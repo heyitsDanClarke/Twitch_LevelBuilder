@@ -1,0 +1,35 @@
+1.1.2
+Added size parameter to TwitchEmoteImage and TwitchEmoteCache for projects that require larger/higher resolution emote sprites.
+
+BREAKING CHANGE: Updated the TwitchEmoteCache::OnLoadCallback to include the loaded Sprite as a parameter.
+
+1.1.1
+Added some TwitchText customization options
+ - Custom listen mode to support message filtering and customization
+ - Emote initialization callback for setting custom materials
+ - Toggle user name rendering on/off
+
+Removed reliance on deprecated Twitch API.
+
+Improved error reporting.
+
+1.1.0
+Added Whisper support!
+ - Send/receive whispers to other Twitch users
+ - Display whisper messages with emotes using TwitchText UI component
+
+Improved connection management
+ - TwitchChatter will now automatically reconnect to Twitch chat and whisper servers if the connection fails at any point
+
+Added an OnChannelJoined callback upon user request
+
+Added more information to optional debug output
+
+1.0.2
+Fixed issue caused by Twitch chat migration to AWS back-end. Also made code resilient to similar changes in the future.
+
+1.0.1
+Fixed issue with TwitchText emote scaling used on world-space canvases
+
+1.0.0
+Initial release!
