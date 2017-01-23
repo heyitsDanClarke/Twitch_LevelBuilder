@@ -455,6 +455,8 @@ PlayerSettings:
   cloudServicesEnabled:
     Build: 1
     Collab: 1
+    ErrorHub: 0
+    Hub: 0
     UNet: 1
   cloudProjectId: e7180e8e-ac6f-41a8-9a87-4d1a83fef86c
   projectName: Twitch_LevelBuilder
