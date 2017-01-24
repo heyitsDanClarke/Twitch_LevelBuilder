@@ -120,6 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   player: {fileID: 1322290484759090, guid: 9c9c8c4acdc3a714b93e0091443662bb, type: 2}
+  wall: {fileID: 1092966226108738, guid: cf4704b5e89d50142a7738d2940a57a2, type: 2}
 --- !u!4 &836625401
 Transform:
   m_ObjectHideFlags: 0
@@ -193,7 +194,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
