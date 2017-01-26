@@ -119,8 +119,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
-  player: {fileID: 1322290484759090, guid: 9c9c8c4acdc3a714b93e0091443662bb, type: 2}
-  wall: {fileID: 1092966226108738, guid: cf4704b5e89d50142a7738d2940a57a2, type: 2}
+  iceTiles: {fileID: 1039489354002006, guid: 80649adce7bf6194ca88cd39e76cad4e, type: 2}
+  lavaTiles: {fileID: 1844837523870910, guid: 7648773d5ae60eb4cbc5fc1067c06b97, type: 2}
+  player: {fileID: 1117320666350700, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+  wallTiles: {fileID: 1847461018533286, guid: 6a50fbbca499d6b4aaa3a2b7f0d5738f, type: 2}
 --- !u!4 &836625401
 Transform:
   m_ObjectHideFlags: 0
