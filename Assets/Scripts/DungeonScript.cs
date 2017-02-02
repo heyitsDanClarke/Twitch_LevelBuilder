@@ -6,8 +6,6 @@ using UnityEngine;
 public class DungeonScript : MonoBehaviour
 {
 
-	public float speed; // speed of player
-
 	public GameObject iceTiles; // ice tiles
 	public GameObject waterTiles; // water tiles
 	public GameObject steamTiles; // steam tiles
@@ -28,17 +26,16 @@ public class DungeonScript : MonoBehaviour
 	private int air = -1; // DO NOT MODIFY
 	private int flood = 0;
 	private int wall = 1; // DO NOT MODIFY
+	private int ice = 2;
+	private int water = 3;
+	private int steam = 4;
+	private int lava = 5;
 
 	// entity IDs, IDs must be different
 	private int empty = 0;
-	private int small = 1;
-	private int large = 2;
-	private int ice = 3;
-	private int water = 4;
-	private int steam = 5;
-	private int lava = 6;
-	private int loot = 7;
-
+	private int loot = 1;
+	private int small = 2;
+	private int large = 3;
 
 	private System.Random random; // random numnber generator
 
@@ -46,15 +43,12 @@ public class DungeonScript : MonoBehaviour
 	void Start ()
 	{
 		random = new System.Random ();
-		int roomWidth = 96; // width of room
-		int roomHeight = 64; // height of room
-
-		// set speed off player
-		speed = 10.0f;
+		int roomWidth = 48; // width of room
+		int roomHeight = 32; // height of room
 
 		// create room
 		int [,] randomRoom = generateRoomArray (roomWidth, roomHeight);
-		createRoom (randomRoom, 0, 0);
+		createRoom (randomRoom, 5, 5); // room array, fire votes, ice votes
 
 		// initialize player object
 		player = (GameObject)Instantiate (player, new Vector3 (roomWidth / 2, roomHeight / 2, 0.0f), transform.rotation);
@@ -67,31 +61,7 @@ public class DungeonScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		// change of position of the player
-		float horizontalMovement = speed * Time.deltaTime;
-		float diagonalMovement = (float)Math.Sqrt (0.5) * speed * Time.deltaTime;
-
-		// move the player according to the key combinations
-		if (Input.GetKey (KeyCode.UpArrow) && Input.GetKey (KeyCode.LeftArrow)) {
-			player.transform.position += new Vector3 (-diagonalMovement, diagonalMovement, 0.0f);
-		} else if (Input.GetKey (KeyCode.DownArrow) && Input.GetKey (KeyCode.LeftArrow)) {
-			player.transform.position += new Vector3 (-diagonalMovement, -diagonalMovement, 0.0f);
-		} else if (Input.GetKey (KeyCode.DownArrow) && Input.GetKey (KeyCode.RightArrow)) {
-			player.transform.position += new Vector3 (diagonalMovement, -diagonalMovement, 0.0f);
-		} else if (Input.GetKey (KeyCode.UpArrow) && Input.GetKey (KeyCode.RightArrow)) {
-			player.transform.position += new Vector3 (diagonalMovement, diagonalMovement, 0.0f);
-		} else if (Input.GetKey (KeyCode.UpArrow)) {
-			player.transform.position += new Vector3 (0.0f, horizontalMovement, 0.0f);
-		} else if (Input.GetKey (KeyCode.DownArrow)) {
-			player.transform.position += new Vector3 (0.0f, -horizontalMovement, 0.0f);
-		} else if (Input.GetKey (KeyCode.LeftArrow)) {
-			player.transform.position += new Vector3 (-horizontalMovement, 0.0f, 0.0f);
-		} else if (Input.GetKey (KeyCode.RightArrow)) {
-			player.transform.position += new Vector3 (horizontalMovement, 0.0f, 0.0f);
-		}
-
-		// update camera position
-		Camera.main.transform.position = new Vector3 (player.transform.position[0], player.transform.position[1], Camera.main.transform.position[2]);
+		
 	}
 
 	// generate an array containing the information of a room
@@ -255,11 +225,11 @@ public class DungeonScript : MonoBehaviour
 							setTile = waterTiles;
 							setTileID = water;
 						}
-						GameObject tileClone = (GameObject)Instantiate (setTile, new Vector3 (i, j, 0.0f), transform.rotation);
-						entities [i, j] = setTileID;
+						Instantiate (setTile, new Vector3 (i, j, 0.0f), transform.rotation);
+						room [i, j] = setTileID;
 					} else if (humidity [i, j] < 0.35f && temperature [i, j] > 0.55f) {
-						GameObject tileClone = (GameObject)Instantiate (lavaTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-						entities [i, j] = lava;
+						Instantiate (lavaTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						room [i, j] = lava;
 					} else {
 						GameObject tileClone = (GameObject)Instantiate (floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
 						tileClone = (GameObject)Instantiate (hotFloorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
@@ -287,7 +257,7 @@ public class DungeonScript : MonoBehaviour
 						tileClone.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(temperature [i, j] * 10 - 4));
 					} else {
 						// set wall tiles
-						GameObject tileClone = (GameObject)Instantiate (wallTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						Instantiate (wallTiles, new Vector3 (i, j, 0.0f), transform.rotation);
 					}
 				}
 			}
@@ -303,7 +273,7 @@ public class DungeonScript : MonoBehaviour
 				} while (room [x, y] != air || entities [x, y] != empty || countAdjacent (room, x, y, wall, 1) <= 3);
 				if (countAdjacent (room, x, y, wall, 2) > 11 && countAdjacent (entities, x, y, loot, 16) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no loot boxes nearby
 					// spawn loot box
-					GameObject mobClone = (GameObject)Instantiate (lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
+					Instantiate (lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
 					entities [x, y] = loot;
 					break;
 				}
@@ -348,7 +318,7 @@ public class DungeonScript : MonoBehaviour
 								i = random.Next (x - 2, x + 2 + 1);
 								j = random.Next (y - 2, y + 2 + 1);
 								try {
-									if (room [i, j] == air && entities [i, j] != small && entities [i, j] != large && entities [i, j] != loot) {
+									if (room [i, j] != wall && entities [i, j] != small && entities [i, j] != large && entities [i, j] != loot) {
 										break;
 									}
 								} catch (IndexOutOfRangeException) {}

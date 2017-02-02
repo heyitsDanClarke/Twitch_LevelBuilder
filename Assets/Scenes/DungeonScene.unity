@@ -118,7 +118,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac865e953c7d1544b1255e8b675da1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
   iceTiles: {fileID: 1039489354002006, guid: 80649adce7bf6194ca88cd39e76cad4e, type: 2}
   waterTiles: {fileID: 1837050098405006, guid: 9475b0d78588b8e4e9a2b4d875c2bb20, type: 2}
   steamTiles: {fileID: 1231349702314534, guid: 774e22af249a584409846e77a0637608, type: 2}
