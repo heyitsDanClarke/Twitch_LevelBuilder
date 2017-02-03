@@ -6,6 +6,9 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour {
 
 	public float speed; // speed of player
+	public int damage; // base damage
+	public int health; // base hit points
+	public int healthRegeneration; // health regeneration speed;
 
 	private Rigidbody2D rb; // rigid body of playersprite
 

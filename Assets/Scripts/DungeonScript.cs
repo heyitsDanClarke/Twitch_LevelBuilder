@@ -231,8 +231,11 @@ public class DungeonScript : MonoBehaviour
 						Instantiate (lavaTiles, new Vector3 (i, j, 0.0f), transform.rotation);
 						room [i, j] = lava;
 					} else {
-						GameObject tileClone = (GameObject)Instantiate (floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-						tileClone = (GameObject)Instantiate (hotFloorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						float hotTileTransparency = Mathf.Clamp01 (temperature [i, j] * 10 - 4);
+						if (hotTileTransparency < 1.0f) {
+							Instantiate (floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						}
+						GameObject tileClone = (GameObject)Instantiate (hotFloorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
 						tileClone.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(temperature [i, j] * 10 - 4));
 					}
 				}
@@ -252,8 +255,11 @@ public class DungeonScript : MonoBehaviour
 
 					if (nearAir) {
 						// set border tiles
-						GameObject tileClone = (GameObject)Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-						tileClone = (GameObject)Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						float hotTileTransparency = Mathf.Clamp01 (temperature [i, j] * 10 - 4);
+						if (hotTileTransparency < 1.0f) {
+							Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						}
+						GameObject tileClone = (GameObject)Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
 						tileClone.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(temperature [i, j] * 10 - 4));
 					} else {
 						// set wall tiles
