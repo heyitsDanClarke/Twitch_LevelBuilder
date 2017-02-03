@@ -17,12 +17,13 @@ public class DemoPoll : MonoBehaviour {
 
     private List<string> _voterList;
 
-    private void Awake()
+    void Awake()
     {
-        if (Instance != null)
-            Destroy(Instance);
-        else
-            Instance = this;
+		if (Instance != null) {
+			Destroy (Instance);
+		} else {
+			Instance = this;
+		}
 
         _voterList = new List<string>();
     }
@@ -41,6 +42,7 @@ public class DemoPoll : MonoBehaviour {
         {
             Debug.LogWarning("No channel name entered for poll! Enter a channel name and restart the scene.", this);
         }
+			
     }
 
     private void OnDestroy()

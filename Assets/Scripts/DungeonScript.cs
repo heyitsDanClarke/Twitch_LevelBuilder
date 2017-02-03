@@ -19,6 +19,7 @@ public class DungeonScript : MonoBehaviour
 	public GameObject smallMob; // small monster
 	public GameObject largeMob; // large monster
 	public GameObject lootBox; // loot box
+	public GameObject exit; // exit of room
 
 	////public Sprite[] spritePlayer = new Sprite[40];
 
@@ -48,10 +49,8 @@ public class DungeonScript : MonoBehaviour
 
 		// create room
 		int [,] randomRoom = generateRoomArray (roomWidth, roomHeight);
-		createRoom (randomRoom, 5, 5); // room array, fire votes, ice votes
-
-		// initialize player object
-		player = (GameObject)Instantiate (player, new Vector3 (roomWidth / 2, roomHeight / 2, 0.0f), transform.rotation);
+		createRoom (randomRoom, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
+		DemoPoll.Instance.ResetVote(); // reset votes
 
 		// initialize camera
 		Camera.main.orthographicSize = 10;
@@ -69,7 +68,11 @@ public class DungeonScript : MonoBehaviour
 	{
 		int[,] room = new int[width, height];
 
+		Vector3 playerLocation = new Vector3 (0.0f, 0.0f, 0.0f); // player spawn location
+		Vector3 exitLocation = new Vector3 (0.0f, 0.0f, 0.0f); // room exit location
+
 		bool satisfied; // whether room is satisfied or not
+
 		do {		
 			satisfied = true;
 
@@ -81,19 +84,47 @@ public class DungeonScript : MonoBehaviour
 				}
 			}
 
+
+
 			// create exits of the room on the opposite sides
 			int w = 4; // width of exit
 			if (random.NextDouble () < 0.5) {
+				bool playerSpawnAtTop = (random.NextDouble () < 0.5)? true : false;
+
 				// create exits on top and bottom of room
 				int position = random.Next (1, width - w - 1);
+				if (!playerSpawnAtTop) {
+					playerLocation = new Vector3 (position + w / 2.0f, 0.0f, 0.0f);
+				} else {
+					exitLocation = new Vector3 (position + w / 2.0f, 0.0f, 0.0f);
+				}
 				room = fillAirSquare (room, position, -w / 2, w);
+
 				position = random.Next (1, width - w - 1);
+				if (playerSpawnAtTop) {
+					playerLocation = new Vector3 (position + w / 2.0f, height - 1, 0.0f);
+				} else {
+					exitLocation = new Vector3 (position + w / 2.0f, height - 1, 0.0f);
+				}
 				room = fillAirSquare (room, position, height - w / 2, w);
 			} else {
+				bool playerSpawnAtRight = (random.NextDouble () < 0.5)? true : false;
+
 				// create exits on left and right of room
 				int position = random.Next (1, height - w - 1);
+				if (!playerSpawnAtRight) {
+					playerLocation = new Vector3 (0.0f, position + w / 2.0f, 0.0f);
+				} else {
+					exitLocation = new Vector3 (0.0f, position + w / 2.0f, 0.0f);
+				}
 				room = fillAirSquare (room, -w / 2, position, w);
+
 				position = random.Next (1, height - w - 1);
+				if (playerSpawnAtRight) {
+					playerLocation = new Vector3 (width - 1, position + w / 2.0f, 0.0f);
+				} else {
+					exitLocation = new Vector3 (width - 1, position + w / 2.0f, 0.0f);
+				}
 				room = fillAirSquare (room, width - w / 2, position, w);
 			}
 
@@ -169,6 +200,10 @@ public class DungeonScript : MonoBehaviour
 			}
 				
 		} while (!satisfied);
+
+		// set player and exit locations
+		player = (GameObject)Instantiate (player, playerLocation, transform.rotation);
+		exit = (GameObject)Instantiate (exit, exitLocation, transform.rotation);
 
 		return room;
 	}
@@ -246,7 +281,7 @@ public class DungeonScript : MonoBehaviour
 					for (int row = i - 1; row <= i + 1; row++) {
 						for (int col = j - 1; col <= j + 1; col++) {
 							try {
-								if (room [row, col] == air) {
+								if (room [row, col] != wall) {
 									nearAir = true;
 								}
 							} catch (IndexOutOfRangeException) {}

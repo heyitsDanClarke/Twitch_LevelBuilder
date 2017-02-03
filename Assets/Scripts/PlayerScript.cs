@@ -36,8 +36,16 @@ public class PlayerScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update ()
-	{
+	{		
 		// update camera position
 		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1], Camera.main.transform.position[2]);
+	}
+
+	void OnTriggerEnter2D(Collider2D coll)
+	{
+		if (coll.gameObject.tag == "Exit")
+		{
+			Application.LoadLevel("DungeonScene");
+		}
 	}
 }

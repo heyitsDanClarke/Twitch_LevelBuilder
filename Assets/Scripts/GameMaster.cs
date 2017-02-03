@@ -9,10 +9,12 @@ public class GameMaster : MonoBehaviour {
     public int iceCount;
     public int fireCount;
 
-	void Awake () {
-        if (Instance != null)
-            Destroy(Instance);
-        else
-            Instance = this;
+	void Start () {
+		if (Instance != null) {
+			Destroy (this.gameObject);
+		} else {
+			Instance = this;
+			DontDestroyOnLoad(this.gameObject);
+		}
     }
 }

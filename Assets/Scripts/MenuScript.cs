@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class MenuScript : MonoBehaviour {
 
+
 	private GUIStyle guiStyle;
+
 
 	// Use this for initialization
 	void Start () {
-
+		
 	}
 	
 	// Update is called once per frame
