@@ -29,8 +29,7 @@ public class DungeonScript : MonoBehaviour
 	private int wall = 1; // DO NOT MODIFY
 	private int ice = 2;
 	private int water = 3;
-	private int steam = 4;
-	private int lava = 5;
+	private int lava = 4;
 
 	// entity IDs, IDs must be different
 	private int empty = 0;
@@ -227,8 +226,8 @@ public class DungeonScript : MonoBehaviour
 
 		// set humidity map of room;
 		float [,] humidity = new float[width, height]; // humidity map of room;
-		xOffset = (float) (random.NextDouble ()) * 1000;
-		yOffset = (float) (random.NextDouble ()) * 1000;
+		xOffset = (float) (random.NextDouble ()) * -1000 - 1200;
+		yOffset = (float) (random.NextDouble ()) * -1000 - 1200;
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				humidity [i, j] = (float) Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, xOffset + j * xScale));
@@ -246,14 +245,11 @@ public class DungeonScript : MonoBehaviour
 		// create room
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				if (room [i, j] == air) { // set lava/steam/water/floor tiles base on the temperature and humidity
-					if (humidity [i, j] > 0.65f) {
+				if (room [i, j] == air) { // set lava/water/floor tiles base on the temperature and humidity
+					if (humidity [i, j] > 0.65f && temperature [i, j] < 0.55f) {
 						GameObject setTile; // the tile to be set in the dungeon
-						int setTileID; // the id of the tile to be set in the dungeon 
-						if (temperature [i, j] > 0.55f) {
-							setTile = steamTiles;
-							setTileID = steam;
-						} else if (temperature [i, j] < 0.45f) {
+						int setTileID; // the id of the tile to be set in the dungeon
+						if (temperature [i, j] < 0.45f) {
 							setTile = iceTiles;
 							setTileID = ice;
 						} else {

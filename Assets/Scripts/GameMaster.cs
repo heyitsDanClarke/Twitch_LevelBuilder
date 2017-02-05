@@ -8,6 +8,8 @@ public class GameMaster : MonoBehaviour {
 
     public int iceCount;
     public int fireCount;
+	public float music;
+	public float sfx;
 
 	void Start () {
 		if (Instance != null) {
