@@ -10,7 +10,10 @@ public class Dungeon : MonoBehaviour
     public int roomWidth = 48; // width of room
     public int roomHeight = 32; // height of room
 
+	[HideInInspector]
     public GameObject dungeonVisual; // dungeon visual
+
+	public GameObject emptyObject; // empty GameObject
     public GameObject iceTiles; // ice tiles
 	public GameObject waterTiles; // water tiles
 	public GameObject steamTiles; // steam tiles
@@ -47,6 +50,8 @@ public class Dungeon : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+		dungeonVisual = null;
+
         if (Instance != null)
         {
             Destroy(gameObject);
@@ -72,15 +77,13 @@ public class Dungeon : MonoBehaviour
 
     public void GenerateRoom(int roomWidth, int roomHeight, string type)
     {
-        GameObject dungeonVisualObject = null;
-
-        if (dungeonVisualObject != null)
+        if (dungeonVisual != null)
         {
-            Destroy(dungeonVisualObject);
+			Destroy(dungeonVisual);
         }
 
-        dungeonVisualObject = Instantiate(dungeonVisual, new Vector3(0, 0, 0), Quaternion.identity); //TODO: figure out why this is making 
-        dungeonVisualObject.transform.name = "Dungeon Visual";
+		dungeonVisual = Instantiate(emptyObject, new Vector3(0, 0, 0), Quaternion.identity); //TODO: figure out why this is making 
+		dungeonVisual.transform.name = "Dungeon Visual";
 
         // create room
         int[,] randomRoom = generateRoomArray(roomWidth, roomHeight);
@@ -228,7 +231,7 @@ public class Dungeon : MonoBehaviour
 
         // set player and exit locations
         player.transform.position = playerLocation;
-		GameObject tempExit = (GameObject)Instantiate (exit, exitLocation, transform.rotation);
+		GameObject tempExit = Instantiate (exit, exitLocation, transform.rotation);
         tempExit.transform.SetParent(dungeonVisual.transform);
 
 		return room;
@@ -239,6 +242,8 @@ public class Dungeon : MonoBehaviour
 		int height = room.GetLength(1); // height of dungeon;
 		float xScale = 0.06f + 2.0f / Mathf.Min(width, height); // x scale of perlin noise
 		float xOffset, yOffset; // x and y offset of perlin noise;
+		GameObject tempTile; // temporary variable for storing the tile to be created
+		GameObject tempEntity; // temporary variable for storing the entity to be created
 
 		// set temperature map of room;
 		float [,] temperature = new float[width, height];
@@ -247,7 +252,7 @@ public class Dungeon : MonoBehaviour
 		float heightOffset = (fireVotes + iceVotes == 0)? 0.0f : 0.3f * (fireVotes - iceVotes) / ((float) (fireVotes + iceVotes)); // height offset of perlin noise for the temperature map
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				temperature [i, j] = (float) Mathf.Clamp01(Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, xOffset + j * xScale) * 1.5f - 0.25f) * 0.4f + 0.3f + heightOffset);
+				temperature [i, j] = (float) Mathf.Clamp01(Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, yOffset + j * xScale) * 1.5f - 0.25f) * 0.4f + 0.3f + heightOffset);
 			}
 		}
 
@@ -257,7 +262,7 @@ public class Dungeon : MonoBehaviour
 		yOffset = (float) (random.NextDouble ()) * -1000 - 1200;
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				humidity [i, j] = (float) Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, xOffset + j * xScale));
+				humidity [i, j] = (float) Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, yOffset + j * xScale));
 			}
 		}
 			
@@ -284,22 +289,22 @@ public class Dungeon : MonoBehaviour
 							setTile = waterTiles;
 							setTileID = water;
 						}
-						GameObject tempTile = Instantiate(setTile, new Vector3(i, j, 0.0f), transform.rotation);
+						tempTile = Instantiate(setTile, new Vector3(i, j, 0.0f), transform.rotation);
                         tempTile.transform.SetParent(dungeonVisual.transform);
 						room [i, j] = setTileID;
 					} else if (humidity [i, j] < 0.35f && temperature [i, j] > 0.55f) {
-						GameObject tempTile = Instantiate (lavaTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						tempTile = Instantiate (lavaTiles, new Vector3 (i, j, 0.0f), transform.rotation);
                         tempTile.transform.SetParent(dungeonVisual.transform);
                         room [i, j] = lava;
 					} else {
 						float hotTileTransparency = Mathf.Clamp01 (temperature [i, j] * 10 - 4);
 						if (hotTileTransparency < 1.0f) {
-                            GameObject tempTile = Instantiate(floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+                            tempTile = Instantiate(floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
                             tempTile.transform.SetParent(dungeonVisual.transform);
                         }
-						GameObject tileClone = Instantiate (hotFloorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-						tileClone.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(temperature [i, j] * 10 - 4));
-                        tileClone.transform.SetParent(dungeonVisual.transform);
+						tempTile = Instantiate (hotFloorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(temperature [i, j] * 10 - 4));
+						tempTile.transform.SetParent(dungeonVisual.transform);
                     }
 				}
 
@@ -323,12 +328,12 @@ public class Dungeon : MonoBehaviour
 							GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
                             tempBorderTile.transform.SetParent(dungeonVisual.transform);
                         }
-						GameObject tempTile = (GameObject)Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						tempTile = (GameObject)Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
                         tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(temperature [i, j] * 10 - 4));
                         tempTile.transform.SetParent(dungeonVisual.transform);
                     } else {
                         // set wall tiles
-                        GameObject tempTile = Instantiate(wallTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+                        tempTile = Instantiate(wallTiles, new Vector3 (i, j, 0.0f), transform.rotation);
                         tempTile.transform.SetParent(dungeonVisual.transform);
                     }
 				}
@@ -345,7 +350,7 @@ public class Dungeon : MonoBehaviour
 				} while (room [x, y] != air || entities [x, y] != empty || countAdjacent (room, x, y, wall, 1) <= 3);
 				if (countAdjacent (room, x, y, wall, 2) > 11 && countAdjacent (entities, x, y, loot, 16) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no loot boxes nearby
                                                                                                                  // spawn loot box
-                    GameObject tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
+                    tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
                     tempEntity.transform.SetParent(dungeonVisual.transform);
                     entities [x, y] = loot;
 					break;
@@ -363,7 +368,7 @@ public class Dungeon : MonoBehaviour
 				} while (room [x, y] != air);
 				if (countAdjacent (room, x, y, wall, 4) < 4 && countAdjacent (entities, x, y, large, 12) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no large monsters nearby
 					// spawn large monster
-					GameObject tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
+					tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
                     tempEntity.transform.SetParent(dungeonVisual.transform);
                     entities [x, y] = large;
 					break;
@@ -381,7 +386,7 @@ public class Dungeon : MonoBehaviour
 				} while (room [x, y] != air);
 				if (countAdjacent (room, x, y, wall, 2) < 4 && countAdjacent (entities, x, y, small, 8) == 0 && countAdjacent (entities, x, y, large, 8) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no mobs nearby
 					// spawn small monster
-					GameObject tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
+					tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
                     tempEntity.transform.SetParent(dungeonVisual.transform);
                     entities [x, y] = small;
 					int mobCluster = random.Next (3 , 6); // size of mob cluster (3 to 5 inclusive)
@@ -398,8 +403,8 @@ public class Dungeon : MonoBehaviour
 									}
 								} catch (IndexOutOfRangeException) {}
 							}
-                            GameObject tempEntityClones = (GameObject)Instantiate (smallMob, new Vector3 (i, j, 0.0f), transform.rotation);
-                            tempEntityClones.transform.SetParent(dungeonVisual.transform);
+                            tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (i, j, 0.0f), transform.rotation);
+                            tempEntity.transform.SetParent(dungeonVisual.transform);
                             entities [x, y] = small;
 							break;
 						}
