@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameMaster : MonoBehaviour {
 
     public static GameMaster Instance;
+
     [HideInInspector]
     public int iceCount;
     [HideInInspector]
@@ -13,18 +14,13 @@ public class GameMaster : MonoBehaviour {
 	public float music;
 	public float sfx;
 
-    void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
-
 	void Start ()
     {
 		if (Instance != null) {
-			Destroy (this.gameObject);
+			Destroy (gameObject);
 		} else {
 			Instance = this;
-			DontDestroyOnLoad(this.gameObject);
+			DontDestroyOnLoad(gameObject);
 		}
     }
 }

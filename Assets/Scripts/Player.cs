@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
 
@@ -39,13 +40,14 @@ public class Player : MonoBehaviour {
 	{		
 		// update camera position
 		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1], Camera.main.transform.position[2]);
+
 	}
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
 		if (coll.gameObject.tag == "Exit")
 		{
-			Application.LoadLevel("DungeonScene");
+            Dungeon.Instance.GenerateRoom(Dungeon.Instance.roomWidth, Dungeon.Instance.roomHeight, null);
 		}
 	}
 }

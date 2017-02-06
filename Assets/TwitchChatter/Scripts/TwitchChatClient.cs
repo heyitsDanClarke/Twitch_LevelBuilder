@@ -87,6 +87,15 @@ using TwitchChatter;
 
 public class TwitchChatClient : MonoBehaviour
 {
+
+    //
+    // Public properties
+    // #PublicProperties
+    //
+
+    // userName
+    //  User name to use when connecting to Twitch chat and sending messages
+
 	//
 	// Public properties
 	// #PublicProperties
