@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DungeonScript : MonoBehaviour
+public class Dungeon : MonoBehaviour
 {
 
 	public GameObject iceTiles; // ice tiles

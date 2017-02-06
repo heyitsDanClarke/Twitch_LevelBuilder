@@ -1,36 +1,59 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class MenuScript : MonoBehaviour {
+public class MainMenu : MonoBehaviour {
 
-	public GUIStyle largeButton; // GUI style for large buttons
-	public Texture backgroundTexture; // background of the menu
+	//public GUIStyle largeButton; // GUI style for large buttons
+	//public Texture backgroundTexture; // background of the menu
+
+    public GameObject settingsMenu;
 
 	public float musicVolume;
 	public float sfxVolume;
 
-	private int state; // state of the UI
+	//private int state; // state of the UI
 
 	// UI ID
-	private int menu = 0;
-	private int settings = 1;
-	private int credits = 2;
+	//private int menu = 0;
+	//private int settings = 1;
+	//private int credits = 2;
 
-	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
+        /*
 		largeButton.normal.textColor = new Color (0, 0, 0);		
 		largeButton.alignment = TextAnchor.MiddleCenter;
-		state = 0;
+		state = 0;*/
 		musicVolume = 0.5f;
 		sfxVolume = 0.5f;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	}
 
-	void OnGUI() {
+    public void StartGame()
+    {
+        SceneManager.LoadScene(1);
+    }
+
+    public void OpenSettings() //todo: enable settings panel
+    {
+
+    }
+
+    public void OpenCredits() //todo: enable credits panel
+    {
+
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    //Gonna suggest we go with the Unity canvas system. Easier to manipulate in my opinion.
+	/*void OnGUI() {
 		GUI.DrawTexture(new Rect (0, 0, Screen.width, Screen.height), backgroundTexture);
 		largeButton.fontSize = Screen.height / 20;
 
@@ -67,5 +90,5 @@ public class MenuScript : MonoBehaviour {
 				state = menu;
 			}
 		}
-	}
+	}*/
 }

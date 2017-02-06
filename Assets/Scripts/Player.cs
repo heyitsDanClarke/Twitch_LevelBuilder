@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerScript : MonoBehaviour {
+public class Player : MonoBehaviour {
 
 	public float speed; // speed of player
 	public int damage; // base damage
