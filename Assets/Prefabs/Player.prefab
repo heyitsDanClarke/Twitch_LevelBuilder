@@ -90,7 +90,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   damage: 0
-  health: 0
+  health: 8
   healthRegeneration: 0
 --- !u!212 &212899989149864662
 SpriteRenderer:

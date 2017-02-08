@@ -7,6 +7,13 @@ TagManager:
   - Button
   - Exit
   - GM
+  - Loot
+  - Lava Floor
+  - Ice Floor
+  - Water
+  - Cold Floor
+  - Hot Floor
+  - Enemy
   layers:
   - Default
   - TransparentFX

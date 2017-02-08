@@ -8,7 +8,7 @@ public class Player : MonoBehaviour {
 
 	public float speed; // speed of player
 	public int damage; // base damage
-	public int health; // base hit points
+	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed;
 
 	private Rigidbody2D rb; // rigid body of playersprite
@@ -49,5 +49,11 @@ public class Player : MonoBehaviour {
 		{
             Dungeon.Instance.GenerateRoom(Dungeon.Instance.roomWidth, Dungeon.Instance.roomHeight, null);
 		}
+
+        else if(coll.gameObject.tag == "Enemy")
+        {
+            if (health > 0)
+                health -= 1;
+        }
 	}
 }
