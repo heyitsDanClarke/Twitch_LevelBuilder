@@ -49,11 +49,15 @@ public class Player : MonoBehaviour {
 		{
             Dungeon.Instance.GenerateRoom(Dungeon.Instance.roomWidth, Dungeon.Instance.roomHeight, null);
 		}
+	}
 
-        else if(coll.gameObject.tag == "Enemy")
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == "Enemy")
         {
             if (health > 0)
                 health -= 1;
+            Destroy(coll.gameObject);
         }
-	}
+    }
 }

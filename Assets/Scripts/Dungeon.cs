@@ -68,11 +68,6 @@ public class Dungeon : MonoBehaviour
         Camera.main.orthographicSize = 10;
         Camera.main.transform.position = new Vector3(0.0f, 0.0f, -10.0f);
 
-        // spawn player
-        //Testing to see if we can just have the player be in the scene and have dungeon reposition
-        //Correct, we do not need to instantiate. Thoughts?
-        //player = Instantiate(player, new Vector3(0, 0, 0), transform.rotation);
-
         GenerateRoom(roomWidth, roomHeight, null);
 
 	}
