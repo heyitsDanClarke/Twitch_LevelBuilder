@@ -72,6 +72,7 @@ public class Dungeon : MonoBehaviour
 
 	}
 
+	// funtion for generating a room
     public void GenerateRoom(int roomWidth, int roomHeight, string type)
     {
         if (dungeonVisual != null)
@@ -85,10 +86,10 @@ public class Dungeon : MonoBehaviour
         // create room
         int[,] randomRoom = generateRoomArray(roomWidth, roomHeight);
         createRoom(randomRoom, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
-        DemoPoll.Instance.ResetVote(); // reset votes
+        Poll.Instance.ResetVote(); // reset votes
     }
 
-	// generate an array containing the information of a room
+	// generate an array containing the information of a room in the scene
 	int [,] generateRoomArray (int width, int height) // height of room, width of room
 	{
 		int[,] room = new int[width, height];
@@ -294,13 +295,13 @@ public class Dungeon : MonoBehaviour
                         tempTile.transform.SetParent(dungeonVisual.transform);
                         room [i, j] = lava;
 					} else {
-						float hotTileTransparency = Mathf.Clamp01 (temperature [i, j] * 10 - 4);
+						float hotTileTransparency = Mathf.Clamp01 (temperature [i, j] * 10 - 5);
 						if (hotTileTransparency < 1.0f) {
                             tempTile = Instantiate(floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
                             tempTile.transform.SetParent(dungeonVisual.transform);
                         }
 						tempTile = Instantiate (hotFloorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-						tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(temperature [i, j] * 10 - 4));
+						tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(temperature [i, j] * 10 - 5));
 						tempTile.transform.SetParent(dungeonVisual.transform);
                     }
 				}
@@ -320,13 +321,13 @@ public class Dungeon : MonoBehaviour
 
 					if (nearAir) {
 						// set border tiles
-						float hotTileTransparency = Mathf.Clamp01 (temperature [i, j] * 10 - 4);
+						float hotTileTransparency = Mathf.Clamp01 (temperature [i, j] * 10 - 5);
 						if (hotTileTransparency < 1.0f) {
 							GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
                             tempBorderTile.transform.SetParent(dungeonVisual.transform);
                         }
 						tempTile = (GameObject)Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-                        tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(temperature [i, j] * 10 - 4));
+                        tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(temperature [i, j] * 10 - 5));
                         tempTile.transform.SetParent(dungeonVisual.transform);
                     } else {
                         // set wall tiles

@@ -63,7 +63,7 @@ public class PlayerDemo : MonoBehaviour {
                 else if (GameMaster.Instance.fireCount > GameMaster.Instance.iceCount)
                     floor.transform.GetChild(i).GetComponent<SpriteRenderer>().color = Color.red;
             }
-            DemoPoll.Instance.ResetVote();
+            Poll.Instance.ResetVote();
         }
     }
 }
