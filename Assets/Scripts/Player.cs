@@ -29,8 +29,34 @@ public class Player : MonoBehaviour {
 
 	void FixedUpdate ()
 	{
-		float moveHorizontal = Input.GetAxis("Horizontal");
-		float moveVertictal = Input.GetAxis("Vertical");
+		float moveHorizontal = 0.0f;
+		float moveVertictal = 0.0f;
+
+		bool menusActive = false; // is there any menus active in the scene
+
+		foreach (Transform child in DungeonUI.Instance.transform) {
+			menusActive = menusActive || child.gameObject.activeSelf;
+		}
+
+
+		if (!menusActive) { // if no menus are active
+			moveHorizontal = Input.GetAxis ("Horizontal");
+			moveVertictal = Input.GetAxis ("Vertical");
+		}
+
+		acceleration = defaultAcceleration;
+		rb.drag = 0.0f;
+
+		try {
+			int x = (int) Math.Round(transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			int y = (int) Math.Round(transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			if (Dungeon.Instance.roomStructure[x, y] == Dungeon.Instance.ice) {
+				acceleration = 1.5f; // make floor slippery if player is on ice
+			}
+			if (Dungeon.Instance.roomStructure[x, y] == Dungeon.Instance.water) {
+				rb.drag = 30.0f; // slow down player if player is in water
+			}
+		} catch (IndexOutOfRangeException) {}
 
 		Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
 
@@ -50,7 +76,7 @@ public class Player : MonoBehaviour {
 	{
 		if (coll.gameObject.tag == "Exit")
 		{
-            Dungeon.Instance.GenerateRoom(Dungeon.Instance.roomWidth, Dungeon.Instance.roomHeight, null);
+			DungeonUI.Instance.showNextLevelMenu ();
 		}
 	}
 

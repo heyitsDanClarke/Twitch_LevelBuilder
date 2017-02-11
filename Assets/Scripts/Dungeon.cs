@@ -32,20 +32,20 @@ public class Dungeon : MonoBehaviour
 	////public Sprite[] spritePlayer = new Sprite[40];
 
 	// tile IDs, IDs must be different
-	private int air = -1; // DO NOT MODIFY
-	private int flood = 0;
-	private int wall = 1; // DO NOT MODIFY
-	private int ice = 2;
-	private int water = 3;
-	private int lava = 4;
+	[HideInInspector]public int air = -1; // DO NOT MODIFY
+	[HideInInspector]public int flood = 0;
+	[HideInInspector]public int wall = 1; // DO NOT MODIFY
+	[HideInInspector]public int ice = 2;
+	[HideInInspector]public int water = 3;
+	[HideInInspector]public int lava = 4;
 
 	// entity IDs, IDs must be different
-	private int empty = 0;
-	private int loot = 1;
-	private int small = 2;
-	private int large = 3;
+	[HideInInspector]public int empty = 0;
+	[HideInInspector]public int loot = 1;
+	[HideInInspector]public int small = 2;
+	[HideInInspector]public int large = 3;
 
-	private int[,] roomStructure; // room structure
+	[HideInInspector]public int[,] roomStructure; // room structure
 
 	private System.Random random; // random numnber generator
 
@@ -70,28 +70,17 @@ public class Dungeon : MonoBehaviour
         Camera.main.orthographicSize = 10;
         Camera.main.transform.position = new Vector3(0.0f, 0.0f, -10.0f);
 
-        GenerateRoom(roomWidth, roomHeight, null);
+        generateRoom(roomWidth, roomHeight, null);
 
 	}
 
-	void Update()
-	{
-		player.GetComponent<Player>().acceleration = player.GetComponent<Player>().defaultAcceleration;
-		player.GetComponent<Player>().speed = player.GetComponent<Player>().defaultSpeed;
-		try {
-			int x = (int) Math.Round(player.transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
-			int y = (int) Math.Round(player.transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
-			if (roomStructure[x, y] == ice) {
-				player.GetComponent<Player>().acceleration = 1.5f; // make floor slippery if player is on ice
-			}
-			if (roomStructure[x, y] == water) {
-				player.GetComponent<Player>().speed = player.GetComponent<Player>().defaultSpeed * 0.4f; // slow down player if player is in water
-			}
-			} catch (IndexOutOfRangeException) {}
+	// function for generating a room from a random selected type and size
+	public void generateRandomRoom() {
+		generateRoom (roomWidth, roomHeight, null);
 	}
-
-	// funtion for generating a room
-    public void GenerateRoom(int roomWidth, int roomHeight, string type)
+		
+	// function for generating a room
+    void generateRoom(int roomWidth, int roomHeight, string type)
     {
         if (dungeonVisual != null)
         {

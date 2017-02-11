@@ -122,11 +122,11 @@ public class Poll : MonoBehaviour {
 	// create UI element based on the lowerleft coordinates (x, y), and its width and height
 	private GameObject instantiateUI(GameObject child, float x, float y, float width, float height)
 	{
-		GameObject newUI = Instantiate (shoutBubble);
+		GameObject newUI = Instantiate (child);
 		newUI.transform.SetParent (transform);
 		newUI.GetComponent<RectTransform> ().anchoredPosition = new Vector2(0, 0);
-		newUI.GetComponent<RectTransform> ().offsetMax =  new Vector2 (x + width, y + height);
-		newUI.GetComponent<RectTransform> ().offsetMin =  new Vector2 (x, y);
+		newUI.GetComponent<RectTransform> ().offsetMax = new Vector2 (x + width, y + height);
+		newUI.GetComponent<RectTransform> ().offsetMin = new Vector2 (x, y);
 		newUI.GetComponent<RectTransform> ().anchorMax = new Vector2 (0.0f, 0.0f);
 		newUI.GetComponent<RectTransform> ().anchorMin = new Vector2 (0.0f, 0.0f);
 		newUI.GetComponent<RectTransform> ().pivot = new Vector2 (0.0f, 0.0f);
