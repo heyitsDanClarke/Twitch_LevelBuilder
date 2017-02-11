@@ -45,6 +45,8 @@ public class Dungeon : MonoBehaviour
 	private int small = 2;
 	private int large = 3;
 
+	private int[,] roomStructure; // room structure
+
 	private System.Random random; // random numnber generator
 
 	// Use this for initialization
@@ -72,6 +74,22 @@ public class Dungeon : MonoBehaviour
 
 	}
 
+	void Update()
+	{
+		player.GetComponent<Player>().acceleration = player.GetComponent<Player>().defaultAcceleration;
+		player.GetComponent<Player>().speed = player.GetComponent<Player>().defaultSpeed;
+		try {
+			int x = (int) Math.Round(player.transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			int y = (int) Math.Round(player.transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			if (roomStructure[x, y] == ice) {
+				player.GetComponent<Player>().acceleration = 1.5f; // make floor slippery if player is on ice
+			}
+			if (roomStructure[x, y] == water) {
+				player.GetComponent<Player>().speed = player.GetComponent<Player>().defaultSpeed * 0.4f; // slow down player if player is in water
+			}
+			} catch (IndexOutOfRangeException) {}
+	}
+
 	// funtion for generating a room
     public void GenerateRoom(int roomWidth, int roomHeight, string type)
     {
@@ -84,8 +102,8 @@ public class Dungeon : MonoBehaviour
 		dungeonVisual.transform.name = "Dungeon Visual";
 
         // create room
-        int[,] randomRoom = generateRoomArray(roomWidth, roomHeight);
-        createRoom(randomRoom, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
+		roomStructure = generateRoomArray(roomWidth, roomHeight);
+		createRoom(roomStructure, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
         Poll.Instance.ResetVote(); // reset votes
     }
 
@@ -238,15 +256,15 @@ public class Dungeon : MonoBehaviour
 	void createRoom (int [,] room, int fireVotes, int iceVotes) { // array of the room, number of fire votes, number of ice votes
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
-		float xScale = 0.06f + 2.0f / Mathf.Min(width, height); // x scale of perlin noise
+		float xScale = 0.04f + 1.8f / Mathf.Min(width, height); // x scale of perlin noise
 		float xOffset, yOffset; // x and y offset of perlin noise;
 		GameObject tempTile; // temporary variable for storing the tile to be created
 		GameObject tempEntity; // temporary variable for storing the entity to be created
 
 		// set temperature map of room;
 		float [,] temperature = new float[width, height];
-		xOffset = (float) (random.NextDouble ()) * 1000;
-		yOffset = (float) (random.NextDouble ()) * 1000;
+		xOffset = (float) (random.NextDouble ()) * 200;
+		yOffset = (float) (random.NextDouble ()) * 200;
 		float heightOffset = (fireVotes + iceVotes == 0)? 0.0f : 0.3f * (fireVotes - iceVotes) / ((float) (fireVotes + iceVotes)); // height offset of perlin noise for the temperature map
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -256,8 +274,8 @@ public class Dungeon : MonoBehaviour
 
 		// set humidity map of room;
 		float [,] humidity = new float[width, height]; // humidity map of room;
-		xOffset = (float) (random.NextDouble ()) * -1000 - 1200;
-		yOffset = (float) (random.NextDouble ()) * -1000 - 1200;
+		xOffset = (float) (random.NextDouble ()) * -200 - 400;
+		yOffset = (float) (random.NextDouble ()) * -200 - 400;
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				humidity [i, j] = (float) Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, yOffset + j * xScale));
@@ -272,15 +290,20 @@ public class Dungeon : MonoBehaviour
 			}
 		}
 
-        // create room
+        // thresholds for climates
+		float wetThreshold = 0.6f;
+		float dryThreshold = 0.4f;
+		float hotThreshold = 0.55f;
+		float coldThreshold = 0.45f;
 
+		// create room
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (room [i, j] == air) { // set lava/water/floor tiles base on the temperature and humidity
-					if (humidity [i, j] > 0.65f && temperature [i, j] < 0.55f) {
+					if (humidity [i, j] > wetThreshold && temperature [i, j] < hotThreshold) {
 						GameObject setTile; // the tile to be set in the dungeon
 						int setTileID; // the id of the tile to be set in the dungeon
-						if (temperature [i, j] < 0.45f) {
+						if (temperature [i, j] < coldThreshold) {
 							setTile = iceTiles;
 							setTileID = ice;
 						} else {
@@ -290,7 +313,7 @@ public class Dungeon : MonoBehaviour
 						tempTile = Instantiate(setTile, new Vector3(i, j, 0.0f), transform.rotation);
                         tempTile.transform.SetParent(dungeonVisual.transform);
 						room [i, j] = setTileID;
-					} else if (humidity [i, j] < 0.35f && temperature [i, j] > 0.55f) {
+					} else if (humidity [i, j] < dryThreshold && temperature [i, j] >= hotThreshold) {
 						tempTile = Instantiate (lavaTiles, new Vector3 (i, j, 0.0f), transform.rotation);
                         tempTile.transform.SetParent(dungeonVisual.transform);
                         room [i, j] = lava;

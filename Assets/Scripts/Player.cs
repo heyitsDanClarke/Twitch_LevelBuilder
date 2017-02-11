@@ -7,6 +7,11 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour {
 
 	public float speed; // speed of player
+	public float acceleration; // acceleration of player;
+	[HideInInspector]
+	public float defaultSpeed = 6.0f; // default speed of player
+	[HideInInspector]
+	public float defaultAcceleration = 20.0f; // default acceleration of player
 	public int damage; // base damage
 	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed;
@@ -16,12 +21,10 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody2D>();
-		rb.mass = 0.01f; // mass of player
-		rb.drag = 1000.0f; // drag of player
-
-		// set speed off player
-		speed = 100.0f;
-		
+		rb.mass = 1.0f; // mass of player
+		rb.drag = 0.0f; // drag of player
+		speed = defaultSpeed;
+		acceleration = defaultAcceleration;
 	}
 
 	void FixedUpdate ()
@@ -29,10 +32,10 @@ public class Player : MonoBehaviour {
 		float moveHorizontal = Input.GetAxis("Horizontal");
 		float moveVertictal = Input.GetAxis("Vertical");
 
-		Vector3 movement = new Vector3(moveHorizontal, moveVertictal, 0.0f);
-		movement = movement.normalized * speed;
+		Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
 
-		rb.AddForce(movement);
+		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
+		rb.AddForce(velocityDifference);
 	}
 
 	// Update is called once per frame
