@@ -67,8 +67,7 @@ public class Dungeon : MonoBehaviour
         random = new System.Random ();
 
         // initialize camera
-        Camera.main.orthographicSize = 10;
-        Camera.main.transform.position = new Vector3(0.0f, 0.0f, -10.0f);
+		Camera.main.transform.position = new Vector3(0.0f, Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, -20.0f);
 
         generateRoom(roomWidth, roomHeight, null);
 

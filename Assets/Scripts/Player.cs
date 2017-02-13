@@ -68,7 +68,7 @@ public class Player : MonoBehaviour {
 	void Update ()
 	{		
 		// update camera position
-		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1], Camera.main.transform.position[2]);
+		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1] + Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, Camera.main.transform.position[2]);
 
 	}
 
