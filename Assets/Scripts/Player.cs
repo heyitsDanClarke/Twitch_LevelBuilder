@@ -34,9 +34,11 @@ public class Player : MonoBehaviour {
 
 		bool menusActive = false; // is there any menus active in the scene
 
-		foreach (Transform child in DungeonUI.Instance.transform) {
-			menusActive = menusActive || child.gameObject.activeSelf;
-		}
+		try {
+			foreach (Transform child in DungeonUI.Instance.transform) {
+				menusActive = menusActive || child.gameObject.activeSelf;
+			}
+		} catch (NullReferenceException) {}
 
 
 		if (!menusActive) { // if no menus are active
@@ -47,7 +49,7 @@ public class Player : MonoBehaviour {
 		acceleration = defaultAcceleration;
 		rb.drag = 0.0f;
 
-		try {
+		/*try {
 			int x = (int) Math.Round(transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
 			int y = (int) Math.Round(transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
 			if (Dungeon.Instance.roomStructure[x, y] == Dungeon.Instance.ice) {
@@ -56,7 +58,7 @@ public class Player : MonoBehaviour {
 			if (Dungeon.Instance.roomStructure[x, y] == Dungeon.Instance.water) {
 				rb.drag = 30.0f; // slow down player if player is in water
 			}
-		} catch (IndexOutOfRangeException) {}
+		} catch (System.Exception) {}*/ //TODO: fix it such that it works for all scenes.  Can change acceleration and drag of player in Dungeon.cs void Update() instead of here
 
 		Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
 

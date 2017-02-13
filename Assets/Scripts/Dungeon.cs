@@ -16,7 +16,6 @@ public class Dungeon : MonoBehaviour
 	public GameObject emptyObject; // empty GameObject
     public GameObject iceTiles; // ice tiles
 	public GameObject waterTiles; // water tiles
-	public GameObject steamTiles; // steam tiles
 	public GameObject floorTiles; // floor tiles
 	public GameObject hotFloorTiles; // hot texture of floor tiles
 	public GameObject lavaTiles; // lava tiles
@@ -32,18 +31,18 @@ public class Dungeon : MonoBehaviour
 	////public Sprite[] spritePlayer = new Sprite[40];
 
 	// tile IDs, IDs must be different
-	[HideInInspector]public int air = -1; // DO NOT MODIFY
-	[HideInInspector]public int flood = 0;
-	[HideInInspector]public int wall = 1; // DO NOT MODIFY
-	[HideInInspector]public int ice = 2;
-	[HideInInspector]public int water = 3;
-	[HideInInspector]public int lava = 4;
+	[HideInInspector]public const int air = -1; // DO NOT MODIFY
+	[HideInInspector]public const int flood = 0;
+	[HideInInspector]public const int wall = 1; // DO NOT MODIFY
+	[HideInInspector]public const int ice = 2;
+	[HideInInspector]public const int water = 3;
+	[HideInInspector]public const int lava = 4;
 
 	// entity IDs, IDs must be different
-	[HideInInspector]public int empty = 0;
-	[HideInInspector]public int loot = 1;
-	[HideInInspector]public int small = 2;
-	[HideInInspector]public int large = 3;
+	[HideInInspector]public const int empty = 0;
+	[HideInInspector]public const int loot = 1;
+	[HideInInspector]public const int small = 2;
+	[HideInInspector]public const int large = 3;
 
 	[HideInInspector]public int[,] roomStructure; // room structure
 
@@ -86,7 +85,7 @@ public class Dungeon : MonoBehaviour
 			Destroy(dungeonVisual);
         }
 
-		dungeonVisual = Instantiate(emptyObject, new Vector3(0, 0, 0), Quaternion.identity); //TODO: figure out why this is making 
+		dungeonVisual = Instantiate(emptyObject, new Vector3(0, 0, 0), Quaternion.identity); 
 		dungeonVisual.transform.name = "Dungeon Visual";
 
         // create room
