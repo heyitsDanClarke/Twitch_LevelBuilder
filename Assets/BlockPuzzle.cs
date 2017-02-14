@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockPushingPuzzle : MonoBehaviour
+public class BlockPuzzle : MonoBehaviour
 {
-	public static BlockPushingPuzzle Instance;
+	public static BlockPuzzle Instance;
 
 	public int roomWidth = 10; // width of room
 	public int roomHeight = 10; // height of room
@@ -24,18 +24,20 @@ public class BlockPushingPuzzle : MonoBehaviour
 	public GameObject plateTile; // plate
 
 	// tile IDs, IDs must be different
-	[HideInInspector]public const int air = 0; // DO NOT MODIFY
-	[HideInInspector]public const int wall = 1;
-	[HideInInspector]public const int ice = 2;
-	[HideInInspector]public const int water = 3;
-	[HideInInspector]public const int lava = 4;
+	[HideInInspector]public int air = 0; // DO NOT MODIFY
+	[HideInInspector]public int wall = 1;
+	[HideInInspector]public int ice = 2;
+	[HideInInspector]public int water = 3;
+	[HideInInspector]public int lava = 4;
 
 	// entity IDs, IDs must be different
-	[HideInInspector]public const int empty = 0; // DO NOT MODIFY
-	[HideInInspector]public const int box = 1;
-	[HideInInspector]public const int plate = 2;
+	[HideInInspector]public int empty = 0; // DO NOT MODIFY
+	[HideInInspector]public int plate = 1;
+	[HideInInspector]public int box = 2;
 
-	[HideInInspector]public int[,] roomStructure; // room structure
+	[HideInInspector]public int[,] room; // room structure
+	[HideInInspector]public int[,] plates; // location of the plates
+	[HideInInspector]public int[,] entities; // entities structure
 
 	private System.Random random; // random numnber generator
 
@@ -82,8 +84,9 @@ public class BlockPushingPuzzle : MonoBehaviour
 
 	// generate a room in the scene
 	void createRoom (int width, int height) { // height of room, width of room
-		int[,] room = new int[width, height];
-		int[,] entities = new int[width, height];
+		room = new int[width, height];
+		plates = new int[width, height];
+		entities = new int[width, height];
 
 		bool satisfied; // whether room is satisfied or not
 
@@ -91,7 +94,7 @@ public class BlockPushingPuzzle : MonoBehaviour
 			satisfied = true;
 
 			// initializing room
-			for (int count = 0; count < 20; count++) {
+			for (int count = 0; count < 5; count++) {
 				while (true) {
 					int x = random.Next (0, width);
 					int y = random.Next (0, height);
@@ -100,15 +103,7 @@ public class BlockPushingPuzzle : MonoBehaviour
 						break;
 					}
 				}
-				while (true) {
-					int x = random.Next (0, width);
-					int y = random.Next (0, height);
-					if (room [x, y] == air) {
-						room [x, y] = ice;
-						break;
-					}
-				}
-				while (true) {
+				/*while (true) {
 					int x = random.Next (0, width);
 					int y = random.Next (0, height);
 					if (room [x, y] == air) {
@@ -123,13 +118,23 @@ public class BlockPushingPuzzle : MonoBehaviour
 						room [x, y] = lava;
 						break;
 					}
+				}*/
+			}
+			for (int count = 0; count < 30; count++) {
+				while (true) {
+					int x = random.Next (0, width);
+					int y = random.Next (0, height);
+					if (room [x, y] == air) {
+						room [x, y] = ice;
+						break;
+					}
 				}
 			}
 			for (int count = 0; count < 10; count++) {
 				while (true) {
 					int x = random.Next (0, width);
 					int y = random.Next (0, height);
-					if (room [x, y] != wall && entities [x, y] == empty) {
+					if (room [x, y] != wall && plates [x, y] == empty && entities [x, y] == empty) {
 						entities [x, y] = box;
 						break;
 					}
@@ -137,8 +142,8 @@ public class BlockPushingPuzzle : MonoBehaviour
 				while (true) {
 					int x = random.Next (0, width);
 					int y = random.Next (0, height);
-					if (room [x, y] != wall && entities [x, y] == empty) {
-						entities [x, y] = plate;
+					if (room [x, y] != wall && plates [x, y] == empty && entities [x, y] == empty) {
+						plates [x, y] = plate;
 						break;
 					}
 				}
@@ -149,48 +154,33 @@ public class BlockPushingPuzzle : MonoBehaviour
 		// set player location
 		player.transform.position = new Vector3 (-1.0f, -1.0f, 0.0f);
 
-
-
 		// create room
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				GameObject tempTile = null;
-				switch (room [i, j])
-				{
-				case air:
+				if (room [i, j] == air) {
 					tempTile = floorTiles;
-					break;
-				case wall:
+				} else if (room [i, j] == wall) {
 					tempTile = wallTiles;
-					break;
-				case ice:
+				} else if (room [i, j] == ice) {
 					tempTile = iceTiles;
-					break;
-				case water:
+				} else if (room [i, j] == water) {
 					tempTile = waterTiles;
-					break;
-				case lava:
+				} else if (room [i, j] == lava) {
 					tempTile = lavaTiles;
-					break;
 				}
 				tempTile = Instantiate(tempTile, new Vector3(i, j, 0.0f), Quaternion.identity);
 				tempTile.transform.SetParent(puzzleVisual.transform);
 
 				GameObject tempEntity = null;
-				switch (entities [i, j])
-				{
-				case empty:
-					break;
-				case box:
+				if (entities [i, j] == box) {
 					tempEntity = boxTile;
-					tempEntity = Instantiate(tempEntity, new Vector3(i, j, 0.0f), Quaternion.identity);
-					tempEntity.transform.SetParent(puzzleVisual.transform);
-					break;
-				case plate:
+					tempEntity = Instantiate (tempEntity, new Vector3 (i, j, 0.0f), Quaternion.identity);
+					tempEntity.transform.SetParent (puzzleVisual.transform);
+				} else if (plates [i, j] == plate) {
 					tempEntity = plateTile;
 					tempEntity = Instantiate(tempEntity, new Vector3(i, j, 0.0f), Quaternion.identity);
 					tempEntity.transform.SetParent(puzzleVisual.transform);
-					break;
 				}
 			}
 		}

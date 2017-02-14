@@ -140,7 +140,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -217,6 +217,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 61644859983898694, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Size.x
+      value: 0.875
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
   m_IsPrefabParent: 0
@@ -257,7 +262,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1105413231}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e42705ce2ccfa2b459988db99c43abd4, type: 3}
+  m_Script: {fileID: 11500000, guid: df0fcb5e28421bd40a68080ffc5e9de5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   roomWidth: 10
@@ -273,3 +278,11 @@ MonoBehaviour:
   player: {fileID: 1117320666350700, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
   boxTile: {fileID: 1781350274763342, guid: f4640ce2ecb5fe04890858098d5a5946, type: 2}
   plateTile: {fileID: 1654860652056372, guid: 96261d0a56310c84c9f460b81bc198b3, type: 2}
+  air: 0
+  wall: 1
+  ice: 2
+  water: 3
+  lava: 4
+  empty: 0
+  plate: 2
+  box: 1
