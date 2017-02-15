@@ -12,8 +12,9 @@ public class Dungeon : MonoBehaviour
 
 	[HideInInspector]
     public GameObject dungeonVisual; // dungeon visual
+    [HideInInspector]
+    public GameObject enemyVisual; //enemy visual
 
-	public GameObject emptyObject; // empty GameObject
     public GameObject iceTiles; // ice tiles
 	public GameObject waterTiles; // water tiles
 	public GameObject floorTiles; // floor tiles
@@ -51,8 +52,6 @@ public class Dungeon : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		dungeonVisual = null;
-
         if (Instance != null)
         {
             Destroy(gameObject);
@@ -60,7 +59,6 @@ public class Dungeon : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
         random = new System.Random ();
@@ -81,15 +79,20 @@ public class Dungeon : MonoBehaviour
     void generateRoom(int roomWidth, int roomHeight, string type)
     {
         if (dungeonVisual != null)
-        {
 			Destroy(dungeonVisual);
-        }
+        if (enemyVisual != null)
+            Destroy(enemyVisual);
 
-		dungeonVisual = Instantiate(emptyObject, new Vector3(0, 0, 0), Quaternion.identity); 
+        dungeonVisual = new GameObject(); 
 		dungeonVisual.transform.name = "Dungeon Visual";
+        dungeonVisual.transform.SetParent(transform);
+
+        enemyVisual = new GameObject();
+        enemyVisual.transform.name = "Enemy Visual";
+        enemyVisual.transform.SetParent(transform);
 
         // create room
-		roomStructure = generateRoomArray(roomWidth, roomHeight);
+        roomStructure = generateRoomArray(roomWidth, roomHeight);
 		createRoom(roomStructure, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
         Poll.Instance.ResetVote(); // reset votes
     }
@@ -377,7 +380,7 @@ public class Dungeon : MonoBehaviour
 				if (countAdjacent (room, x, y, wall, 4) < 4 && countAdjacent (entities, x, y, large, 12) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no large monsters nearby
 					// spawn large monster
 					tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
-                    tempEntity.transform.SetParent(dungeonVisual.transform);
+                    tempEntity.transform.SetParent(enemyVisual.transform);
                     entities [x, y] = large;
 					break;
 				}
@@ -411,8 +414,8 @@ public class Dungeon : MonoBehaviour
 									}
 								} catch (IndexOutOfRangeException) {}
 							}
-                            tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (i, j, 0.0f), transform.rotation);
-                            tempEntity.transform.SetParent(dungeonVisual.transform);
+                            tempEntity = Instantiate(smallMob, new Vector3(i, j, 0.0f), transform.rotation);
+                            tempEntity.transform.SetParent(enemyVisual.transform);
                             entities [x, y] = small;
 							break;
 						}

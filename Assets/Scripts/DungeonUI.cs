@@ -17,7 +17,6 @@ public class DungeonUI : MonoBehaviour {
 		else
 		{
 			Instance = this;
-			DontDestroyOnLoad(gameObject);
 		}
 	}
 	
