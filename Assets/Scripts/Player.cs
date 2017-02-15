@@ -6,40 +6,69 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
 
+	public static Player Instance;
+
 	public float speed; // speed of player
+	public float acceleration; // acceleration of player;
+	[HideInInspector]
+	public float defaultSpeed = 6.0f; // default speed of player
+	[HideInInspector]
+	public float defaultAcceleration = 20.0f; // default acceleration of player
 	public int damage; // base damage
 	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed;
 
-	private Rigidbody2D rb; // rigid body of playersprite
+	[HideInInspector]
+	public Rigidbody2D rb; // rigid body of playersprite
 
 	// Use this for initialization
 	void Start () {
-		rb = GetComponent<Rigidbody2D>();
-		rb.mass = 0.01f; // mass of player
-		rb.drag = 1000.0f; // drag of player
+		if (Instance != null)
+		{
+			Destroy(gameObject);
+		}
+		else
+		{
+			Instance = this;
+		}
 
-		// set speed off player
-		speed = 100.0f;
-		
+		rb = GetComponent<Rigidbody2D>();
+		rb.mass = 1.0f; // mass of player
+		rb.drag = 0.0f; // drag of player
+		speed = defaultSpeed;
+		acceleration = defaultAcceleration;
 	}
 
 	void FixedUpdate ()
 	{
-		float moveHorizontal = Input.GetAxis("Horizontal");
-		float moveVertictal = Input.GetAxis("Vertical");
+		float moveHorizontal = 0.0f;
+		float moveVertictal = 0.0f;
 
-		Vector3 movement = new Vector3(moveHorizontal, moveVertictal, 0.0f);
-		movement = movement.normalized * speed;
+		bool menusActive = false; // is there any menus active in the scene
 
-		rb.AddForce(movement);
+		try {
+			foreach (Transform child in DungeonUI.Instance.transform) {
+				menusActive = menusActive || child.gameObject.activeSelf;
+			}
+		} catch (NullReferenceException) {}
+
+
+		if (!menusActive) { // if no menus are active
+			moveHorizontal = Input.GetAxis ("Horizontal");
+			moveVertictal = Input.GetAxis ("Vertical");
+		}
+
+		Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
+
+		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
+		rb.AddForce(velocityDifference);
 	}
 
 	// Update is called once per frame
 	void Update ()
 	{		
 		// update camera position
-		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1], Camera.main.transform.position[2]);
+		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1] + Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, Camera.main.transform.position[2]);
 
 	}
 
@@ -47,7 +76,7 @@ public class Player : MonoBehaviour {
 	{
 		if (coll.gameObject.tag == "Exit")
 		{
-            Dungeon.Instance.GenerateRoom(Dungeon.Instance.roomWidth, Dungeon.Instance.roomHeight, null);
+			DungeonUI.Instance.showNextLevelMenu ();
 		}
 	}
 
