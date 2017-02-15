@@ -70,6 +70,26 @@ public class Dungeon : MonoBehaviour
 
 	}
 
+	void FixedUpdate () {
+
+		// modify player's acceleration and drag
+		Player.Instance.acceleration = Player.Instance.defaultAcceleration;
+		Player.Instance.rb.drag = 0.0f;
+		try {
+			int x = (int) Math.Round(player.transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			int y = (int) Math.Round(player.transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			if (roomStructure[x, y] == ice) {
+				Player.Instance.acceleration = 1.5f; // make floor slippery if player is on ice
+			}
+			if (roomStructure[x, y] == water) {
+				Player.Instance.rb.drag = 25.0f; // slow down player if player is in water
+				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make water slightly slippery if player is on ice
+			}
+		} catch (IndexOutOfRangeException) {}
+
+
+	}
+
 	// function for generating a room from a random selected type and size
 	public void generateRandomRoom() {
 		generateRoom (roomWidth, roomHeight, null);

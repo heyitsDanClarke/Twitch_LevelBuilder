@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour {
 
+	public static Player Instance;
+
 	public float speed; // speed of player
 	public float acceleration; // acceleration of player;
 	[HideInInspector]
@@ -16,10 +18,20 @@ public class Player : MonoBehaviour {
 	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed;
 
-	private Rigidbody2D rb; // rigid body of playersprite
+	[HideInInspector]
+	public Rigidbody2D rb; // rigid body of playersprite
 
 	// Use this for initialization
 	void Start () {
+		if (Instance != null)
+		{
+			Destroy(gameObject);
+		}
+		else
+		{
+			Instance = this;
+		}
+
 		rb = GetComponent<Rigidbody2D>();
 		rb.mass = 1.0f; // mass of player
 		rb.drag = 0.0f; // drag of player
@@ -45,20 +57,6 @@ public class Player : MonoBehaviour {
 			moveHorizontal = Input.GetAxis ("Horizontal");
 			moveVertictal = Input.GetAxis ("Vertical");
 		}
-
-		acceleration = defaultAcceleration;
-		rb.drag = 0.0f;
-
-		/*try {
-			int x = (int) Math.Round(transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
-			int y = (int) Math.Round(transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
-			if (Dungeon.Instance.roomStructure[x, y] == Dungeon.Instance.ice) {
-				acceleration = 1.5f; // make floor slippery if player is on ice
-			}
-			if (Dungeon.Instance.roomStructure[x, y] == Dungeon.Instance.water) {
-				rb.drag = 30.0f; // slow down player if player is in water
-			}
-		} catch (System.Exception) {}*/ //TODO: fix it such that it works for all scenes.  Can change acceleration and drag of player in Dungeon.cs void Update() instead of here
 
 		Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
 
