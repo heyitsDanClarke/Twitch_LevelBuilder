@@ -44,8 +44,8 @@ public class WeaponScript : MonoBehaviour {
 	/// <summary>
 	/// Create a new projectile if possible
 	/// </summary>
-	public void Attack(bool isEnemy)
-	{
+	public void Attack(bool isEnemy) {
+		/*
 		if (CanAttack)
 		{
 			shootCooldown = shootingRate;
@@ -69,7 +69,7 @@ public class WeaponScript : MonoBehaviour {
 			{
 				move.direction = this.transform.right; // towards in 2D space is the right of the sprite
 			}
-		}
+		}*/
 	}
 
 	/// <summary>

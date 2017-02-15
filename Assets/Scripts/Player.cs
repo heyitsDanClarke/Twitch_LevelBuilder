@@ -18,6 +18,8 @@ public class Player : MonoBehaviour {
 	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed;
 
+	public Vector2 savedVelocity; // velocity of player
+
 	[HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
 
@@ -36,6 +38,7 @@ public class Player : MonoBehaviour {
 		rb.mass = 1.0f; // mass of player
 		rb.drag = 0.0f; // drag of player
 		speed = defaultSpeed;
+		savedVelocity = new Vector2 (0, 0);
 		acceleration = defaultAcceleration;
 	}
 
@@ -47,8 +50,10 @@ public class Player : MonoBehaviour {
 		bool menusActive = false; // is there any menus active in the scene
 
 		try {
-			foreach (Transform child in DungeonUI.Instance.transform) {
-				menusActive = menusActive || child.gameObject.activeSelf;
+			if (DungeonUI.Instance != null) {
+				foreach (Transform child in DungeonUI.Instance.transform) {
+					menusActive = menusActive || child.gameObject.activeSelf;
+				}
 			}
 		} catch (NullReferenceException) {}
 
@@ -58,10 +63,20 @@ public class Player : MonoBehaviour {
 			moveVertictal = Input.GetAxis ("Vertical");
 		}
 
-		Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
+		if (DungeonUI.Instance.transform.GetChild (1).gameObject.activeSelf) { // if pause menu is active
+			savedVelocity = rb.velocity; // save current velocity of player
+			rb.velocity = new Vector2 (0, 0);
+		} else {
+			if (savedVelocity != new Vector2 (0, 0)) {
+				rb.velocity = savedVelocity; // restore velocity of player
+				savedVelocity = new Vector2 (0, 0);
+			}
+			Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
 
-		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
-		rb.AddForce(velocityDifference);
+			Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
+			rb.AddForce (velocityDifference);
+		}
+
 	}
 
 	// Update is called once per frame

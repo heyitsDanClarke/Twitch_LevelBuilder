@@ -13,7 +13,6 @@ public class BlockPuzzle : MonoBehaviour
 	[HideInInspector]
 	public GameObject puzzleVisual; // dungeon visual
 
-	public GameObject emptyObject; // empty GameObject
 	public GameObject iceTiles; // ice tiles
 	public GameObject waterTiles; // water tiles
 	public GameObject wallTiles; // wall tiles
@@ -74,7 +73,7 @@ public class BlockPuzzle : MonoBehaviour
 			Destroy(puzzleVisual);
 		}
 
-		puzzleVisual = Instantiate(emptyObject, new Vector3(0, 0, 0), Quaternion.identity);
+		puzzleVisual = new GameObject ();
 		puzzleVisual.transform.name = "Puzzle Visual";
 
 		// create room
