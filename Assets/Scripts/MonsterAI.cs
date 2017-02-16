@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class MonsterAI : MonoBehaviour
 {
@@ -20,7 +22,15 @@ public class MonsterAI : MonoBehaviour
     {
 		if(target!= null)
         {
-            _visual.transform.position = Vector3.MoveTowards(_visual.transform.position, target.transform.position, speed * Time.deltaTime);
+			// pause player while pause menu is active
+			try {
+				if (DungeonUI.Instance != null) {
+					if (DungeonUI.Instance.transform.GetChild (1).gameObject.activeSelf) { // if pause menu is active
+					} else { // if pause menu is not active
+						_visual.transform.position = Vector3.MoveTowards(_visual.transform.position, target.transform.position, speed * Time.deltaTime);
+					}
+				}
+			} catch (NullReferenceException) {}
         }
 	}
 

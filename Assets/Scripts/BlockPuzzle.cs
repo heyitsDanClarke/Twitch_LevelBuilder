@@ -62,6 +62,9 @@ public class BlockPuzzle : MonoBehaviour
 
 		generateRoom(roomWidth, roomHeight, null);
 
+		// set player location
+		player.transform.position = new Vector3 (-1.0f, -1.0f, 0.0f);
+
 	}
 
 
@@ -149,9 +152,6 @@ public class BlockPuzzle : MonoBehaviour
 			}
 				
 		} while (!satisfied);
-
-		// set player location
-		player.transform.position = new Vector3 (-1.0f, -1.0f, 0.0f);
 
 		// create room
 		for (int i = 0; i < width; i++) {

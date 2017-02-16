@@ -63,19 +63,27 @@ public class Player : MonoBehaviour {
 			moveVertictal = Input.GetAxis ("Vertical");
 		}
 
-		if (DungeonUI.Instance.transform.GetChild (1).gameObject.activeSelf) { // if pause menu is active
-			savedVelocity = rb.velocity; // save current velocity of player
-			rb.velocity = new Vector2 (0, 0);
-		} else {
-			if (savedVelocity != new Vector2 (0, 0)) {
-				rb.velocity = savedVelocity; // restore velocity of player
-				savedVelocity = new Vector2 (0, 0);
+		// pause player while pause menu is active
+		try {
+			if (DungeonUI.Instance != null) {
+				if (DungeonUI.Instance.transform.GetChild (1).gameObject.activeSelf) { // if pause menu is active
+					if (rb.velocity != new Vector2 (0, 0)) { // if player is moving
+						savedVelocity = rb.velocity; // save current velocity of player
+						rb.velocity = new Vector2 (0, 0); // pause player
+					}
+				} else { // if pause menu is not active
+					if (savedVelocity != new Vector2 (0, 0)) {// if velocity is being saved
+						rb.velocity = savedVelocity; // restore velocity of player
+						savedVelocity = new Vector2 (0, 0); // reset saved velocity
+					}
+				}
 			}
-			Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
+		} catch (NullReferenceException) {}
 
-			Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
-			rb.AddForce (velocityDifference);
-		}
+		Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
+
+		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
+		rb.AddForce (velocityDifference);
 
 	}
 

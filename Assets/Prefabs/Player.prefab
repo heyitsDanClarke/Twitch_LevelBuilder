@@ -95,6 +95,8 @@ MonoBehaviour:
   damage: 0
   health: 8
   healthRegeneration: 0
+  savedVelocity: {x: 0, y: 0}
+  rb: {fileID: 0}
 --- !u!212 &212899989149864662
 SpriteRenderer:
   m_ObjectHideFlags: 1
