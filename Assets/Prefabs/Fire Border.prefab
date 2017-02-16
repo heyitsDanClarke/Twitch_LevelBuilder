@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4012986231992416}
   - component: {fileID: 212580706006111316}
   - component: {fileID: 61476931512126234}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Fire Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}

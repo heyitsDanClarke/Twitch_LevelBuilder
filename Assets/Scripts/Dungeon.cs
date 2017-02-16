@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
 public class Dungeon : MonoBehaviour
 {
@@ -66,7 +67,7 @@ public class Dungeon : MonoBehaviour
         // initialize camera
 		Camera.main.transform.position = new Vector3(0.0f, Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, -20.0f);
 
-        generateRoom(roomWidth, roomHeight, null);
+        GenerateRoom(roomWidth, roomHeight, null);
 
 	}
 
@@ -89,14 +90,9 @@ public class Dungeon : MonoBehaviour
 
 
 	}
-
-	// function for generating a room from a random selected type and size
-	public void generateRandomRoom() {
-		generateRoom (roomWidth, roomHeight, null);
-	}
-		
+	
 	// function for generating a room
-    void generateRoom(int roomWidth, int roomHeight, string type)
+    void GenerateRoom(int roomWidth, int roomHeight, string type)
     {
         if (dungeonVisual != null)
 			Destroy(dungeonVisual);
@@ -112,13 +108,14 @@ public class Dungeon : MonoBehaviour
         enemyVisual.transform.SetParent(transform);
 
         // create room
-        roomStructure = generateRoomArray(roomWidth, roomHeight);
-		createRoom(roomStructure, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
+        roomStructure = GenerateRoomArray(roomWidth, roomHeight);
+		CreateRoom(roomStructure, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
+        AstarPath.active.Scan();
         Poll.Instance.ResetVote(); // reset votes
     }
 
 	// generate an array containing the information of a room in the scene
-	int [,] generateRoomArray (int width, int height) // height of room, width of room
+	int [,] GenerateRoomArray (int width, int height) // height of room, width of room
 	{
 		int[,] room = new int[width, height];
 
@@ -263,7 +260,7 @@ public class Dungeon : MonoBehaviour
 		return room;
 	}
 
-	void createRoom (int [,] room, int fireVotes, int iceVotes) { // array of the room, number of fire votes, number of ice votes
+	void CreateRoom (int [,] room, int fireVotes, int iceVotes) { // array of the room, number of fire votes, number of ice votes
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 		float xScale = 0.04f + 1.8f / Mathf.Min(width, height); // x scale of perlin noise
