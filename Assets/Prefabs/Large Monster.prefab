@@ -184,7 +184,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   updateRate: 2
-  speed: 300
+  speed: 100
   fMode: 0
   pathIsEnded: 0
   nextWaypointDistance: 3

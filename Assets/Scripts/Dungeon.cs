@@ -90,8 +90,13 @@ public class Dungeon : MonoBehaviour
 
 
 	}
-	
-	// function for generating a room
+
+    public void GenerateRandomRoom()
+    {
+        GenerateRoom(roomWidth, roomHeight, null);
+    }
+
+    // function for generating a room
     void GenerateRoom(int roomWidth, int roomHeight, string type)
     {
         if (dungeonVisual != null)
@@ -149,7 +154,7 @@ public class Dungeon : MonoBehaviour
 				} else {
 					exitLocation = new Vector3 (position + w / 2.0f, 0.0f, 0.0f);
 				}
-				room = fillAirSquare (room, position, -w / 2, w);
+				room = FillAirSquare (room, position, -w / 2, w);
 
 				position = random.Next (1, width - w - 1);
 				if (playerSpawnAtTop) {
@@ -157,7 +162,7 @@ public class Dungeon : MonoBehaviour
 				} else {
 					exitLocation = new Vector3 (position + w / 2.0f, height - 1, 0.0f);
 				}
-				room = fillAirSquare (room, position, height - w / 2, w);
+				room = FillAirSquare (room, position, height - w / 2, w);
 			} else {
 				bool playerSpawnAtRight = (random.NextDouble () < 0.5)? true : false;
 
@@ -168,7 +173,7 @@ public class Dungeon : MonoBehaviour
 				} else {
 					exitLocation = new Vector3 (0.0f, position + w / 2.0f, 0.0f);
 				}
-				room = fillAirSquare (room, -w / 2, position, w);
+				room = FillAirSquare (room, -w / 2, position, w);
 
 				position = random.Next (1, height - w - 1);
 				if (playerSpawnAtRight) {
@@ -176,7 +181,7 @@ public class Dungeon : MonoBehaviour
 				} else {
 					exitLocation = new Vector3 (width - 1, position + w / 2.0f, 0.0f);
 				}
-				room = fillAirSquare (room, width - w / 2, position, w);
+				room = FillAirSquare (room, width - w / 2, position, w);
 			}
 
 			// smoothen room
@@ -215,7 +220,7 @@ public class Dungeon : MonoBehaviour
 				x = random.Next (0, width);
 				y = random.Next (0, height);
 			} while (room [x, y] != air);
-			room = floodFill (room, x, y);
+			room = FloodFill (room, x, y);
 
 			// set flood to air, and others to wall
 			for (int i = 0; i < width; i++) {
@@ -375,8 +380,8 @@ public class Dungeon : MonoBehaviour
 				do {
 					x = random.Next (0, width);
 					y = random.Next (0, height);
-				} while (room [x, y] != air || entities [x, y] != empty || countAdjacent (room, x, y, wall, 1) <= 3);
-				if (countAdjacent (room, x, y, wall, 2) > 11 && countAdjacent (entities, x, y, loot, 16) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no loot boxes nearby
+				} while (room [x, y] != air || entities [x, y] != empty || CountAdjacent (room, x, y, wall, 1) <= 3);
+				if (CountAdjacent (room, x, y, wall, 2) > 11 && CountAdjacent (entities, x, y, loot, 16) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no loot boxes nearby
                                                                                                                  // spawn loot box
                     tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
                     tempEntity.transform.SetParent(dungeonVisual.transform);
@@ -394,7 +399,7 @@ public class Dungeon : MonoBehaviour
 					x = random.Next (0, width);
 					y = random.Next (0, height);
 				} while (room [x, y] != air);
-				if (countAdjacent (room, x, y, wall, 4) < 4 && countAdjacent (entities, x, y, large, 12) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no large monsters nearby
+				if (CountAdjacent (room, x, y, wall, 4) < 4 && CountAdjacent (entities, x, y, large, 12) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no large monsters nearby
 					// spawn large monster
 					tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
                     tempEntity.transform.SetParent(enemyVisual.transform);
@@ -412,7 +417,7 @@ public class Dungeon : MonoBehaviour
 					x = random.Next (0, width);
 					y = random.Next (0, height);
 				} while (room [x, y] != air);
-				if (countAdjacent (room, x, y, wall, 2) < 4 && countAdjacent (entities, x, y, small, 8) == 0 && countAdjacent (entities, x, y, large, 8) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no mobs nearby
+				if (CountAdjacent (room, x, y, wall, 2) < 4 && CountAdjacent (entities, x, y, small, 8) == 0 && CountAdjacent (entities, x, y, large, 8) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no mobs nearby
 					// spawn small monster
 					tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
                     tempEntity.transform.SetParent(dungeonVisual.transform);
@@ -445,14 +450,14 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// flood filling tiles around chosen point
-	int[,] floodFill (int[,] room, int i, int j) {
+	int[,] FloodFill (int[,] room, int i, int j) {
 		if (room [i, j] == air) {
 			room [i, j] = flood;
 			try {
-				room = floodFill (room, i + 1, j);
-				room = floodFill (room, i - 1, j);
-				room = floodFill (room, i, j + 1);
-				room = floodFill (room, i, j - 1);
+				room = FloodFill (room, i + 1, j);
+				room = FloodFill (room, i - 1, j);
+				room = FloodFill (room, i, j + 1);
+				room = FloodFill (room, i, j - 1);
 			} catch (IndexOutOfRangeException) {}
 			return room;
 		} else {
@@ -461,7 +466,7 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// fill the square area with defined size with air, with [x, y] as the bottom left corner of the square
-	int[,] fillAirSquare (int[,] room, int x, int y, int size) { // room array, x-coordinate, y-coordinate, size of square
+	int[,] FillAirSquare (int[,] room, int x, int y, int size) { // room array, x-coordinate, y-coordinate, size of square
 		for (int row = x; row <= x + size; row++) {
 			for (int col = y; col <= y + size; col++) {
 				try {
@@ -473,7 +478,7 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// count the number of specific tiles in the area of a specific point
-	int countAdjacent (int [,] room, int x, int y, int tile, int distance) { // room array, x-coordinate, y-coordinate, tile type, maximum distance from the tile
+	int CountAdjacent (int [,] room, int x, int y, int tile, int distance) { // room array, x-coordinate, y-coordinate, tile type, maximum distance from the tile
 		int tileCounter = 0;
 		for (int row = x - distance; row <= x + distance; row++) {
 			for (int col = y - distance; col <= y + distance; col++) {
