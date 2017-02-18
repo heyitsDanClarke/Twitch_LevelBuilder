@@ -18,7 +18,6 @@ public class BlockPuzzle : MonoBehaviour
 	public GameObject wallTiles; // wall tiles
 	public GameObject floorTiles; // floor tiles
 	public GameObject lavaTiles; // lava tiles
-	public GameObject player; // the player
 	public GameObject boxTile; // box
 	public GameObject plateTile; // plate
 
@@ -30,7 +29,7 @@ public class BlockPuzzle : MonoBehaviour
 	[HideInInspector]public int lava = 4;
 
 	// entity IDs, IDs must be different
-	[HideInInspector]public int me = -1; // the player
+	[HideInInspector]public int player = -1; // the player
 	[HideInInspector]public int empty = 0; // DO NOT MODIFY
 	[HideInInspector]public int box = 1;
 
@@ -67,11 +66,11 @@ public class BlockPuzzle : MonoBehaviour
 
 		generateRoom(roomWidth, roomHeight, null);
 
-		// set player location
-		player.transform.position = new Vector3 (-1.0f, -1.0f, 0.0f);
-
+		// set player size and speed
+		Player.Instance.transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
+		Player.Instance.GetComponent<Player> ().speed = 2.0f;
 	}
-
+		
 
 	// function for generating a room
 	void generateRoom(int roomWidth, int roomHeight, string type)
@@ -104,9 +103,9 @@ public class BlockPuzzle : MonoBehaviour
 			// initializing room structure
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
-					if (random.NextDouble() < 0.125) {
+					if (random.NextDouble() < 0.12) {
 						room [x, y] = wall;
-					} else if (random.NextDouble() < 0.875) {
+					} else if (random.NextDouble() < 0.88) {
 						room [x, y] = ice;
 					} else {
 						room [x, y] = air;
@@ -120,9 +119,28 @@ public class BlockPuzzle : MonoBehaviour
 					int x = random.Next (1, width - 1);
 					int y = random.Next (1, height - 1);
 					if (room [x, y] != wall && entities [x, y] == empty) {
-						entities [x, y] = box;
-						simulateEntities [x, y] = box;
-						break;
+						bool obstacleOnDownOrUp = false;
+						bool obstacleOnLeftOrRight = false;
+
+						// determine whether there is obstacles on the left or right of the location
+						try {
+							obstacleOnLeftOrRight = room [x - 1, y] == wall || entities [x - 1, y] != empty || room [x + 1, y] == wall || entities [x + 1, y] != empty;
+						} catch (IndexOutOfRangeException) {
+							obstacleOnLeftOrRight = true;
+						}
+
+						// determine whether there is obstacles on the bottom or top of the location
+						try {
+							obstacleOnDownOrUp = room [x, y - 1] == wall || entities [x, y - 1] != empty || room [x, y + 1] == wall || entities [x, y + 1] != empty;
+						} catch (IndexOutOfRangeException) {
+							obstacleOnDownOrUp = true;
+						}
+
+						if (! (obstacleOnLeftOrRight && obstacleOnDownOrUp)) {
+							entities [x, y] = box;
+							simulateEntities [x, y] = box;
+							break;
+						}
 					}
 				}
 			}
@@ -173,7 +191,7 @@ public class BlockPuzzle : MonoBehaviour
 
 				// simulate player movement
 				for (int step = 0; step < randomSteps; step++) {
-					push (ref room, ref simulateEntities, ref plates, me, simulatePlayerPos, dir);
+					push (ref room, ref simulateEntities, ref plates, player, simulatePlayerPos, dir);
 					simulatePlayerPos = new Vector2(simulatePlayerPos.x + dir.x, simulatePlayerPos.y + dir.y);
 				}
 
@@ -243,7 +261,7 @@ public class BlockPuzzle : MonoBehaviour
 				if (entityType == box) { // cannot push box with another box
 					return false;
 				}
-				if (entityType == me) {
+				if (entityType == player) {
 					return canPush (ref room, ref entities, ref plates, box, new Vector2 (adjacentPosX, adjacentPosY), dir);
 				}
 				return false;
@@ -304,8 +322,8 @@ public class BlockPuzzle : MonoBehaviour
 
 		int distance = 0;
 		while (true) {
-			if (canPush (ref room, ref entitiesClone, ref plates, me, playerPos, dir)) {
-				push (ref room, ref entitiesClone, ref plates, me, playerPos, dir);
+			if (canPush (ref room, ref entitiesClone, ref plates, player, playerPos, dir)) {
+				push (ref room, ref entitiesClone, ref plates, player, playerPos, dir);
 				playerPos = new Vector2 (playerPos.x + dir.x, playerPos.y + dir.y);
 				distance += 1;
 			} else {
