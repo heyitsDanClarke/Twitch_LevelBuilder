@@ -23,6 +23,8 @@ public class Player : MonoBehaviour {
 	[HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
 
+    GameObject sword;
+
 	// Use this for initialization
 	void Start () {
 		if (Instance != null)
@@ -33,6 +35,8 @@ public class Player : MonoBehaviour {
 		{
 			Instance = this;
 		}
+
+        sword = transform.GetChild(0).gameObject;
 
 		rb = GetComponent<Rigidbody2D>();
 		rb.mass = 1.0f; // mass of player
@@ -65,7 +69,7 @@ public class Player : MonoBehaviour {
 
 		// pause player while pause menu is active
 		try {
-			if (DungeonUI.Instance != null) {
+			if (DungeonUI.Instance != null) {//probably gonna just change this logic to be time.timescale = 0
 				if (DungeonUI.Instance.transform.GetChild (1).gameObject.activeSelf) { // if pause menu is active
 					if (rb.velocity != new Vector2 (0, 0)) { // if player is moving
 						savedVelocity = rb.velocity; // save current velocity of player
@@ -84,6 +88,12 @@ public class Player : MonoBehaviour {
 
 		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
 		rb.AddForce (velocityDifference);
+
+        if (Input.GetKey("j"))
+        {
+            StopAllCoroutines();
+            StartCoroutine(Attack());
+        }
 
 	}
 
@@ -111,5 +121,12 @@ public class Player : MonoBehaviour {
                 health -= 1;
             Destroy(coll.gameObject);
         }
+    }
+
+    IEnumerator Attack()
+    {
+        sword.SetActive(true);
+        yield return new WaitForSeconds(0.25f);
+        sword.SetActive(false);
     }
 }

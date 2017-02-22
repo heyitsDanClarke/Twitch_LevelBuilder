@@ -18,6 +18,7 @@ TagManager:
   - Block
   - Next Level Menu
   - Pause Menu
+  - Sword
   layers:
   - Default
   - TransparentFX
