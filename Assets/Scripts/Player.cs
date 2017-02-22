@@ -59,8 +59,8 @@ public class Player : MonoBehaviour {
 
 
 		if (!menusActive) { // if no menus are active
-			moveHorizontal = Input.GetAxis ("Horizontal");
-			moveVertictal = Input.GetAxis ("Vertical");
+			moveHorizontal = Input.GetAxisRaw ("Horizontal");
+			moveVertictal = Input.GetAxisRaw ("Vertical");
 		}
 
 		// pause player while pause menu is active

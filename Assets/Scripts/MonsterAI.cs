@@ -42,7 +42,6 @@ public class MonsterAI : MonoBehaviour
 
         if (target == null)
         {
-            Debug.LogError("No Player found? PANIC!");
             return;
         }
 
@@ -69,7 +68,6 @@ public class MonsterAI : MonoBehaviour
 
     public void OnPathComplete(Path p)
     {
-        Debug.Log("We got a path. Did it have an error? " + p.error);
         if (!p.error)
         {
             path = p;
@@ -95,7 +93,6 @@ public class MonsterAI : MonoBehaviour
             if (pathIsEnded)
                 return;
 
-            Debug.Log("End of path reached.");
             pathIsEnded = true;
             return;
         }
