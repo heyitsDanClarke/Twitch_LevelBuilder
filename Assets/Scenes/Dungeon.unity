@@ -795,6 +795,10 @@ Prefab:
       propertyPath: m_SortingOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4240049407232970, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
   m_IsPrefabParent: 0
@@ -2401,9 +2405,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 836625399}
-        m_MethodName: 
-        m_Mode: 5
+      - m_Target: {fileID: 836625400}
+        m_MethodName: GenerateRandomRoom
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

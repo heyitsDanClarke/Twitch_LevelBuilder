@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4106170121326282}
   - component: {fileID: 212773345774135200}
-  - component: {fileID: 61100269966984852}
+  - component: {fileID: 58968939274780584}
   - component: {fileID: 50892423433063708}
   - component: {fileID: 114335656788208966}
   - component: {fileID: 114915250698004516}
@@ -87,7 +87,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.5
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -110,20 +110,20 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 5
---- !u!61 &61100269966984852
-BoxCollider2D:
+--- !u!58 &58968939274780584
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1312217157551614}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 05325556ab853ba49981c39edf36af32, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Radius: 0.5
 --- !u!114 &114235325386074914
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -184,8 +184,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   updateRate: 2
-  speed: 100
-  fMode: 0
+  speed: 1.5
+  acceleration: 20
   pathIsEnded: 0
   nextWaypointDistance: 3
 --- !u!114 &114915250698004516
@@ -202,9 +202,9 @@ MonoBehaviour:
   repathRate: Infinity
   target: {fileID: 0}
   canSearch: 1
-  canMove: 1
-  speed: 4
-  enableRotation: 1
+  canMove: 0
+  speed: 0
+  enableRotation: 0
   rotationIn2D: 1
   rotationSpeed: 30
   interpolatePathSwitches: 1

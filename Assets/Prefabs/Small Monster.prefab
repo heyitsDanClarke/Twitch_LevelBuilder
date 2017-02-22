@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4019762174617212}
   - component: {fileID: 212129039322115106}
-  - component: {fileID: 61594360281212462}
+  - component: {fileID: 58793265167388148}
   - component: {fileID: 50722183663358086}
   - component: {fileID: 114011511477104110}
   - component: {fileID: 114556804144402472}
@@ -87,7 +87,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -96,6 +96,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!58 &58793265167388148
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1407179485245116}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 05325556ab853ba49981c39edf36af32, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.25
 --- !u!58 &58933605747031682
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -110,20 +124,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 7
---- !u!61 &61594360281212462
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1407179485245116}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5}
 --- !u!114 &114011511477104110
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -185,9 +185,9 @@ MonoBehaviour:
   repathRate: Infinity
   target: {fileID: 0}
   canSearch: 1
-  canMove: 1
-  speed: 4
-  enableRotation: 1
+  canMove: 0
+  speed: 0
+  enableRotation: 0
   rotationIn2D: 1
   rotationSpeed: 30
   interpolatePathSwitches: 1
@@ -205,8 +205,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   updateRate: 2
-  speed: 100
-  fMode: 0
+  speed: 2
+  acceleration: 20
   pathIsEnded: 0
   nextWaypointDistance: 3
 --- !u!212 &212129039322115106

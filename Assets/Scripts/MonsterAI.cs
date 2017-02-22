@@ -17,12 +17,11 @@ public class MonsterAI : MonoBehaviour
     private Seeker seeker;
     private Rigidbody2D rb;
 
-    //The calculated path
+    // The calculated path
     public Path path;
 
-    //The AI's speed per second
-    public float speed = 300f;
-    public ForceMode2D fMode;
+	public float speed = 3f; // The AI's speed per second
+	public float acceleration = 20f; // The AI's acceleration
 
     [HideInInspector]
     public bool pathIsEnded = false;
@@ -98,12 +97,10 @@ public class MonsterAI : MonoBehaviour
         }
         pathIsEnded = false;
 
-        //Direction to the next waypoint
-        Vector3 dir = (path.vectorPath[currentWaypoint] - transform.position).normalized;
-        dir *= speed * Time.fixedDeltaTime;
+		Vector2 targetVelocity = (path.vectorPath[currentWaypoint] - transform.position).normalized * speed; // target velocity of monster
 
-        //Move the AI
-        rb.AddForce(dir, fMode);
+		Vector2 velocityDifference = (targetVelocity - rb.velocity) * 6.0f;//* acceleration;
+		rb.AddForce (velocityDifference);
 
         float dist = Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]);
         if (dist < nextWaypointDistance)
