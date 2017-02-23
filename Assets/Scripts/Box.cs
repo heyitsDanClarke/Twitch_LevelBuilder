@@ -115,7 +115,7 @@ public class Box : MonoBehaviour {
 			}
 
 			// add force
-			rb.AddForce (direction * rb.mass * 7.2f, ForceMode2D.Impulse);
+			rb.AddForce (direction * rb.mass * Player.Instance.speed * 1.2f, ForceMode2D.Impulse);
 		}
 	}
 
