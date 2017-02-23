@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using Pathfinding;
 
@@ -21,7 +22,7 @@ public class MonsterAI : MonoBehaviour
     public Path path;
 
 	public float speed = 3f; // The AI's speed per second
-	public float acceleration = 20f; // The AI's acceleration
+	public float acceleration = 4f; // The AI's acceleration
 
     [HideInInspector]
     public bool pathIsEnded = false;
@@ -97,9 +98,18 @@ public class MonsterAI : MonoBehaviour
         }
         pathIsEnded = false;
 
-		Vector2 targetVelocity = (path.vectorPath[currentWaypoint] - transform.position).normalized * speed; // target velocity of monster
+		bool PauseMenuActive = false; // is the pause menus active in the scene
 
-		Vector2 velocityDifference = (targetVelocity - rb.velocity) * 6.0f;//* acceleration;
+		try {
+			PauseMenuActive = DungeonUI.Instance.transform.Find ("Pause Menu").gameObject.activeSelf;
+		} catch (NullReferenceException) {}
+
+		Vector2 targetVelocity = new Vector2 (0, 0);
+		if (!PauseMenuActive) { // if the pause menu is not active
+			targetVelocity = (path.vectorPath [currentWaypoint] - transform.position).normalized * speed; // target velocity of monster
+		}
+
+		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
 		rb.AddForce (velocityDifference);
 
         float dist = Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]);
