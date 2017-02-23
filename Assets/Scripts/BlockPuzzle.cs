@@ -187,7 +187,7 @@ public class BlockPuzzle : MonoBehaviour
 				previousRandomDirection = randomDirection; // update previous randomly sellected direction
 				int randomSteps = random.Next(1, maxSteps + 1); // the number of steps to simulate
 
-				Debug.Log(simulatePlayerPos.ToString() + " Direction: " + dir.ToString() + " MoveDist: " + randomSteps.ToString() + " MaxDist: " + maxSteps.ToString());
+				//Debug.Log(simulatePlayerPos.ToString() + " Direction: " + dir.ToString() + " MoveDist: " + randomSteps.ToString() + " MaxDist: " + maxSteps.ToString());
 
 				// simulate player movement
 				for (int step = 0; step < randomSteps; step++) {

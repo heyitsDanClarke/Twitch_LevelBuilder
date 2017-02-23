@@ -18,8 +18,6 @@ public class Player : MonoBehaviour {
 	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed;
 
-	public Vector2 savedVelocity; // velocity of player
-
 	[HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
 
@@ -42,7 +40,6 @@ public class Player : MonoBehaviour {
 		rb.mass = 1.0f; // mass of player
 		rb.drag = 0.0f; // drag of player
 		speed = defaultSpeed;
-		savedVelocity = new Vector2 (0, 0);
 		acceleration = defaultAcceleration;
 	}
 
@@ -66,23 +63,6 @@ public class Player : MonoBehaviour {
 			moveHorizontal = Input.GetAxisRaw ("Horizontal");
 			moveVertictal = Input.GetAxisRaw ("Vertical");
 		}
-
-		// pause player while pause menu is active
-		try {
-			if (DungeonUI.Instance != null) {//probably gonna just change this logic to be time.timescale = 0
-				if (DungeonUI.Instance.transform.GetChild (1).gameObject.activeSelf) { // if pause menu is active
-					if (rb.velocity != new Vector2 (0, 0)) { // if player is moving
-						savedVelocity = rb.velocity; // save current velocity of player
-						rb.velocity = new Vector2 (0, 0); // pause player
-					}
-				} else { // if pause menu is not active
-					if (savedVelocity != new Vector2 (0, 0)) {// if velocity is being saved
-						rb.velocity = savedVelocity; // restore velocity of player
-						savedVelocity = new Vector2 (0, 0); // reset saved velocity
-					}
-				}
-			}
-		} catch (NullReferenceException) {}
 
 		Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
 
