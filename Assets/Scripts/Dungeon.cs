@@ -122,7 +122,7 @@ public class Dungeon : MonoBehaviour
 		enemyVisual.transform.SetParent(transform);
 
 		if (roomsLeftUntilBoss > 0) {
-			GenerateCaveRoom (roomWidth, roomHeight, null);
+			GenerateCaveRoom (roomWidth, roomHeight);
 		} else if (roomsLeftUntilBoss == 0) {
 			GenerateBossRoom (roomWidth, roomHeight);
 		} else {
@@ -198,12 +198,18 @@ public class Dungeon : MonoBehaviour
 	}
 
     // function for generating a cave room
-    void GenerateCaveRoom(int roomWidth, int roomHeight, string type)
+    void GenerateCaveRoom(int roomWidth, int roomHeight)
     {
         // create room
         roomStructure = GenerateCaveRoomArray(roomWidth, roomHeight);
 		InstantiateCaveRoom(roomStructure, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
 		InstantiateRoomBorder (roomWidth, roomHeight);
+
+		// spawn chests and monsters
+		spawnLootChests (ref roomStructure);
+		spawnLargeMonsters (ref roomStructure);
+		spawnSmallMonsters (ref roomStructure);
+
 		AstarPath.active.Scan();
     }
 
@@ -358,7 +364,6 @@ public class Dungeon : MonoBehaviour
 		float xScale = 0.04f + 1.8f / Mathf.Min(width, height); // x scale of perlin noise
 		float xOffset, yOffset; // x and y offset of perlin noise;
 		GameObject tempTile; // temporary variable for storing the tile to be created
-		GameObject tempEntity; // temporary variable for storing the entity to be created
 
 		// set temperature map of room;
 		xOffset = (float) (random.NextDouble ()) * 200;
@@ -434,11 +439,9 @@ public class Dungeon : MonoBehaviour
 					if (nearAir) {
 						// set border tiles
 						float hotTileTransparency = Mathf.Clamp01 (room [i, j].temperature * 10 - 5);
-						if (hotTileTransparency < 1.0f) {
-							GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-                            tempBorderTile.transform.SetParent(dungeonVisual.transform);
-                        }
-						tempTile = (GameObject)Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // cold borders
+                        tempBorderTile.transform.SetParent(dungeonVisual.transform);
+						tempTile = Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // hot borders
 						tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(room [i, j].temperature * 10 - 5));
                         tempTile.transform.SetParent(dungeonVisual.transform);
                     } else {
@@ -449,9 +452,13 @@ public class Dungeon : MonoBehaviour
 				}
 			}
 		}
+	}
 
-		// place loots
-		for (int spawnCount = 0; spawnCount < width * height / 1536; spawnCount++) {
+	void spawnLootChests (ref RoomTile [,] room) {
+		int width = room.GetLength(0); // width of dungeon;
+		int height = room.GetLength(1); // height of dungeon;
+
+		for (int spawnCount = 0; spawnCount < width * height / 1024; spawnCount++) {
 			for (int spawnAttempt = 0; spawnAttempt < 16; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				do {
@@ -459,17 +466,21 @@ public class Dungeon : MonoBehaviour
 					y = random.Next (0, height);
 				} while (room [x, y].tile != air || room [x, y].entity != empty || CountAdjacentTiles (room, x, y, wall, 1) <= 3);
 				if (CountAdjacentTiles (room, x, y, wall, 2) > 11 && CountAdjacentEntities (room, x, y, loot, 16) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no loot boxes nearby
-                                                                                                                 // spawn loot box
-                    tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
-                    tempEntity.transform.SetParent(dungeonVisual.transform);
-                    room [x, y].entity = loot;
+					// spawn loot box
+					GameObject tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
+					tempEntity.transform.SetParent(dungeonVisual.transform);
+					room [x, y].entity = loot;
 					break;
 				}
 			}
 		}
+	}
 
-		// spawn large monsters
-		for (int spawnCount = 0; spawnCount < width * height / 1536; spawnCount++) {
+	void spawnLargeMonsters (ref RoomTile [,] room) {
+		int width = room.GetLength(0); // width of dungeon;
+		int height = room.GetLength(1); // height of dungeon;
+
+		for (int spawnCount = 0; spawnCount < width * height / 1024; spawnCount++) {
 			for (int spawnAttempt = 0; spawnAttempt < 64; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				float distanceToPlayer;
@@ -480,16 +491,20 @@ public class Dungeon : MonoBehaviour
 				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
 				if (CountAdjacentTiles (room, x, y, wall, 4) < 4 && CountAdjacentEntities (room, x, y, large, 12) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no large monsters nearby
 					// spawn large monster
-					tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
-                    tempEntity.transform.SetParent(enemyVisual.transform);
-                    room [x, y].entity = large;
+					GameObject tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
+					tempEntity.transform.SetParent(enemyVisual.transform);
+					room [x, y].entity = large;
 					break;
 				}
 			}
 		}
+	}
 
-		// spawn small monsters
-		for (int spawnCount = 0; spawnCount < width * height / 384; spawnCount++) {
+	void spawnSmallMonsters (ref RoomTile [,] room) {
+		int width = room.GetLength(0); // width of dungeon;
+		int height = room.GetLength(1); // height of dungeon;
+
+		for (int spawnCount = 0; spawnCount < width * height / 256; spawnCount++) {
 			for (int spawnAttempt = 0; spawnAttempt < 64; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				float distanceToPlayer;
@@ -500,9 +515,9 @@ public class Dungeon : MonoBehaviour
 				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
 				if (CountAdjacentTiles (room, x, y, wall, 2) < 4 && CountAdjacentEntities (room, x, y, small, 8) == 0 && CountAdjacentEntities (room, x, y, large, 8) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no mobs nearby
 					// spawn small monster
-					tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
-                    tempEntity.transform.SetParent(dungeonVisual.transform);
-                    room [x, y].entity = small;
+					GameObject tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
+					tempEntity.transform.SetParent(dungeonVisual.transform);
+					room [x, y].entity = small;
 					int mobCluster = random.Next (3 , 6); // size of mob cluster (3 to 5 inclusive)
 					for (int mobCount = 1; mobCount < mobCluster; mobCount++) {
 						for (int spawnClusterAttempt = 0; spawnClusterAttempt < 12; spawnClusterAttempt++) {
@@ -517,9 +532,9 @@ public class Dungeon : MonoBehaviour
 									}
 								} catch (IndexOutOfRangeException) {}
 							}
-                            tempEntity = Instantiate(smallMob, new Vector3(i, j, 0.0f), transform.rotation);
-                            tempEntity.transform.SetParent(enemyVisual.transform);
-                            room [x, y].entity = small;
+							tempEntity = Instantiate(smallMob, new Vector3(i, j, 0.0f), transform.rotation);
+							tempEntity.transform.SetParent(enemyVisual.transform);
+							room [x, y].entity = small;
 							break;
 						}
 					}
@@ -573,7 +588,7 @@ public class Dungeon : MonoBehaviour
 		return tileCounter;
 	}
 
-	// count the number of specific tiles in the area of a specific point
+	// count the number of specific entities in the area of a specific point
 	int CountAdjacentEntities (RoomTile [,] room, int x, int y, int entity, int distance) { // room array, x-coordinate, y-coordinate, tile type, maximum distance from the tile
 		int tileCounter = 0;
 		for (int row = x - distance; row <= x + distance; row++) {
