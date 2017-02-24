@@ -1,42 +1,131 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
+using System.Collections;
+using Pathfinding;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Seeker))]
 public class MonsterAI : MonoBehaviour
 {
-    public int speed;
 
-    GameObject _visual; //visual component for the monster
+    // What to chase?
+    public Transform target;
 
-    GameObject target;
+    // How many times each second we will update our path
+    public float updateRate = 2f;
 
-    void Start ()
+    // Caching
+    private Seeker seeker;
+    private Rigidbody2D rb;
+
+    // The calculated path
+    public Path path;
+
+	public float speed = 3f; // The AI's speed per second
+	public float acceleration = 4f; // The AI's acceleration
+
+    [HideInInspector]
+    public bool pathIsEnded = false;
+
+    // The max distance from the AI to a waypoint for it to continue to the next waypoint
+    public float nextWaypointDistance = 3;
+
+    // The waypoint we are currently moving towards
+    private int currentWaypoint = 0;
+
+    void Start()
     {
-        _visual = transform.parent.gameObject;
-	}
+        seeker = GetComponent<Seeker>();
+        rb = GetComponent<Rigidbody2D>();
 
+        target = GameObject.Find("Player").transform;
 
-	void Update ()
-    {
-		if(target!= null)
+        if (target == null)
         {
-            _visual.transform.position = Vector3.MoveTowards(_visual.transform.position, target.transform.position, speed * Time.deltaTime);
+            return;
         }
-	}
+
+        // Start a new path to the target position, return the result to the OnPathComplete method
+        seeker.StartPath(transform.position, target.position, OnPathComplete);
+
+        StartCoroutine(UpdatePath());
+    }
+
+    IEnumerator UpdatePath()
+    {
+        if (target == null)
+        {
+            //TODO: Insert a player search here.
+           //return false;
+        }
+
+        // Start a new path to the target position, return the result to the OnPathComplete method
+        seeker.StartPath(transform.position, target.position, OnPathComplete);
+
+        yield return new WaitForSeconds(1f / updateRate);
+        StartCoroutine(UpdatePath());
+    }
+
+    public void OnPathComplete(Path p)
+    {
+        if (!p.error)
+        {
+            path = p;
+            currentWaypoint = 0;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (target == null)
+        {
+            //TODO: Insert a player search here.
+            return;
+        }
+
+        //TODO: Always look at player?
+
+        if (path == null)
+            return;
+
+        if (currentWaypoint >= path.vectorPath.Count)
+        {
+            if (pathIsEnded)
+                return;
+
+            pathIsEnded = true;
+            return;
+        }
+        pathIsEnded = false;
+
+		bool PauseMenuActive = false; // is the pause menus active in the scene
+
+		try {
+			PauseMenuActive = DungeonUI.Instance.transform.Find ("Pause Menu").gameObject.activeSelf;
+		} catch (NullReferenceException) {}
+
+		Vector2 targetVelocity = new Vector2 (0, 0);
+		if (!PauseMenuActive) { // if the pause menu is not active
+			targetVelocity = (path.vectorPath [currentWaypoint] - transform.position).normalized * speed; // target velocity of monster
+		}
+
+		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
+		rb.AddForce (velocityDifference);
+
+        float dist = Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]);
+        if (dist < nextWaypointDistance)
+        {
+            currentWaypoint++;
+            return;
+        }
+    }
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        if(coll.gameObject.tag == "Player")
+        if (coll.gameObject.tag == "Sword")
         {
-            target = coll.gameObject;
+            Destroy(gameObject);
         }
     }
 
-    void OnTriggerExit2D(Collider2D coll)
-    {
-        if (coll.gameObject.tag == "Player")
-        {
-            target = null;
-        }
-    }
 }

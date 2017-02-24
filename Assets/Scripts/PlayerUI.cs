@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour {
 
-    public GameObject player;
-
     Text healthValue;
 
     void Awake()
@@ -16,6 +14,6 @@ public class PlayerUI : MonoBehaviour {
 
 	void FixedUpdate()
     {
-        healthValue.text = player.GetComponent<Player>().health.ToString();
+        healthValue.text = Player.Instance.health.ToString();
     }
 }

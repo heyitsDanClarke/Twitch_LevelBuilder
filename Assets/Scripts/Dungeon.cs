@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Dungeon : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class Dungeon : MonoBehaviour
 
     public int roomWidth = 48; // width of room
     public int roomHeight = 32; // height of room
+	public int roomsLeftUntilBoss; // number of rooms left before boss room
 
 	[HideInInspector]
     public GameObject dungeonVisual; // dungeon visual
@@ -47,6 +49,7 @@ public class Dungeon : MonoBehaviour
 
 	[HideInInspector]public int[,] roomStructure; // room structure
 
+	private Vector2 playerStartPosition; // starting position of player
 	private System.Random random; // random numnber generator
 
 	// Use this for initialization
@@ -66,8 +69,8 @@ public class Dungeon : MonoBehaviour
         // initialize camera
 		Camera.main.transform.position = new Vector3(0.0f, Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, -20.0f);
 
-        generateRoom(roomWidth, roomHeight, null);
-
+		roomsLeftUntilBoss = 5;
+		GenerateRandomRoom ();
 	}
 
 	void FixedUpdate () {
@@ -86,44 +89,117 @@ public class Dungeon : MonoBehaviour
 				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make water slightly slippery if player is on ice
 			}
 		} catch (IndexOutOfRangeException) {}
-
-
+			
 	}
 
-	// function for generating a room from a random selected type and size
-	public void generateRandomRoom() {
-		generateRoom (roomWidth, roomHeight, null);
-	}
-		
-	// function for generating a room
-    void generateRoom(int roomWidth, int roomHeight, string type)
+    public void GenerateRandomRoom()
     {
-        if (dungeonVisual != null)
+		if (dungeonVisual != null)
 			Destroy(dungeonVisual);
-        if (enemyVisual != null)
-            Destroy(enemyVisual);
+		if (enemyVisual != null)
+			Destroy(enemyVisual);
 
-        dungeonVisual = new GameObject(); 
+		dungeonVisual = new GameObject(); 
 		dungeonVisual.transform.name = "Dungeon Visual";
-        dungeonVisual.transform.SetParent(transform);
+		dungeonVisual.transform.SetParent(transform);
 
-        enemyVisual = new GameObject();
-        enemyVisual.transform.name = "Enemy Visual";
-        enemyVisual.transform.SetParent(transform);
+		enemyVisual = new GameObject();
+		enemyVisual.transform.name = "Enemy Visual";
+		enemyVisual.transform.SetParent(transform);
 
-        // create room
-        roomStructure = generateRoomArray(roomWidth, roomHeight);
-		createRoom(roomStructure, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
-        Poll.Instance.ResetVote(); // reset votes
+		if (roomsLeftUntilBoss > 0) {
+			GenerateCaveRoom (roomWidth, roomHeight, null);
+		} else if (roomsLeftUntilBoss == 0) {
+			GenerateBossRoom (roomWidth, roomHeight);
+		} else {
+			SceneManager.LoadScene(0);
+		}
+		roomsLeftUntilBoss -= 1;
+		Poll.Instance.ResetVote(); // reset votes
     }
 
-	// generate an array containing the information of a room in the scene
-	int [,] generateRoomArray (int width, int height) // height of room, width of room
+	// function for creating the border of the room in the scene
+	void InstantiateRoomBorder (int roomWidth, int roomHeight) {
+		for (int i = -1; i < roomWidth + 1; i++) {
+			GameObject wallTile = Instantiate(wallTiles, new Vector3(i, -1, 0.0f), transform.rotation);
+			wallTile.transform.SetParent(dungeonVisual.transform);
+			wallTile = Instantiate(wallTiles, new Vector3(i, roomHeight, 0.0f), transform.rotation);
+			wallTile.transform.SetParent(dungeonVisual.transform);
+		}
+		for (int j = 0; j < roomHeight; j++) {
+			GameObject wallTile = Instantiate(wallTiles, new Vector3(-1, j, 0.0f), transform.rotation);
+			wallTile.transform.SetParent(dungeonVisual.transform);
+			wallTile = Instantiate(wallTiles, new Vector3(roomWidth, j, 0.0f), transform.rotation);
+			wallTile.transform.SetParent(dungeonVisual.transform);
+		}
+
+	}
+
+	// function for generating a boss room
+	void GenerateBossRoom(int roomWidth, int roomHeight)
+	{
+		// create room
+		roomStructure = GenerateBossRoomArray(roomWidth, roomHeight);
+		InstantiateBossRoom(roomStructure); // room array, fire votes, ice votes
+		InstantiateRoomBorder (roomWidth, roomHeight);
+		AstarPath.active.Scan();
+	}
+
+	// generate an array containing the information of a cave room in the scene
+	int [,] GenerateBossRoomArray (int width, int height) // height of room, width of room
 	{
 		int[,] room = new int[width, height];
 
-		Vector3 playerLocation = new Vector3 (0.0f, 0.0f, 0.0f); // player spawn location
-		Vector3 exitLocation = new Vector3 (0.0f, 0.0f, 0.0f); // room exit location
+		playerStartPosition = new Vector2 (0.0f, 0.0f); // player spawn location
+		Vector2 exitLocation = new Vector2 (10.0f, 10.0f); // room exit location
+
+		// initializing room
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				room [i, j] = air;
+			}
+		}
+
+		// set player and exit locations
+		player.transform.position = playerStartPosition;
+		GameObject tempExit = Instantiate (exit, exitLocation, transform.rotation);
+		tempExit.transform.SetParent(dungeonVisual.transform);
+
+		return room;
+	}
+
+	void InstantiateBossRoom (int [,] room) {
+		int width = room.GetLength(0); // width of dungeon;
+		int height = room.GetLength(1); // height of dungeon;
+
+		// create room
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (room [i, j] == air) { // set floor tiles
+					GameObject floorTile = Instantiate (floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+					floorTile.transform.SetParent (dungeonVisual.transform);
+				}
+			}
+		}
+	}
+
+    // function for generating a cave room
+    void GenerateCaveRoom(int roomWidth, int roomHeight, string type)
+    {
+        // create room
+        roomStructure = GenerateCaveRoomArray(roomWidth, roomHeight);
+		InstantiateCaveRoom(roomStructure, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
+		InstantiateRoomBorder (roomWidth, roomHeight);
+		AstarPath.active.Scan();
+    }
+
+	// generate an array containing the information of a cave room in the scene
+	int [,] GenerateCaveRoomArray (int width, int height) // height of room, width of room
+	{
+		int[,] room = new int[width, height];
+
+		playerStartPosition = new Vector2 (0.0f, 0.0f); // player spawn location
+		Vector2 exitLocation = new Vector2 (0.0f, 0.0f); // room exit location
 
 		bool satisfied; // whether room is satisfied or not
 
@@ -148,38 +224,38 @@ public class Dungeon : MonoBehaviour
 				// create exits on top and bottom of room
 				int position = random.Next (1, width - w - 1);
 				if (!playerSpawnAtTop) {
-					playerLocation = new Vector3 (position + w / 2.0f, 0.0f, 0.0f);
+					playerStartPosition = new Vector2 (position + w / 2.0f, 0.0f);
 				} else {
-					exitLocation = new Vector3 (position + w / 2.0f, 0.0f, 0.0f);
+					exitLocation = new Vector2 (position + w / 2.0f, 0.0f);
 				}
-				room = fillAirSquare (room, position, -w / 2, w);
+				room = FillAirSquare (room, position, -w / 2, w);
 
 				position = random.Next (1, width - w - 1);
 				if (playerSpawnAtTop) {
-					playerLocation = new Vector3 (position + w / 2.0f, height - 1, 0.0f);
+					playerStartPosition = new Vector2 (position + w / 2.0f, height - 1);
 				} else {
-					exitLocation = new Vector3 (position + w / 2.0f, height - 1, 0.0f);
+					exitLocation = new Vector2 (position + w / 2.0f, height - 1);
 				}
-				room = fillAirSquare (room, position, height - w / 2, w);
+				room = FillAirSquare (room, position, height - w / 2, w);
 			} else {
 				bool playerSpawnAtRight = (random.NextDouble () < 0.5)? true : false;
 
 				// create exits on left and right of room
 				int position = random.Next (1, height - w - 1);
 				if (!playerSpawnAtRight) {
-					playerLocation = new Vector3 (0.0f, position + w / 2.0f, 0.0f);
+					playerStartPosition = new Vector2 (0.0f, position + w / 2.0f);
 				} else {
-					exitLocation = new Vector3 (0.0f, position + w / 2.0f, 0.0f);
+					exitLocation = new Vector2 (0.0f, position + w / 2.0f);
 				}
-				room = fillAirSquare (room, -w / 2, position, w);
+				room = FillAirSquare (room, -w / 2, position, w);
 
 				position = random.Next (1, height - w - 1);
 				if (playerSpawnAtRight) {
-					playerLocation = new Vector3 (width - 1, position + w / 2.0f, 0.0f);
+					playerStartPosition = new Vector2 (width - 1, position + w / 2.0f);
 				} else {
-					exitLocation = new Vector3 (width - 1, position + w / 2.0f, 0.0f);
+					exitLocation = new Vector2 (width - 1, position + w / 2.0f);
 				}
-				room = fillAirSquare (room, width - w / 2, position, w);
+				room = FillAirSquare (room, width - w / 2, position, w);
 			}
 
 			// smoothen room
@@ -218,7 +294,7 @@ public class Dungeon : MonoBehaviour
 				x = random.Next (0, width);
 				y = random.Next (0, height);
 			} while (room [x, y] != air);
-			room = floodFill (room, x, y);
+			room = FloodFill (room, x, y);
 
 			// set flood to air, and others to wall
 			for (int i = 0; i < width; i++) {
@@ -256,14 +332,15 @@ public class Dungeon : MonoBehaviour
 		} while (!satisfied);
 
         // set player and exit locations
-        player.transform.position = playerLocation;
+		player.transform.position = playerStartPosition;
 		GameObject tempExit = Instantiate (exit, exitLocation, transform.rotation);
         tempExit.transform.SetParent(dungeonVisual.transform);
 
 		return room;
 	}
 
-	void createRoom (int [,] room, int fireVotes, int iceVotes) { // array of the room, number of fire votes, number of ice votes
+	// function for creating the room in the scene
+	void InstantiateCaveRoom (int [,] room, int fireVotes, int iceVotes) { // array of the room, number of fire votes, number of ice votes
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 		float xScale = 0.04f + 1.8f / Mathf.Min(width, height); // x scale of perlin noise
@@ -378,8 +455,8 @@ public class Dungeon : MonoBehaviour
 				do {
 					x = random.Next (0, width);
 					y = random.Next (0, height);
-				} while (room [x, y] != air || entities [x, y] != empty || countAdjacent (room, x, y, wall, 1) <= 3);
-				if (countAdjacent (room, x, y, wall, 2) > 11 && countAdjacent (entities, x, y, loot, 16) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no loot boxes nearby
+				} while (room [x, y] != air || entities [x, y] != empty || CountAdjacent (room, x, y, wall, 1) <= 3);
+				if (CountAdjacent (room, x, y, wall, 2) > 11 && CountAdjacent (entities, x, y, loot, 16) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no loot boxes nearby
                                                                                                                  // spawn loot box
                     tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
                     tempEntity.transform.SetParent(dungeonVisual.transform);
@@ -393,11 +470,13 @@ public class Dungeon : MonoBehaviour
 		for (int spawnCount = 0; spawnCount < width * height / 1536; spawnCount++) {
 			for (int spawnAttempt = 0; spawnAttempt < 64; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
+				float distanceToPlayer;
 				do {
 					x = random.Next (0, width);
 					y = random.Next (0, height);
-				} while (room [x, y] != air);
-				if (countAdjacent (room, x, y, wall, 4) < 4 && countAdjacent (entities, x, y, large, 12) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no large monsters nearby
+					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
+				} while (room [x, y] != air && distanceToPlayer >= 10.0f);
+				if (CountAdjacent (room, x, y, wall, 4) < 4 && CountAdjacent (entities, x, y, large, 12) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no large monsters nearby
 					// spawn large monster
 					tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
                     tempEntity.transform.SetParent(enemyVisual.transform);
@@ -411,11 +490,13 @@ public class Dungeon : MonoBehaviour
 		for (int spawnCount = 0; spawnCount < width * height / 384; spawnCount++) {
 			for (int spawnAttempt = 0; spawnAttempt < 64; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
+				float distanceToPlayer;
 				do {
 					x = random.Next (0, width);
 					y = random.Next (0, height);
-				} while (room [x, y] != air);
-				if (countAdjacent (room, x, y, wall, 2) < 4 && countAdjacent (entities, x, y, small, 8) == 0 && countAdjacent (entities, x, y, large, 8) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no mobs nearby
+					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
+				} while (room [x, y] != air && distanceToPlayer >= 10.0f);
+				if (CountAdjacent (room, x, y, wall, 2) < 4 && CountAdjacent (entities, x, y, small, 8) == 0 && CountAdjacent (entities, x, y, large, 8) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no mobs nearby
 					// spawn small monster
 					tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
                     tempEntity.transform.SetParent(dungeonVisual.transform);
@@ -448,14 +529,14 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// flood filling tiles around chosen point
-	int[,] floodFill (int[,] room, int i, int j) {
+	int[,] FloodFill (int[,] room, int i, int j) {
 		if (room [i, j] == air) {
 			room [i, j] = flood;
 			try {
-				room = floodFill (room, i + 1, j);
-				room = floodFill (room, i - 1, j);
-				room = floodFill (room, i, j + 1);
-				room = floodFill (room, i, j - 1);
+				room = FloodFill (room, i + 1, j);
+				room = FloodFill (room, i - 1, j);
+				room = FloodFill (room, i, j + 1);
+				room = FloodFill (room, i, j - 1);
 			} catch (IndexOutOfRangeException) {}
 			return room;
 		} else {
@@ -464,7 +545,7 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// fill the square area with defined size with air, with [x, y] as the bottom left corner of the square
-	int[,] fillAirSquare (int[,] room, int x, int y, int size) { // room array, x-coordinate, y-coordinate, size of square
+	int[,] FillAirSquare (int[,] room, int x, int y, int size) { // room array, x-coordinate, y-coordinate, size of square
 		for (int row = x; row <= x + size; row++) {
 			for (int col = y; col <= y + size; col++) {
 				try {
@@ -476,7 +557,7 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// count the number of specific tiles in the area of a specific point
-	int countAdjacent (int [,] room, int x, int y, int tile, int distance) { // room array, x-coordinate, y-coordinate, tile type, maximum distance from the tile
+	int CountAdjacent (int [,] room, int x, int y, int tile, int distance) { // room array, x-coordinate, y-coordinate, tile type, maximum distance from the tile
 		int tileCounter = 0;
 		for (int row = x - distance; row <= x + distance; row++) {
 			for (int col = y - distance; col <= y + distance; col++) {

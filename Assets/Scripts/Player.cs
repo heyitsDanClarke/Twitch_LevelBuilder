@@ -21,6 +21,8 @@ public class Player : MonoBehaviour {
 	[HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
 
+    GameObject sword;
+
 	// Use this for initialization
 	void Start () {
 		if (Instance != null)
@@ -31,6 +33,8 @@ public class Player : MonoBehaviour {
 		{
 			Instance = this;
 		}
+
+        sword = transform.GetChild(0).gameObject;
 
 		rb = GetComponent<Rigidbody2D>();
 		rb.mass = 1.0f; // mass of player
@@ -47,21 +51,30 @@ public class Player : MonoBehaviour {
 		bool menusActive = false; // is there any menus active in the scene
 
 		try {
-			foreach (Transform child in DungeonUI.Instance.transform) {
-				menusActive = menusActive || child.gameObject.activeSelf;
+			if (DungeonUI.Instance != null) {
+				foreach (Transform child in DungeonUI.Instance.transform) {
+					menusActive = menusActive || child.gameObject.activeSelf;
+				}
 			}
 		} catch (NullReferenceException) {}
 
 
 		if (!menusActive) { // if no menus are active
-			moveHorizontal = Input.GetAxis ("Horizontal");
-			moveVertictal = Input.GetAxis ("Vertical");
+			moveHorizontal = Input.GetAxisRaw ("Horizontal");
+			moveVertictal = Input.GetAxisRaw ("Vertical");
 		}
 
 		Vector2 targetVelocity = new Vector3 (moveHorizontal, moveVertictal).normalized * speed; // target velocity of player
 
 		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
-		rb.AddForce(velocityDifference);
+		rb.AddForce (velocityDifference);
+
+        if (Input.GetKey("j"))
+        {
+            StopAllCoroutines();
+            StartCoroutine(Attack());
+        }
+
 	}
 
 	// Update is called once per frame
@@ -88,5 +101,12 @@ public class Player : MonoBehaviour {
                 health -= 1;
             Destroy(coll.gameObject);
         }
+    }
+
+    IEnumerator Attack()
+    {
+        sword.SetActive(true);
+        yield return new WaitForSeconds(0.25f);
+        sword.SetActive(false);
     }
 }

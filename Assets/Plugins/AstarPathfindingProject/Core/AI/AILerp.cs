@@ -47,10 +47,10 @@ public class AILerp : MonoBehaviour {
 	public bool canMove = true;
 
 	/** Speed in world units */
-	public float speed = 3;
+	public float speed = 3f;
 
 	/** If true, the AI will rotate to face the movement direction */
-	public bool enableRotation = true;
+	public bool enableRotation = false;
 
 	/** If true, rotation will only be done along the Z axis */
 	public bool rotationIn2D = false;

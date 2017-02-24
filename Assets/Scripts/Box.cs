@@ -98,29 +98,24 @@ public class Box : MonoBehaviour {
 					// cannot push block if a wall or another box is in front of the box
 					if (BlockPuzzle.Instance.room[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)] == BlockPuzzle.Instance.wall ||
 						BlockPuzzle.Instance.entities[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)] == BlockPuzzle.Instance.box) {
-						print("WALL");
 						break;
 					}
 
 					// increase move distance of box
 					distance += 1;
 					nextPos = currPos + direction * distance;
-					print("ADD");
 
 					// stop the box if it is not on an ice tile;
 					if (BlockPuzzle.Instance.room[(int) nextPos.x, (int) nextPos.y] != BlockPuzzle.Instance.ice) {
 						break;
-						print("NOT ICE");
 					}
 				} catch (IndexOutOfRangeException) {
 					break;
-					print("OUT");
 				}
 			}
 
 			// add force
-			rb.AddForce (direction * rb.mass * 7.2f, ForceMode2D.Impulse);
-			print("ADD FORCE");
+			rb.AddForce (direction * rb.mass * Player.Instance.speed * 1.2f, ForceMode2D.Impulse);
 		}
 	}
 
