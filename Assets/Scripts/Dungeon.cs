@@ -475,7 +475,7 @@ public class Dungeon : MonoBehaviour
 					x = random.Next (0, width);
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
-				} while (room [x, y] != air && distanceToPlayer >= 10.0f);
+				} while (room [x, y] != air || distanceToPlayer < 10.0f);
 				if (CountAdjacent (room, x, y, wall, 4) < 4 && CountAdjacent (entities, x, y, large, 12) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no large monsters nearby
 					// spawn large monster
 					tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
@@ -495,7 +495,7 @@ public class Dungeon : MonoBehaviour
 					x = random.Next (0, width);
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
-				} while (room [x, y] != air && distanceToPlayer >= 10.0f);
+				} while (room [x, y] != air || distanceToPlayer < 10.0f);
 				if (CountAdjacent (room, x, y, wall, 2) < 4 && CountAdjacent (entities, x, y, small, 8) == 0 && CountAdjacent (entities, x, y, large, 8) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no mobs nearby
 					// spawn small monster
 					tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
