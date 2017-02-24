@@ -17,6 +17,7 @@ public class Player : MonoBehaviour {
 	public int damage; // base damage
 	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed;
+	public int coins;
 
 	[HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
@@ -90,6 +91,11 @@ public class Player : MonoBehaviour {
 		if (coll.gameObject.tag == "Exit")
 		{
 			DungeonUI.Instance.showNextLevelMenu ();
+		}
+
+		if (coll.gameObject.tag == "Loot") {
+			health += 1;
+			Destroy (coll.gameObject);
 		}
 	}
 
