@@ -7,8 +7,8 @@ public class BlockPuzzle : MonoBehaviour
 {
 	public static BlockPuzzle Instance;
 
-	public int roomWidth = 10; // width of room
-	public int roomHeight = 10; // height of room
+	public int roomWidth = 12; // width of room
+	public int roomHeight = 12; // height of room
 
 	[HideInInspector]
 	public GameObject puzzleVisual; // dungeon visual
@@ -68,7 +68,7 @@ public class BlockPuzzle : MonoBehaviour
 
 		// set player size and speed
 		Player.Instance.transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
-		Player.Instance.GetComponent<Player> ().speed = 2.0f;
+		Player.Instance.GetComponent<Player> ().speed = 3.0f;
 	}
 		
 
@@ -101,11 +101,11 @@ public class BlockPuzzle : MonoBehaviour
 			satisfied = true;
 
 			// initializing room structure
-			for (int x = 0; x < width; x++) {
-				for (int y = 0; y < height; y++) {
-					if (random.NextDouble() < 0.12) {
+			for (int x = 0; x < width - 0; x++) {
+				for (int y = 0; y < height - 0; y++) {
+					if (random.NextDouble() < 0.2) {
 						room [x, y] = wall;
-					} else if (random.NextDouble() < 0.88) {
+					} else if (random.NextDouble() < 0.8) {
 						room [x, y] = ice;
 					} else {
 						room [x, y] = air;
@@ -161,7 +161,7 @@ public class BlockPuzzle : MonoBehaviour
 			// forward tracking
 			Vector2 simulatePlayerPos = playerStartPos;
 			int previousRandomDirection = -1; // DO NOT MODIFY
-			for (int count = 0; count < 1000; count++) { // number of iterations for forward tracking simulation
+			for (int count = 0; count < 9001; count++) { // number of iterations for forward tracking simulation
 				bool[] canMove = {true, true, true, true}; // whether the player can move in the 4 directions
 				Vector2 dir;
 				int maxSteps;
@@ -176,7 +176,7 @@ public class BlockPuzzle : MonoBehaviour
 					dir = directions[randomDirection];
 
 					// calculate the number of steps the player can move in that directoin
-					maxSteps = maxDistance (room, simulateEntities, plates, simulatePlayerPos, dir);
+					maxSteps = maxDistance (room, simulateEntities, plates, simulatePlayerPos, dir, false);
 					if (maxSteps == 0) {
 						canMove[randomDirection] = false;
 					} else {
@@ -244,7 +244,7 @@ public class BlockPuzzle : MonoBehaviour
 	}
 
 	// check wether the player can push the entity to a specific direction
-	bool canPush (ref int[,] room, ref int[,] entities, ref int[,] plates, int entityType, Vector2 pos, Vector2 dir) { // room array, boxes array, plates array, type of the pushing entity, coordinates of entity, direction vector
+	bool canPush (ref int[,] room, ref int[,] entities, ref int[,] plates, int entityType, Vector2 pos, Vector2 dir, bool allowBlockOnIceToHitBoundary) { // room array, boxes array, plates array, type of the pushing entity, coordinates of entity, direction vector, whether to allow block on ice to hit boundary of room
 		try {
 			// get information of the adjacent block 
 			int adjacentPosX = (int) (pos.x + dir.x); // x-coordinate of adjacent position
@@ -262,10 +262,27 @@ public class BlockPuzzle : MonoBehaviour
 					return false;
 				}
 				if (entityType == player) {
-					return canPush (ref room, ref entities, ref plates, box, new Vector2 (adjacentPosX, adjacentPosY), dir);
+					return canPush (ref room, ref entities, ref plates, box, new Vector2 (adjacentPosX, adjacentPosY), dir, allowBlockOnIceToHitBoundary);
 				}
 				return false;
 			}
+
+			if (entityType == box && adjacentTile == ice && adjacentEntity == empty) { // slide box
+				try {
+					while (true) {
+						adjacentPosX = (int) (adjacentPosX + dir.x); // x-coordinate of adjacent position
+						adjacentPosY = (int) (adjacentPosY + dir.y); // y-coordinate of adjacent position
+						adjacentTile = room[adjacentPosX, adjacentPosY];
+						adjacentEntity = entities[adjacentPosX, adjacentPosY];
+						if (!(adjacentTile == ice && adjacentEntity == empty)) { // end loop if box cannot slide anymore
+							return true;
+						}
+					}
+				} catch (IndexOutOfRangeException) { // return allowBlockOnIceToHitBoundary if box slides and hit the boundary of the puzzle
+					return allowBlockOnIceToHitBoundary;
+				}
+			}
+
 			return true; // can push otherwise
 
 		} catch (IndexOutOfRangeException) { // if adjacent block is outside boundary of puzzle
@@ -275,7 +292,7 @@ public class BlockPuzzle : MonoBehaviour
 
 	// check wether the entity can push the adjacent entity to a specific direction
 	void push (ref int[,] room, ref int[,] entities, ref int[,] plates, int entityType, Vector2 pos, Vector2 dir) { // room array, boxes array, plates array, type of the pushing entity, coordinates of entity, direction vector
-		if (canPush (ref room, ref entities, ref plates, entityType, pos, dir)) {
+		if (canPush (ref room, ref entities, ref plates, entityType, pos, dir, true)) {
 			int adjacentPosX = (int)(pos.x + dir.x); // x-coordinate of adjacent position
 			int adjacentPosY = (int)(pos.y + dir.y); // y-coordinate of adjacent position
 			int adjacentEntity = entities [adjacentPosX, adjacentPosY];
@@ -317,12 +334,12 @@ public class BlockPuzzle : MonoBehaviour
 	}
 
 	// calculates the maximum distance a player can walk with the given direction
-	int maxDistance (int[,] room, int[,] entities, int[,] plates, Vector2 playerPos, Vector2 dir) { // room array, boxes array, plates array, coordinates of player, direction vector
+	int maxDistance (int[,] room, int[,] entities, int[,] plates, Vector2 playerPos, Vector2 dir, bool allowBlockOnIceToHitBoundary) { // room array, boxes array, plates array, coordinates of player, direction vector
 		int[,] entitiesClone =	entities.Clone() as int[,]; // deep copy
 
 		int distance = 0;
 		while (true) {
-			if (canPush (ref room, ref entitiesClone, ref plates, player, playerPos, dir)) {
+			if (canPush (ref room, ref entitiesClone, ref plates, player, playerPos, dir, allowBlockOnIceToHitBoundary)) {
 				push (ref room, ref entitiesClone, ref plates, player, playerPos, dir);
 				playerPos = new Vector2 (playerPos.x + dir.x, playerPos.y + dir.y);
 				distance += 1;
