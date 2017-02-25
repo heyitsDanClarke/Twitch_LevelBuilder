@@ -22,7 +22,7 @@ public class BlockPuzzle : MonoBehaviour
 	public GameObject plateTile; // plate
 
 	// tile IDs, IDs must be different
-	[HideInInspector]public int air = 0; // DO NOT MODIFY
+	[HideInInspector]public int air = -1;
 	[HideInInspector]public int wall = 1;
 	[HideInInspector]public int ice = 2;
 	[HideInInspector]public int water = 3;
@@ -31,7 +31,7 @@ public class BlockPuzzle : MonoBehaviour
 	// entity IDs, IDs must be different
 	[HideInInspector]public int player = -1; // the player
 	[HideInInspector]public int empty = 0; // DO NOT MODIFY
-	[HideInInspector]public int box = 1;
+	[HideInInspector]public int box = 4;
 
 	// plate IDs, IDs must be different
 	//[HideInInspector]public int empty = 0; // COMMENTED OUT, BUT STILL DO NOT MODIFY

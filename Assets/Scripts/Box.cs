@@ -96,8 +96,8 @@ public class Box : MonoBehaviour {
 			while (left || right || down || up) { // while the box can move
 				try {
 					// cannot push block if a wall or another box is in front of the box
-					if (BlockPuzzle.Instance.room[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)] == BlockPuzzle.Instance.wall ||
-						BlockPuzzle.Instance.entities[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)] == BlockPuzzle.Instance.box) {
+					if (Dungeon.Instance.roomStructure[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)].tile == Dungeon.Instance.wall ||
+						Dungeon.Instance.roomStructure[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)].entity == Dungeon.Instance.box) {
 						break;
 					}
 
@@ -106,7 +106,7 @@ public class Box : MonoBehaviour {
 					nextPos = currPos + direction * distance;
 
 					// stop the box if it is not on an ice tile;
-					if (BlockPuzzle.Instance.room[(int) nextPos.x, (int) nextPos.y] != BlockPuzzle.Instance.ice) {
+					if (Dungeon.Instance.roomStructure[(int) nextPos.x, (int) nextPos.y].tile != Dungeon.Instance.ice) {
 						break;
 					}
 				} catch (IndexOutOfRangeException) {
@@ -125,8 +125,8 @@ public class Box : MonoBehaviour {
 		transform.position = new Vector3 (nextPos.x, nextPos.y, transform.position.z);
 
 		// update arrays 
-		BlockPuzzle.Instance.entities [(int) currPos.x, (int) currPos.y] = BlockPuzzle.Instance.empty;
-		BlockPuzzle.Instance.entities [(int) nextPos.x, (int) nextPos.y] = BlockPuzzle.Instance.box;
+		Dungeon.Instance.roomStructure [(int) currPos.x, (int) currPos.y].entity = Dungeon.Instance.empty;
+		Dungeon.Instance.roomStructure [(int) nextPos.x, (int) nextPos.y].entity = Dungeon.Instance.box;
 
 		//update position variables and stop moving the box
 		currPos = nextPos;

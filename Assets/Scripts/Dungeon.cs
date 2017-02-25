@@ -31,13 +31,14 @@ public class Dungeon : MonoBehaviour
 	public GameObject floorTiles; // floor tiles
 	public GameObject hotFloorTiles; // hot texture of floor tiles
 	public GameObject lavaTiles; // lava tiles
-	public GameObject player; // the player
 	public GameObject borderTiles; // border tiles
 	public GameObject hotBorderTiles; // hot texture of border tiles
 	public GameObject wallTiles; // wall tiles
 	public GameObject smallMob; // small monster
 	public GameObject largeMob; // large monster
 	public GameObject lootBox; // loot box
+	public GameObject boxTile; // box
+	public GameObject pressurePlateTile; // pressure plate
 	public GameObject exit; // exit of room
 
 	////public Sprite[] spritePlayer = new Sprite[40];
@@ -51,7 +52,8 @@ public class Dungeon : MonoBehaviour
 	[HideInInspector]public int lava = 4;
 
 	// entity IDs, IDs must be different
-	[HideInInspector]public int empty = 0;
+	[HideInInspector]public int player = -1; // the player
+	[HideInInspector]public int empty = 0; // DO NOT MODIFY
 	[HideInInspector]public int loot = 1;
 	[HideInInspector]public int small = 2;
 	[HideInInspector]public int large = 3;
@@ -83,7 +85,7 @@ public class Dungeon : MonoBehaviour
         // initialize camera
 		Camera.main.transform.position = new Vector3(0.0f, Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, -20.0f);
 
-		roomsLeftUntilBoss = 5;
+		roomsLeftUntilBoss = 6; // 6 dungeons before boss room
 		GenerateRandomRoom ();
 	}
 
@@ -93,8 +95,8 @@ public class Dungeon : MonoBehaviour
 		Player.Instance.acceleration = Player.Instance.defaultAcceleration;
 		Player.Instance.rb.drag = 0.0f;
 		try {
-			int x = (int) Math.Round(player.transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
-			int y = (int) Math.Round(player.transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			int x = (int) Math.Round(Player.Instance.transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			int y = (int) Math.Round(Player.Instance.transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
 			if (roomStructure[x, y].tile == ice) {
 				Player.Instance.acceleration = 1.5f; // make floor slippery if player is on ice
 			}
@@ -103,7 +105,6 @@ public class Dungeon : MonoBehaviour
 				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make water slightly slippery if player is on ice
 			}
 		} catch (IndexOutOfRangeException) {}
-			
 	}
 
     public void GenerateRandomRoom()
@@ -122,13 +123,29 @@ public class Dungeon : MonoBehaviour
 		enemyVisual.transform.SetParent(transform);
 
 		if (roomsLeftUntilBoss > 0) {
-			GenerateCaveRoom (roomWidth, roomHeight);
+			int RoomType = random.Next (0, 3);
+			if (RoomType == 0) {
+				roomWidth = 40;
+				roomHeight = 40;
+				GenerateCaveRoom (roomWidth, roomHeight);
+			} else if (RoomType == 1) {
+				roomWidth = 25;
+				roomHeight = 25;
+				GenerateCaveRoom (roomWidth, roomHeight);
+			} else {
+				roomWidth = 10;
+				roomHeight = 10;
+				GeneratePuzzleRoom (roomWidth, roomHeight);
+			}
 		} else if (roomsLeftUntilBoss == 0) {
+			roomWidth = 10;
+			roomHeight = 10;
 			GenerateBossRoom (roomWidth, roomHeight);
 		} else {
 			SceneManager.LoadScene(0);
 		}
 		roomsLeftUntilBoss -= 1;
+		AstarPath.active.Scan();
 		Poll.Instance.ResetVote(); // reset votes
     }
 
@@ -156,7 +173,7 @@ public class Dungeon : MonoBehaviour
 		roomStructure = GenerateBossRoomArray(roomWidth, roomHeight);
 		InstantiateBossRoom(roomStructure); // room array, fire votes, ice votes
 		InstantiateRoomBorder (roomWidth, roomHeight);
-		AstarPath.active.Scan();
+
 	}
 
 	// generate an array containing the information of a cave room in the scene
@@ -165,7 +182,7 @@ public class Dungeon : MonoBehaviour
 		RoomTile[,] room = new RoomTile[width, height];
 
 		playerStartPosition = new Vector2 (0.0f, 0.0f); // player spawn location
-		Vector2 exitLocation = new Vector2 (10.0f, 10.0f); // room exit location
+		Vector2 exitLocation = new Vector2 (9.0f, 9.0f); // room exit location
 
 		// initializing room
 		for (int i = 0; i < width; i++) {
@@ -175,7 +192,7 @@ public class Dungeon : MonoBehaviour
 		}
 
 		// set player and exit locations
-		player.transform.position = playerStartPosition;
+		Player.Instance.transform.position = playerStartPosition;
 		GameObject tempExit = Instantiate (exit, exitLocation, transform.rotation);
 		tempExit.transform.SetParent(dungeonVisual.transform);
 
@@ -210,7 +227,8 @@ public class Dungeon : MonoBehaviour
 		spawnLargeMonsters (ref roomStructure);
 		spawnSmallMonsters (ref roomStructure);
 
-		AstarPath.active.Scan();
+		// clear mobs from room structure array
+		RemoveMonstersFromArray (ref roomStructure);
     }
 
 	// generate an array containing the information of a cave room in the scene
@@ -350,7 +368,7 @@ public class Dungeon : MonoBehaviour
 		} while (!satisfied);
 
         // set player and exit locations
-		player.transform.position = playerStartPosition;
+		Player.Instance.transform.position = playerStartPosition;
 		GameObject tempExit = Instantiate (exit, exitLocation, transform.rotation);
         tempExit.transform.SetParent(dungeonVisual.transform);
 
@@ -454,11 +472,293 @@ public class Dungeon : MonoBehaviour
 		}
 	}
 
+	// function for generating a puzzle room
+	void GeneratePuzzleRoom (int roomWidth, int roomHeight)
+	{
+		// create room
+		roomStructure = GeneratePuzzleRoomArray (roomWidth, roomHeight);
+		InstantiatePuzzleRoom (roomStructure);
+		InstantiateRoomBorder (roomWidth, roomHeight);
+	}
+
+	// generate an array containing the information of a cave room in the scene
+	RoomTile[,] GeneratePuzzleRoomArray (int width, int height)
+	{
+		RoomTile[,] room = new RoomTile[width, height];
+		RoomTile[,] simulateRoom =  new RoomTile[width, height]; // entities array for simulation
+
+		bool satisfied; // whether room is satisfied or not
+
+		do {		
+			satisfied = true;
+
+			// initializing room structure
+			for (int x = 0; x < width - 0; x++) {
+				for (int y = 0; y < height - 0; y++) {
+					if (random.NextDouble() < 0.1) {
+						room [x, y].tile = wall;
+						simulateRoom [x, y].tile = wall;
+					} else if (random.NextDouble() < 0.8) {
+						room [x, y].tile = ice;
+						simulateRoom [x, y].tile = ice;
+					} else {
+						room [x, y].tile = air;
+						simulateRoom [x, y].tile = air;
+					}
+				}
+			}
+
+			// place boxes
+			for (int count = 0; count < 10; count++) {
+				while (true) {
+					int x = random.Next (1, width - 1);
+					int y = random.Next (1, height - 1);
+					if (room [x, y].tile != wall && room [x, y].entity == empty) {
+						bool obstacleOnDownOrUp = false;
+						bool obstacleOnLeftOrRight = false;
+
+						// determine whether there is obstacles on the left or right of the location
+						try {
+							obstacleOnLeftOrRight = room [x - 1, y].tile == wall || room [x - 1, y].entity != empty || room [x + 1, y].tile == wall || room [x + 1, y].entity != empty;
+						} catch (IndexOutOfRangeException) {
+							obstacleOnLeftOrRight = true;
+						}
+
+						// determine whether there is obstacles on the bottom or top of the location
+						try {
+							obstacleOnDownOrUp = room [x, y - 1].tile == wall || room [x, y - 1].entity != empty || room [x, y + 1].tile == wall || room [x, y + 1].entity != empty;
+						} catch (IndexOutOfRangeException) {
+							obstacleOnDownOrUp = true;
+						}
+
+						if (! (obstacleOnLeftOrRight && obstacleOnDownOrUp)) {
+							room [x, y].entity = box;
+							simulateRoom [x, y].entity = box;
+							break;
+						}
+					}
+				}
+			}
+
+			// set player final position
+			while (true) {
+				int x = random.Next (0, width);
+				int y = random.Next (0, height);
+				if (room [x, y].tile != wall && room [x, y].entity == empty) {
+					playerStartPosition = new Vector2 (x, y);
+					break;
+				}
+			}
+
+			// DO NOT MODIFY
+			Vector2[] directions = {new Vector2(-1, 0), new Vector2(1, 0), new Vector2(0, -1), new Vector2(0, 1)}; // left, right, down, up
+
+			// forward tracking
+			Vector2 simulatePlayerPosition = playerStartPosition;
+			int previousRandomDirection = -1; // DO NOT MODIFY
+			for (int count = 0; count < 9001; count++) { // number of iterations for forward tracking simulation
+				bool[] canMove = {true, true, true, true}; // whether the player can move in the 4 directions
+				Vector2 dir;
+				int maxSteps;
+				int randomDirection;
+
+				// choose a random direction that the player can move
+				while (true) {
+					// the randomly selected direction need to allow the player to move, and cannot be the previous randomly selected direction
+					do {
+						randomDirection = random.Next(0, 4);
+					} while (canMove[randomDirection] == false || randomDirection == previousRandomDirection);
+					dir = directions[randomDirection];
+
+					// calculate the number of steps the player can move in that directoin
+					maxSteps = maxDistance (simulateRoom, simulatePlayerPosition, dir, false);
+					if (maxSteps == 0) {
+						canMove[randomDirection] = false;
+					} else {
+						break;
+					}
+				}
+
+				previousRandomDirection = randomDirection; // update previous randomly sellected direction
+				int randomSteps = random.Next(1, maxSteps + 1); // the number of steps to simulate
+
+				// simulate player movement
+				for (int step = 0; step < randomSteps; step++) {
+					push (ref simulateRoom, player, simulatePlayerPosition, dir);
+					simulatePlayerPosition = new Vector2(simulatePlayerPosition.x + dir.x, simulatePlayerPosition.y + dir.y);
+				}
+
+			}
+
+			// place plates
+			for (int x = 0; x < width; x++) {
+				for (int y = 0; y < width; y++) {
+					if (simulateRoom [x, y].entity == box) {
+						room [x, y].plate = plate;
+					}
+				}
+			}
+		} while (!satisfied);
+
+		return room;
+	}
+
+	// generate a puzzle room in the scene
+	void InstantiatePuzzleRoom (RoomTile [,] room) { // height of room, width of room
+		int width = room.GetLength(0); // width of dungeon;
+		int height = room.GetLength(1); // height of dungeon;
+
+		// reposition player
+		Player.Instance.transform.position = new Vector3(playerStartPosition.x, playerStartPosition.y + 0.05f, Player.Instance.transform.position.z);
+
+		// generate exit
+		GameObject tempExit = Instantiate (exit, new Vector2 (-2f, 0f), transform.rotation);
+		tempExit.transform.SetParent(dungeonVisual.transform);
+
+		// create room
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				GameObject tempTile = null;
+				if (room [i, j].tile == air) {
+					tempTile = floorTiles;
+				} else if (room [i, j].tile == wall) {
+					tempTile = wallTiles;
+				} else if (room [i, j].tile == ice) {
+					tempTile = iceTiles;
+				} else if (room [i, j].tile == water) {
+					tempTile = waterTiles;
+				} else if (room [i, j].tile == lava) {
+					tempTile = lavaTiles;
+				}
+				tempTile = Instantiate(tempTile, new Vector3(i, j, 0.0f), Quaternion.identity);
+				tempTile.transform.SetParent(dungeonVisual.transform);
+
+				GameObject tempEntity = null;
+				if (room [i, j].entity == box) {
+					tempEntity = boxTile;
+					tempEntity = Instantiate (tempEntity, new Vector3 (i, j, 0.0f), Quaternion.identity);
+					tempEntity.transform.SetParent (dungeonVisual.transform);
+				}
+				if (room [i, j].plate == plate) {
+					tempEntity = pressurePlateTile;
+					tempEntity = Instantiate(tempEntity, new Vector3(i, j, 0.0f), Quaternion.identity);
+					tempEntity.transform.SetParent(dungeonVisual.transform);
+				}
+			}
+		}
+	}
+
+	// check wether the player can push the entity to a specific direction
+	bool canPush (ref RoomTile[,] room, int entityType, Vector2 pos, Vector2 dir, bool allowBlockOnIceToHitBoundary) { // room array, boxes array, plates array, type of the pushing entity, coordinates of entity, direction vector, whether to allow block on ice to hit boundary of room
+		try {
+			// get information of the adjacent block 
+			int adjacentPosX = (int) (pos.x + dir.x); // x-coordinate of adjacent position
+			int adjacentPosY = (int) (pos.y + dir.y); // y-coordinate of adjacent position
+			int adjacentTile = room[adjacentPosX, adjacentPosY].tile;
+			int adjacentEntity = room[adjacentPosX, adjacentPosY].entity;
+			//int adjacentPlates = plates[adjacentPosX, adjacentPosY];
+
+			// check whether it can be pushed or not
+			if (adjacentTile == wall) { // cannot push if the next tile is a wall
+				return false;
+			}
+			if (adjacentEntity == box) {
+				if (entityType == box) { // cannot push box with another box
+					return false;
+				}
+				if (entityType == player) {
+					return canPush (ref room, box, new Vector2 (adjacentPosX, adjacentPosY), dir, allowBlockOnIceToHitBoundary);
+				}
+				return false;
+			}
+
+			if (entityType == box && adjacentTile == ice && adjacentEntity == empty) { // slide box
+				try {
+					while (true) {
+						adjacentPosX = (int) (adjacentPosX + dir.x); // x-coordinate of adjacent position
+						adjacentPosY = (int) (adjacentPosY + dir.y); // y-coordinate of adjacent position
+						adjacentTile = room[adjacentPosX, adjacentPosY].tile;
+						adjacentEntity = room[adjacentPosX, adjacentPosY].entity;
+						if (!(adjacentTile == ice && adjacentEntity == empty)) { // end loop if box cannot slide anymore
+							return true;
+						}
+					}
+				} catch (IndexOutOfRangeException) { // return allowBlockOnIceToHitBoundary if box slides and hit the boundary of the puzzle
+					return allowBlockOnIceToHitBoundary;
+				}
+			}
+
+			return true; // can push otherwise
+
+		} catch (IndexOutOfRangeException) { // if adjacent block is outside boundary of puzzle
+			return false;
+		}
+	}
+
+	// check wether the entity can push the adjacent entity to a specific direction
+	void push (ref RoomTile[,] room, int entityType, Vector2 pos, Vector2 dir) { // room array, boxes array, plates array, type of the pushing entity, coordinates of entity, direction vector
+		if (canPush (ref room, entityType, pos, dir, true)) {
+			int adjacentPosX = (int)(pos.x + dir.x); // x-coordinate of adjacent position
+			int adjacentPosY = (int)(pos.y + dir.y); // y-coordinate of adjacent position
+			int adjacentEntity = room [adjacentPosX, adjacentPosY].entity;
+			if (adjacentEntity == empty) { // done pushing if nothing to push in front
+				return; 
+			}
+
+			push (ref room, adjacentEntity, new Vector2 (adjacentPosX, adjacentPosY), dir); // push the other entity in front of the adjacent entity
+
+			int entityPosX = (int)(adjacentPosX + dir.x); // x-coordinate of new position of entity
+			int entityPosY = (int)(adjacentPosY + dir.y); // y-coordinate of new position of entity
+
+			// move adjacent entity
+			room [entityPosX, entityPosY].entity = adjacentEntity;
+			room [adjacentPosX, adjacentPosY].entity = empty;
+
+			// slide box if it is on ice until it hits another entity
+			while (true) {
+				try {
+					int nextPosX = (int)(entityPosX + dir.x); // x-coordinate of the adjacent sliding position of entity
+					int nextPosY = (int)(entityPosY + dir.y); // y-coordinate of the adjacent sliding position of entity
+
+					if (room[entityPosX, entityPosY].tile == ice && room[nextPosX, nextPosY].tile != wall && room[nextPosX, nextPosY].entity == empty) {
+						// slide entity
+						room [nextPosX, nextPosY].entity = adjacentEntity;
+						room [entityPosX, entityPosY].entity = empty;
+
+						// update position of entity
+						entityPosX = nextPosX;
+						entityPosY = nextPosY;
+					} else { // it is not on ice or it hits another entity
+						break;
+					}
+				} catch (IndexOutOfRangeException) { // if adjacent block is outside boundary of puzzle
+					break;
+				}
+			}
+		}
+	}
+
+	// calculates the maximum distance a player can walk with the given direction
+	int maxDistance (RoomTile[,] room, Vector2 playerPos, Vector2 dir, bool allowBlockOnIceToHitBoundary) { // room array, boxes array, plates array, coordinates of player, direction vector
+		RoomTile[,] roomClone =	room.Clone() as RoomTile[,]; // deep copy
+
+		int distance = 0;
+		while (true) {
+			if (canPush (ref roomClone, player, playerPos, dir, allowBlockOnIceToHitBoundary)) {
+				push (ref roomClone, player, playerPos, dir);
+				playerPos = new Vector2 (playerPos.x + dir.x, playerPos.y + dir.y);
+				distance += 1;
+			} else {
+				return distance; // return max distance if player cannot proceed in that direction further
+			}
+		}
+	}
+
 	void spawnLootChests (ref RoomTile [,] room) {
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 
-		for (int spawnCount = 0; spawnCount < width * height / 1024; spawnCount++) {
+		for (int spawnCount = 0; spawnCount < width * height / 625; spawnCount++) {
 			for (int spawnAttempt = 0; spawnAttempt < 16; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				do {
@@ -480,7 +780,7 @@ public class Dungeon : MonoBehaviour
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 
-		for (int spawnCount = 0; spawnCount < width * height / 1024; spawnCount++) {
+		for (int spawnCount = 0; spawnCount < width * height / 625; spawnCount++) {
 			for (int spawnAttempt = 0; spawnAttempt < 64; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				float distanceToPlayer;
@@ -504,7 +804,7 @@ public class Dungeon : MonoBehaviour
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 
-		for (int spawnCount = 0; spawnCount < width * height / 256; spawnCount++) {
+		for (int spawnCount = 0; spawnCount < width * height / 200; spawnCount++) {
 			for (int spawnAttempt = 0; spawnAttempt < 64; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				float distanceToPlayer;
@@ -539,6 +839,20 @@ public class Dungeon : MonoBehaviour
 						}
 					}
 					break;
+				}
+			}
+		}
+	}
+	
+	// clear all monsters from the array
+	void RemoveMonstersFromArray (ref RoomTile[,] room) {
+		int width = room.GetLength(0); // width of dungeon;
+		int height = room.GetLength(1); // height of dungeon;
+		
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (room[i, j].entity == large || room[i, j].entity == small) {
+					room[i, j].entity = empty;
 				}
 			}
 		}
