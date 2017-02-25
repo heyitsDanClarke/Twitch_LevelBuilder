@@ -37,7 +37,7 @@ public class Dungeon : MonoBehaviour
 	public GameObject smallMob; // small monster
 	public GameObject largeMob; // large monster
 	public GameObject lootBox; // loot box
-	public GameObject boxTile; // box
+	public GameObject boxTiles; // box
 	public GameObject pressurePlateTile; // pressure plate
 	public GameObject exit; // exit of room
 
@@ -131,10 +131,10 @@ public class Dungeon : MonoBehaviour
 			} else if (RoomType == 1) {
 				roomWidth = 25;
 				roomHeight = 25;
-				GenerateCaveRoom (roomWidth, roomHeight);
+				GenerateHybridRoom (roomWidth, roomHeight);
 			} else {
-				roomWidth = 10;
-				roomHeight = 10;
+				roomWidth = 12;
+				roomHeight = 12;
 				GeneratePuzzleRoom (roomWidth, roomHeight);
 			}
 		} else if (roomsLeftUntilBoss == 0) {
@@ -218,8 +218,8 @@ public class Dungeon : MonoBehaviour
     void GenerateCaveRoom(int roomWidth, int roomHeight)
     {
         // create room
-        roomStructure = GenerateCaveRoomArray(roomWidth, roomHeight);
-		InstantiateCaveRoom(roomStructure, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount); // room array, fire votes, ice votes
+		roomStructure = GenerateCaveRoomArray(roomWidth, roomHeight, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount);
+		InstantiateCaveRoom(roomStructure);
 		InstantiateRoomBorder (roomWidth, roomHeight);
 
 		// spawn chests and monsters
@@ -232,7 +232,7 @@ public class Dungeon : MonoBehaviour
     }
 
 	// generate an array containing the information of a cave room in the scene
-	RoomTile [,] GenerateCaveRoomArray (int width, int height) // height of room, width of room
+	RoomTile [,] GenerateCaveRoomArray (int width, int height, int fireVotes, int iceVotes) // height of room, width of room
 	{
 		RoomTile[,] room = new RoomTile[width, height];
 
@@ -367,21 +367,8 @@ public class Dungeon : MonoBehaviour
 				
 		} while (!satisfied);
 
-        // set player and exit locations
-		Player.Instance.transform.position = playerStartPosition;
-		GameObject tempExit = Instantiate (exit, exitLocation, transform.rotation);
-        tempExit.transform.SetParent(dungeonVisual.transform);
-
-		return room;
-	}
-
-	// function for creating a cave room in the scene
-	void InstantiateCaveRoom (RoomTile [,] room, int fireVotes, int iceVotes) { // array of the room, number of fire votes, number of ice votes
-		int width = room.GetLength(0); // width of dungeon;
-		int height = room.GetLength(1); // height of dungeon;
 		float xScale = 0.04f + 1.8f / Mathf.Min(width, height); // x scale of perlin noise
 		float xOffset, yOffset; // x and y offset of perlin noise;
-		GameObject tempTile; // temporary variable for storing the tile to be created
 
 		// set temperature map of room;
 		xOffset = (float) (random.NextDouble ()) * 200;
@@ -402,43 +389,64 @@ public class Dungeon : MonoBehaviour
 			}
 		}
 
-        // thresholds for climates
+		// thresholds for climates
 		float wetThreshold = 0.6f;
 		float dryThreshold = 0.4f;
 		float hotThreshold = 0.55f;
 		float coldThreshold = 0.45f;
 
-		// create room
+		// transform air blocks according to the temperature and humidity
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (room [i, j].tile == air) { // set lava/water/floor tiles base on the temperature and humidity
-					if (room [i, j].humidity > wetThreshold && room [i, j].temperature < hotThreshold) {
-						GameObject setTile; // the tile to be set in the dungeon
-						int setTileID; // the id of the tile to be set in the dungeon
-						if (room [i, j].temperature < coldThreshold) {
-							setTile = iceTiles;
-							setTileID = ice;
-						} else {
-							setTile = waterTiles;
-							setTileID = water;
-						}
-						tempTile = Instantiate(setTile, new Vector3(i, j, 0.0f), transform.rotation);
-                        tempTile.transform.SetParent(dungeonVisual.transform);
-						room [i, j].tile = setTileID;
+					if (room [i, j].humidity > wetThreshold && room [i, j].temperature < coldThreshold) {
+						room [i, j].tile = ice;
+					} else if (room [i, j].humidity > wetThreshold && room [i, j].temperature < hotThreshold) {
+						room [i, j].tile = water;
 					} else if (room [i, j].humidity < dryThreshold && room [i, j].temperature >= hotThreshold) {
-						tempTile = Instantiate (lavaTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-                        tempTile.transform.SetParent(dungeonVisual.transform);
-                        room [i, j].tile = lava;
+						room [i, j].tile = lava;
 					} else {
-						float hotTileTransparency = Mathf.Clamp01 (room [i, j].temperature * 10 - 5);
-						if (hotTileTransparency < 1.0f) {
-                            tempTile = Instantiate(floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-                            tempTile.transform.SetParent(dungeonVisual.transform);
-                        }
-						tempTile = Instantiate (hotFloorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-						tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(room [i, j].temperature * 10 - 5));
-						tempTile.transform.SetParent(dungeonVisual.transform);
+						room [i, j].tile = air;
+					}
+				}
+			}
+		}
+
+        // set player and exit locations
+		Player.Instance.transform.position = playerStartPosition;
+		GameObject tempExit = Instantiate (exit, exitLocation, transform.rotation);
+        tempExit.transform.SetParent(dungeonVisual.transform);
+
+		return room;
+	}
+
+	// function for creating a cave room in the scene
+	void InstantiateCaveRoom (RoomTile [,] room) { // array of the room, number of fire votes, number of ice votes
+		int width = room.GetLength(0); // width of dungeon;
+		int height = room.GetLength(1); // height of dungeon;
+		GameObject tempTile; // temporary variable for storing the tile to be created
+
+		// create room
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (room [i, j].tile == lava) {
+					tempTile = Instantiate (lavaTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.transform.SetParent (dungeonVisual.transform);
+				} else if (room [i, j].tile == water) {
+					tempTile = Instantiate (waterTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.transform.SetParent (dungeonVisual.transform);
+				} else if (room [i, j].tile == ice) {
+					tempTile = Instantiate (iceTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.transform.SetParent (dungeonVisual.transform);
+				} else if (room [i, j].tile == air) {
+					float hotTileTransparency = Mathf.Clamp01 (room [i, j].temperature * 10 - 5);
+					if (hotTileTransparency < 1.0f) {
+                        tempTile = Instantiate(floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+                        tempTile.transform.SetParent(dungeonVisual.transform);
                     }
+					tempTile = Instantiate (hotFloorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(room [i, j].temperature * 10 - 5));
+					tempTile.transform.SetParent(dungeonVisual.transform);
 				}
 
 				if (room [i, j].tile == wall) { // set the walls and borders of the room
@@ -468,8 +476,74 @@ public class Dungeon : MonoBehaviour
                         tempTile.transform.SetParent(dungeonVisual.transform);
                     }
 				}
+
+				// place boxes
+				if (room [i, j].entity == box) {
+					tempTile = Instantiate(boxTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.transform.SetParent(dungeonVisual.transform);
+				}
+
+				// place plates
+				if (room [i, j].plate == plate) {
+					tempTile = Instantiate(pressurePlateTile, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.transform.SetParent(dungeonVisual.transform);
+				}
+
 			}
 		}
+	}
+
+	// function for generating a hybrid room
+	void GenerateHybridRoom(int roomWidth, int roomHeight)
+	{
+		int puzzleRadius = 4; // smack a 11x11 puzzle to the room
+
+		// lower left corner of puzzle in room
+		int lowerX = -1;
+		int lowerY = -1;
+
+		// create room
+		while (true) {
+			roomStructure = GenerateCaveRoomArray (roomWidth, roomHeight, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount);
+			for (int findLargeAreaAttempt = 0; findLargeAreaAttempt < 64; findLargeAreaAttempt++) {
+				int x = random.Next (puzzleRadius, roomWidth - puzzleRadius);
+				int y = random.Next (puzzleRadius, roomHeight - puzzleRadius);
+				if (CountAdjacentTiles (roomStructure, x, y, wall, puzzleRadius) < 20) {
+					// set lower left corner of puzzle in room
+					lowerX = x - puzzleRadius;
+					lowerY = y - puzzleRadius;
+					break;
+				}
+			}
+
+			if (lowerX != -1 && lowerY != -1) { // puzzle position in room found
+				break;
+			}
+		}
+		RoomTile [,] puzzle = GeneratePuzzleRoomArray (puzzleRadius * 2 + 1, puzzleRadius * 2 + 1, lowerX, lowerY, roomStructure);
+
+		int puzzleWidth = puzzle.GetLength(0); // width of puzzle;
+		int puzzleHeight = puzzle.GetLength(1); // height of puzzle;
+
+		// smack puzzle to room
+		for (int i = 0; i < puzzleWidth; i++) {
+			for (int j = 0; j < puzzleHeight; j++) {
+				roomStructure [i + lowerX, j + lowerY].tile = puzzle [i, j].tile;
+				roomStructure [i + lowerX, j + lowerY].entity = puzzle [i, j].entity;
+				roomStructure [i + lowerX, j + lowerY].plate = puzzle [i, j].plate;
+			}
+		}
+
+		InstantiateCaveRoom (roomStructure);
+		InstantiateRoomBorder (roomWidth, roomHeight);
+
+		// spawn chests and monsters
+		spawnLootChests (ref roomStructure);
+		spawnLargeMonsters (ref roomStructure);
+		spawnSmallMonsters (ref roomStructure);
+
+		// clear mobs from room structure array
+		RemoveMonstersFromArray (ref roomStructure);
 	}
 
 	// function for generating a puzzle room
@@ -482,10 +556,10 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// generate an array containing the information of a cave room in the scene
-	RoomTile[,] GeneratePuzzleRoomArray (int width, int height)
+	RoomTile[,] GeneratePuzzleRoomArray (int width, int height, int lowerX = 0, int lowerY = 0, RoomTile [,] room = null)
 	{
-		RoomTile[,] room = new RoomTile[width, height];
-		RoomTile[,] simulateRoom =  new RoomTile[width, height]; // entities array for simulation
+		RoomTile[,] puzzleRoom = new RoomTile[width, height];
+		RoomTile[,] simulatePuzzleRoom =  new RoomTile[width, height]; // entities array for simulation
 
 		bool satisfied; // whether room is satisfied or not
 
@@ -495,15 +569,34 @@ public class Dungeon : MonoBehaviour
 			// initializing room structure
 			for (int x = 0; x < width - 0; x++) {
 				for (int y = 0; y < height - 0; y++) {
-					if (random.NextDouble() < 0.1) {
-						room [x, y].tile = wall;
-						simulateRoom [x, y].tile = wall;
-					} else if (random.NextDouble() < 0.8) {
-						room [x, y].tile = ice;
-						simulateRoom [x, y].tile = ice;
-					} else {
-						room [x, y].tile = air;
-						simulateRoom [x, y].tile = air;
+					if (room == null) { // stand-alone puzzle room
+						if (random.NextDouble() < 0.1 ) {
+							puzzleRoom [x, y].tile = wall;
+							simulatePuzzleRoom [x, y].tile = wall;
+						} else if (random.NextDouble() < 0.8) {
+							puzzleRoom [x, y].tile = ice;
+							simulatePuzzleRoom [x, y].tile = ice;
+						} else {
+							puzzleRoom [x, y].tile = air;
+							simulatePuzzleRoom [x, y].tile = air;
+						}
+					} else { // puzzle for hybrid room
+						if (room[x + lowerX, y + lowerY].tile == wall) {
+							puzzleRoom [x, y].tile = wall;
+							simulatePuzzleRoom [x, y].tile = wall;
+						} else if (random.NextDouble() < 0.1) {
+							puzzleRoom [x, y].tile = wall;
+							simulatePuzzleRoom [x, y].tile = wall;
+						} else if (room[x + lowerX, y + lowerY].tile == ice) {
+							puzzleRoom [x, y].tile = ice;
+							simulatePuzzleRoom [x, y].tile = ice;
+						} else if (random.NextDouble() < 0.7) {
+							puzzleRoom [x, y].tile = ice;
+							simulatePuzzleRoom [x, y].tile = ice;
+						} else {
+							puzzleRoom [x, y].tile = air;
+							simulatePuzzleRoom [x, y].tile = air;
+						}
 					}
 				}
 			}
@@ -513,27 +606,27 @@ public class Dungeon : MonoBehaviour
 				while (true) {
 					int x = random.Next (1, width - 1);
 					int y = random.Next (1, height - 1);
-					if (room [x, y].tile != wall && room [x, y].entity == empty) {
+					if (puzzleRoom [x, y].tile != wall && puzzleRoom [x, y].entity == empty) {
 						bool obstacleOnDownOrUp = false;
 						bool obstacleOnLeftOrRight = false;
 
 						// determine whether there is obstacles on the left or right of the location
 						try {
-							obstacleOnLeftOrRight = room [x - 1, y].tile == wall || room [x - 1, y].entity != empty || room [x + 1, y].tile == wall || room [x + 1, y].entity != empty;
+							obstacleOnLeftOrRight = puzzleRoom [x - 1, y].tile == wall || puzzleRoom [x - 1, y].entity != empty || puzzleRoom [x + 1, y].tile == wall || puzzleRoom [x + 1, y].entity != empty;
 						} catch (IndexOutOfRangeException) {
 							obstacleOnLeftOrRight = true;
 						}
 
 						// determine whether there is obstacles on the bottom or top of the location
 						try {
-							obstacleOnDownOrUp = room [x, y - 1].tile == wall || room [x, y - 1].entity != empty || room [x, y + 1].tile == wall || room [x, y + 1].entity != empty;
+							obstacleOnDownOrUp = puzzleRoom [x, y - 1].tile == wall || puzzleRoom [x, y - 1].entity != empty || puzzleRoom [x, y + 1].tile == wall || puzzleRoom [x, y + 1].entity != empty;
 						} catch (IndexOutOfRangeException) {
 							obstacleOnDownOrUp = true;
 						}
 
 						if (! (obstacleOnLeftOrRight && obstacleOnDownOrUp)) {
-							room [x, y].entity = box;
-							simulateRoom [x, y].entity = box;
+							puzzleRoom [x, y].entity = box;
+							simulatePuzzleRoom [x, y].entity = box;
 							break;
 						}
 					}
@@ -544,7 +637,7 @@ public class Dungeon : MonoBehaviour
 			while (true) {
 				int x = random.Next (0, width);
 				int y = random.Next (0, height);
-				if (room [x, y].tile != wall && room [x, y].entity == empty) {
+				if (puzzleRoom [x, y].tile != wall && puzzleRoom [x, y].entity == empty) {
 					playerStartPosition = new Vector2 (x, y);
 					break;
 				}
@@ -571,7 +664,7 @@ public class Dungeon : MonoBehaviour
 					dir = directions[randomDirection];
 
 					// calculate the number of steps the player can move in that directoin
-					maxSteps = maxDistance (simulateRoom, simulatePlayerPosition, dir, false);
+					maxSteps = maxDistance (simulatePuzzleRoom, simulatePlayerPosition, dir, false);
 					if (maxSteps == 0) {
 						canMove[randomDirection] = false;
 					} else {
@@ -584,7 +677,7 @@ public class Dungeon : MonoBehaviour
 
 				// simulate player movement
 				for (int step = 0; step < randomSteps; step++) {
-					push (ref simulateRoom, player, simulatePlayerPosition, dir);
+					push (ref simulatePuzzleRoom, player, simulatePlayerPosition, dir);
 					simulatePlayerPosition = new Vector2(simulatePlayerPosition.x + dir.x, simulatePlayerPosition.y + dir.y);
 				}
 
@@ -593,14 +686,14 @@ public class Dungeon : MonoBehaviour
 			// place plates
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < width; y++) {
-					if (simulateRoom [x, y].entity == box) {
-						room [x, y].plate = plate;
+					if (simulatePuzzleRoom [x, y].entity == box) {
+						puzzleRoom [x, y].plate = plate;
 					}
 				}
 			}
 		} while (!satisfied);
 
-		return room;
+		return puzzleRoom;
 	}
 
 	// generate a puzzle room in the scene
@@ -635,7 +728,7 @@ public class Dungeon : MonoBehaviour
 
 				GameObject tempEntity = null;
 				if (room [i, j].entity == box) {
-					tempEntity = boxTile;
+					tempEntity = boxTiles;
 					tempEntity = Instantiate (tempEntity, new Vector3 (i, j, 0.0f), Quaternion.identity);
 					tempEntity.transform.SetParent (dungeonVisual.transform);
 				}
@@ -765,7 +858,7 @@ public class Dungeon : MonoBehaviour
 					x = random.Next (0, width);
 					y = random.Next (0, height);
 				} while (room [x, y].tile != air || room [x, y].entity != empty || CountAdjacentTiles (room, x, y, wall, 1) <= 3);
-				if (CountAdjacentTiles (room, x, y, wall, 2) > 11 && CountAdjacentEntities (room, x, y, loot, 16) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no loot boxes nearby
+				if (CountAdjacentTiles (room, x, y, wall, 2) > 11 && CountAdjacentEntities (room, x, y, loot, 16) == 0 && CountAdjacentEntities (room, x, y, box, 6) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no boxes/loot chests nearby
 					// spawn loot box
 					GameObject tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(dungeonVisual.transform);
@@ -789,7 +882,7 @@ public class Dungeon : MonoBehaviour
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
 				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
-				if (CountAdjacentTiles (room, x, y, wall, 4) < 4 && CountAdjacentEntities (room, x, y, large, 12) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no large monsters nearby
+				if (CountAdjacentTiles (room, x, y, wall, 4) < 4 && CountAdjacentEntities (room, x, y, large, 12) == 0 && CountAdjacentEntities (room, x, y, box, 6) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no boxes / large monsters nearby
 					// spawn large monster
 					GameObject tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(enemyVisual.transform);
@@ -813,12 +906,12 @@ public class Dungeon : MonoBehaviour
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
 				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
-				if (CountAdjacentTiles (room, x, y, wall, 2) < 4 && CountAdjacentEntities (room, x, y, small, 8) == 0 && CountAdjacentEntities (room, x, y, large, 8) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no mobs nearby
+				if (CountAdjacentTiles (room, x, y, wall, 2) < 4 && CountAdjacentEntities (room, x, y, small, 8) == 0 && CountAdjacentEntities (room, x, y, large, 8) == 0 && CountAdjacentEntities (room, x, y, box, 6) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no boxes / mobs nearby
 					// spawn small monster
 					GameObject tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(dungeonVisual.transform);
 					room [x, y].entity = small;
-					int mobCluster = random.Next (3 , 6); // size of mob cluster (3 to 5 inclusive)
+					int mobCluster = random.Next (3, 6); // size of mob cluster (3 to 5 inclusive)
 					for (int mobCount = 1; mobCount < mobCluster; mobCount++) {
 						for (int spawnClusterAttempt = 0; spawnClusterAttempt < 12; spawnClusterAttempt++) {
 							int i, j; // x and y coordinates of the room

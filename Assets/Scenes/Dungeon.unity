@@ -782,7 +782,7 @@ MonoBehaviour:
   smallMob: {fileID: 1407179485245116, guid: 583f0673aa3916d43a5ba260c0675399, type: 2}
   largeMob: {fileID: 1312217157551614, guid: 721776a4c08c3914bb7733856202d164, type: 2}
   lootBox: {fileID: 1858367021845136, guid: 763eedcf09fa69f44ad2dada16c9cb4b, type: 2}
-  boxTile: {fileID: 1781350274763342, guid: f4640ce2ecb5fe04890858098d5a5946, type: 2}
+  boxTiles: {fileID: 1781350274763342, guid: f4640ce2ecb5fe04890858098d5a5946, type: 2}
   pressurePlateTile: {fileID: 1654860652056372, guid: 96261d0a56310c84c9f460b81bc198b3,
     type: 2}
   exit: {fileID: 1834166575883816, guid: 0811b3a655bef9d4cb00bd6f4eaab5d6, type: 2}

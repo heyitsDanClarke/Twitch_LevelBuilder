@@ -103,6 +103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
+  isEnemyShot: 0
 --- !u!212 &212276977792145084
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -133,7 +134,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: 5be7ed732b18d4ee5a3b77f6c2e246a4, type: 3}
   m_Color: {r: 0.78676474, g: 0.50908303, b: 0.50908303, a: 1}
   m_FlipX: 0
