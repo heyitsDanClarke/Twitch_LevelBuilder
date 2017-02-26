@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212897153582232218}
   - component: {fileID: 61932533580063532}
   m_Layer: 0
-  m_Name: Loot
+  m_Name: LootBox
   m_TagString: Loot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
