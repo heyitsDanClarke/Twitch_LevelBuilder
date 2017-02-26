@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour {
 
@@ -18,14 +19,15 @@ public class Player : MonoBehaviour {
 	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed;
 	public int coins;
+    public GameObject coin;
 
 	[HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
 
     GameObject sword;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		if (Instance != null)
 		{
 			Destroy(gameObject);
@@ -93,11 +95,18 @@ public class Player : MonoBehaviour {
 			DungeonUI.Instance.showNextLevelMenu ();
 		}
 
-		if (coll.gameObject.tag == "Loot") {
-			health += 1;
+		if (coll.gameObject.tag == "Coin") {
+			coins += 1;
 			Destroy (coll.gameObject);
+            
 		}
-	}
+        if (coll.gameObject.tag == "Gem")
+        {
+            coins += 5;
+            Destroy(coll.gameObject);
+        }
+
+    }
 
     void OnCollisionEnter2D(Collision2D coll)
     {
@@ -105,8 +114,13 @@ public class Player : MonoBehaviour {
         {
             if (health > 0)
                 health -= 1;
+            Vector3 enemyPosition = coll.transform.position;
+            Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
+            //float coinBounce = Random.Range(1.5f, 4.0f);
             Destroy(coll.gameObject);
+            Instantiate(coin, coinPosition, Quaternion.identity);
         }
+
     }
 
     IEnumerator Attack()

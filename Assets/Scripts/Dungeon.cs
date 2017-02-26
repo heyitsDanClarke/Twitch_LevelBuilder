@@ -40,6 +40,7 @@ public class Dungeon : MonoBehaviour
 	public GameObject boxTiles; // box
 	public GameObject pressurePlateTile; // pressure plate
 	public GameObject exit; // exit of room
+    public GameObject coin; // one kind of loot in the lootBox
 
 	////public Sprite[] spritePlayer = new Sprite[40];
 
