@@ -129,14 +129,17 @@ public class Dungeon : MonoBehaviour
 				roomWidth = 40;
 				roomHeight = 40;
 				GenerateCaveRoom (roomWidth, roomHeight);
+				DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(false); // hide panel containing box info
 			} else if (RoomType == 1) {
 				roomWidth = 25;
 				roomHeight = 25;
 				GenerateHybridRoom (roomWidth, roomHeight);
+				DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(true); // show panel containing box info
 			} else {
 				roomWidth = 12;
 				roomHeight = 12;
 				GeneratePuzzleRoom (roomWidth, roomHeight);
+				DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(true); // show panel containing box info
 			}
 		} else if (roomsLeftUntilBoss == 0) {
 			roomWidth = 15;
@@ -560,6 +563,7 @@ public class Dungeon : MonoBehaviour
 	{
 		RoomTile[,] puzzleRoom = new RoomTile[width, height];
 		RoomTile[,] simulatePuzzleRoom =  new RoomTile[width, height]; // entities array for simulation
+		bool[,] tileIsModified =  new bool[width, height]; // check whether the tiles of the room is being modified or not during the simulation
 
 		bool satisfied; // whether room is satisfied or not
 
@@ -569,6 +573,7 @@ public class Dungeon : MonoBehaviour
 			// initializing room structure
 			for (int x = 0; x < width - 0; x++) {
 				for (int y = 0; y < height - 0; y++) {
+					tileIsModified [x, y] = false;
 					if (room == null) { // stand-alone puzzle room
 						if (random.NextDouble() < 0.1 ) {
 							puzzleRoom [x, y].tile = wall;
@@ -602,7 +607,7 @@ public class Dungeon : MonoBehaviour
 			}
 
 			// place boxes
-			for (int count = 0; count < 10; count++) {
+			for (int count = 0; count < width; count++) {
 				while (true) {
 					int x = random.Next (1, width - 1);
 					int y = random.Next (1, height - 1);
@@ -633,7 +638,7 @@ public class Dungeon : MonoBehaviour
 				}
 			}
 
-			// set player final position
+			// set player initial position
 			while (true) {
 				int x = random.Next (0, width);
 				int y = random.Next (0, height);
@@ -677,21 +682,33 @@ public class Dungeon : MonoBehaviour
 
 				// simulate player movement
 				for (int step = 0; step < randomSteps; step++) {
-					push (ref simulatePuzzleRoom, player, simulatePlayerPosition, dir);
+					push (ref simulatePuzzleRoom, ref tileIsModified, player, simulatePlayerPosition, dir);
 					simulatePlayerPosition = new Vector2(simulatePlayerPosition.x + dir.x, simulatePlayerPosition.y + dir.y);
 				}
 
 			}
 
 			// place plates
+			int totalPlates = 0;
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < width; y++) {
+					if (!tileIsModified [x, y] && simulatePuzzleRoom [x, y].entity == box) { // convert unmoved boxes to walls
+						simulatePuzzleRoom [x, y].entity = empty;
+						puzzleRoom [x, y].entity = empty;
+						puzzleRoom [x, y].tile = wall;
+					}
+
 					if (simulatePuzzleRoom [x, y].entity == box) {
 						puzzleRoom [x, y].plate = plate;
+						totalPlates += 1;
 					}
 				}
 			}
+			Player.Instance.boxes = totalPlates; // set the number of boxes in the dungeon
+
 		} while (!satisfied);
+
+
 
 		return puzzleRoom;
 	}
@@ -789,7 +806,7 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// check wether the entity can push the adjacent entity to a specific direction
-	void push (ref RoomTile[,] room, int entityType, Vector2 pos, Vector2 dir) { // room array, boxes array, plates array, type of the pushing entity, coordinates of entity, direction vector
+	void push (ref RoomTile[,] room, ref bool[,] tileIsModified, int entityType, Vector2 pos, Vector2 dir) { // room array, check modified array, boxes array, plates array, type of the pushing entity, coordinates of entity, direction vector
 		if (canPush (ref room, entityType, pos, dir, true)) {
 			int adjacentPosX = (int)(pos.x + dir.x); // x-coordinate of adjacent position
 			int adjacentPosY = (int)(pos.y + dir.y); // y-coordinate of adjacent position
@@ -798,7 +815,7 @@ public class Dungeon : MonoBehaviour
 				return; 
 			}
 
-			push (ref room, adjacentEntity, new Vector2 (adjacentPosX, adjacentPosY), dir); // push the other entity in front of the adjacent entity
+			push (ref room, ref tileIsModified, adjacentEntity, new Vector2 (adjacentPosX, adjacentPosY), dir); // push the other entity in front of the adjacent entity
 
 			int entityPosX = (int)(adjacentPosX + dir.x); // x-coordinate of new position of entity
 			int entityPosY = (int)(adjacentPosY + dir.y); // y-coordinate of new position of entity
@@ -806,6 +823,8 @@ public class Dungeon : MonoBehaviour
 			// move adjacent entity
 			room [entityPosX, entityPosY].entity = adjacentEntity;
 			room [adjacentPosX, adjacentPosY].entity = empty;
+			tileIsModified [entityPosX, entityPosY] = true;
+			tileIsModified [adjacentPosX, adjacentPosY] = true;
 
 			// slide box if it is on ice until it hits another entity
 			while (true) {
@@ -817,6 +836,8 @@ public class Dungeon : MonoBehaviour
 						// slide entity
 						room [nextPosX, nextPosY].entity = adjacentEntity;
 						room [entityPosX, entityPosY].entity = empty;
+						tileIsModified [nextPosX, nextPosY] = true;
+						tileIsModified [entityPosX, entityPosY] = true;
 
 						// update position of entity
 						entityPosX = nextPosX;
@@ -835,10 +856,14 @@ public class Dungeon : MonoBehaviour
 	int maxDistance (RoomTile[,] room, Vector2 playerPos, Vector2 dir, bool allowBlockOnIceToHitBoundary) { // room array, boxes array, plates array, coordinates of player, direction vector
 		RoomTile[,] roomClone =	room.Clone() as RoomTile[,]; // deep copy
 
+		int width = room.GetLength(0); // width of dungeon;
+		int height = room.GetLength(1); // height of dungeon;
+		bool[,] tileIsModified =  new bool[width, height];
+
 		int distance = 0;
 		while (true) {
 			if (canPush (ref roomClone, player, playerPos, dir, allowBlockOnIceToHitBoundary)) {
-				push (ref roomClone, player, playerPos, dir);
+				push (ref roomClone, ref tileIsModified, player, playerPos, dir);
 				playerPos = new Vector2 (playerPos.x + dir.x, playerPos.y + dir.y);
 				distance += 1;
 			} else {
@@ -858,7 +883,7 @@ public class Dungeon : MonoBehaviour
 					x = random.Next (0, width);
 					y = random.Next (0, height);
 				} while (room [x, y].tile != air || room [x, y].entity != empty || CountAdjacentTiles (room, x, y, wall, 1) <= 3);
-				if (CountAdjacentTiles (room, x, y, wall, 2) > 11 && CountAdjacentEntities (room, x, y, loot, 16) == 0 && CountAdjacentEntities (room, x, y, box, 6) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no boxes/loot chests nearby
+				if (CountAdjacentTiles (room, x, y, wall, 2) > 11 && CountAdjacentEntities (room, x, y, loot, 16) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no boxes/loot chests nearby
 					// spawn loot box
 					GameObject tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(dungeonVisual.transform);
@@ -874,7 +899,7 @@ public class Dungeon : MonoBehaviour
 		int height = room.GetLength(1); // height of dungeon;
 
 		for (int spawnCount = 0; spawnCount < width * height / 625; spawnCount++) {
-			for (int spawnAttempt = 0; spawnAttempt < 64; spawnAttempt++) {
+			for (int spawnAttempt = 0; spawnAttempt < 128; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				float distanceToPlayer;
 				do {
@@ -882,7 +907,7 @@ public class Dungeon : MonoBehaviour
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
 				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
-				if (CountAdjacentTiles (room, x, y, wall, 4) < 4 && CountAdjacentEntities (room, x, y, large, 12) == 0 && CountAdjacentEntities (room, x, y, box, 6) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no boxes / large monsters nearby
+				if (CountAdjacentTiles (room, x, y, wall, 4) < 4 && CountAdjacentEntities (room, x, y, large, 12) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no boxes / large monsters nearby
 					// spawn large monster
 					GameObject tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(enemyVisual.transform);
@@ -906,7 +931,7 @@ public class Dungeon : MonoBehaviour
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
 				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
-				if (CountAdjacentTiles (room, x, y, wall, 2) < 4 && CountAdjacentEntities (room, x, y, small, 8) == 0 && CountAdjacentEntities (room, x, y, large, 8) == 0 && CountAdjacentEntities (room, x, y, box, 6) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no boxes / mobs nearby
+				if (CountAdjacentTiles (room, x, y, wall, 2) < 4 && CountAdjacentEntities (room, x, y, small, 8) == 0 && CountAdjacentEntities (room, x, y, large, 8) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no boxes / mobs nearby
 					// spawn small monster
 					GameObject tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(dungeonVisual.transform);

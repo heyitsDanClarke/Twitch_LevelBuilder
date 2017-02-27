@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PressurePlateScript : MonoBehaviour {
 
@@ -8,7 +9,8 @@ public class PressurePlateScript : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("Box"))
         {
-			
+			Player.Instance.boxes -= 1;
+			DungeonUI.Instance.transform.FindChild("Puzzle Panel").FindChild("Box Value").GetComponent<Text>().text = Player.Instance.boxes.ToString();
         }
     }
 
@@ -25,6 +27,8 @@ public class PressurePlateScript : MonoBehaviour {
 		if (other.gameObject.CompareTag("Box"))
 		{
 			other.gameObject.GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, 0.5f);
+			Player.Instance.boxes += 1;
+			DungeonUI.Instance.transform.FindChild("Puzzle Panel").FindChild("Box Value").GetComponent<Text>().text = Player.Instance.boxes.ToString();
 		}
 	}
 
