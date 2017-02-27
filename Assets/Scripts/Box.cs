@@ -74,14 +74,31 @@ public class Box : MonoBehaviour {
 		}
 	}
 
+	void OnCollisionStay2D(Collision2D collision) 
+	{
+		OnCollisionEnter2D(collision);
+	}
+
 	void OnCollisionEnter2D(Collision2D collision) 
 	{
 		Collider2D collider = collision.collider;
 
-		if(collider.gameObject.CompareTag("Player"))
+		bool menusActive = false; // is there any menus active in the scene
+
+		try {
+			if (DungeonUI.Instance != null) {
+				foreach (Transform child in DungeonUI.Instance.transform) {
+					if (child.gameObject.name == "Next Level Menu" || child.gameObject.name == "Pause Menu")
+						menusActive = menusActive || child.gameObject.activeSelf;
+				}
+			}
+		} catch (NullReferenceException) {}
+
+		// if player touches the block and the player is holding down the space button
+		if(collider.gameObject.CompareTag("Player") && Input.GetKey(KeyCode.Space) && !menusActive)
 		{ 
 			currPos = new Vector2((int) Mathf.Round(transform.position.x), (int) Mathf.Round(transform.position.y));
-			Vector3 contactPoint = collider.transform.position; // contact point of the player and the box, PLAYER COLLIDER MUST BE A SQUARE
+			Vector3 contactPoint = collider.transform.position; // contact point of the player and the box, PLAYER COLLIDER MUST BE A SQUARE OR CIRCLE
 
 			Vector3 boxCenter = transform.position; // center coordinates of the box
 
@@ -126,8 +143,10 @@ public class Box : MonoBehaviour {
 				}
 			}
 
-			// add force
-			rb.AddForce (direction * rb.mass * Player.Instance.speed * 1.2f, ForceMode2D.Impulse);
+			// add force if box is not moving
+			if (rb.velocity.magnitude < Player.Instance.speed / 100.0) {
+				rb.AddForce (direction * rb.mass * Player.Instance.speed * 1.2f, ForceMode2D.Impulse);
+			}
 		}
 	}
 

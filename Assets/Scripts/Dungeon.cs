@@ -99,7 +99,7 @@ public class Dungeon : MonoBehaviour
 			int x = (int) Math.Round(Player.Instance.transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
 			int y = (int) Math.Round(Player.Instance.transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
 			if (roomStructure[x, y].tile == ice) {
-				Player.Instance.acceleration = 1.5f; // make floor slippery if player is on ice
+				Player.Instance.acceleration = 2.0f; // make floor slippery if player is on ice
 			}
 			if (roomStructure[x, y].tile == water) {
 				Player.Instance.rb.drag = 25.0f; // slow down player if player is in water
@@ -705,6 +705,8 @@ public class Dungeon : MonoBehaviour
 				}
 			}
 			Player.Instance.boxes = totalPlates; // set the number of boxes in the dungeon
+
+			satisfied = totalPlates >= (width * 2.0/3.0)? true : false; // make sure there are enough boxes in the room
 
 		} while (!satisfied);
 
