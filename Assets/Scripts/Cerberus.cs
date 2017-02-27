@@ -9,10 +9,11 @@ public class Cerberus : MonoBehaviour {
     float counter;
     int moveReset;
     bool paused;
+    bool moveLeft;
 
     public float speed;
     public float damage;
-    public float health;
+    public float health; //todo: add damage and when health = 0 make an exit
 
     public GameObject fireball;
 
@@ -32,6 +33,7 @@ public class Cerberus : MonoBehaviour {
             if (counter >= moveReset)
             {
                 StartCoroutine(PauseFire());
+                moveLeft = !moveLeft;
                 moveReset = Random.Range(1, 3);
                 counter = 0;
             }
@@ -55,9 +57,12 @@ public class Cerberus : MonoBehaviour {
 
     Vector2 ChooseDirection()
     {
-        float x = Random.Range(-1.0f, 1.0f);
-        float y = Random.Range(-1.0f, 1.0f);
-        return new Vector2(x, y);
+        float x;
+        if (moveLeft)
+            x = -1;
+        else
+            x = 1;
+        return new Vector2(x, 0);
     }
 
     IEnumerator PauseFire()
@@ -66,7 +71,7 @@ public class Cerberus : MonoBehaviour {
         paused = true;
         yield return new WaitForSeconds(1);
         GameObject tempFire = Instantiate(fireball, new Vector2(transform.position.x, transform.position.y-0.5f), transform.rotation);
-        tempFire.GetComponent<Rigidbody2D>().velocity = Vector2.down;
+        tempFire.GetComponent<Rigidbody2D>().velocity = Player.Instance.transform.position - transform.position;
         _rb.velocity = ChooseDirection();
         paused = false;
     }

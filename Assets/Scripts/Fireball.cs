@@ -10,4 +10,17 @@ public class Fireball : MonoBehaviour {
             Destroy(gameObject);
         }
 	}
+
+    void OnTriggerEnter2D(Collider2D coll)
+    {
+        if(coll.gameObject.tag == "Wall")
+        {
+            Destroy(gameObject);
+        }
+        else if(coll.gameObject.tag == "Player")
+        {
+            Player.Instance.health -= 1;
+            Destroy(gameObject);
+        }
+    }
 }

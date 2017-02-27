@@ -41,6 +41,7 @@ public class Dungeon : MonoBehaviour
 	public GameObject pressurePlateTile; // pressure plate
 	public GameObject exit; // exit of room
     public GameObject coin; // one kind of loot in the lootBox
+    public GameObject boss;
 
 	////public Sprite[] spritePlayer = new Sprite[40];
 
@@ -86,7 +87,6 @@ public class Dungeon : MonoBehaviour
         // initialize camera
 		Camera.main.transform.position = new Vector3(0.0f, Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, -20.0f);
 
-		roomsLeftUntilBoss = 6; // 6 dungeons before boss room
 		GenerateRandomRoom ();
 	}
 
@@ -139,8 +139,8 @@ public class Dungeon : MonoBehaviour
 				GeneratePuzzleRoom (roomWidth, roomHeight);
 			}
 		} else if (roomsLeftUntilBoss == 0) {
-			roomWidth = 10;
-			roomHeight = 10;
+			roomWidth = 15;
+			roomHeight = 11;
 			GenerateBossRoom (roomWidth, roomHeight);
 		} else {
 			SceneManager.LoadScene(0);
@@ -194,8 +194,6 @@ public class Dungeon : MonoBehaviour
 
 		// set player and exit locations
 		Player.Instance.transform.position = playerStartPosition;
-		GameObject tempExit = Instantiate (exit, exitLocation, transform.rotation);
-		tempExit.transform.SetParent(dungeonVisual.transform);
 
 		return room;
 	}
@@ -213,6 +211,7 @@ public class Dungeon : MonoBehaviour
 				}
 			}
 		}
+        Instantiate(boss, new Vector2(width/2, height-2), transform.rotation);
 	}
 
     // function for generating a cave room
@@ -706,7 +705,7 @@ public class Dungeon : MonoBehaviour
 		Player.Instance.transform.position = new Vector3(playerStartPosition.x, playerStartPosition.y + 0.05f, Player.Instance.transform.position.z);
 
 		// generate exit
-		GameObject tempExit = Instantiate (exit, new Vector2 (-2f, 0f), transform.rotation);
+		GameObject tempExit = Instantiate (exit, new Vector2 (0f, 0f), transform.rotation);
 		tempExit.transform.SetParent(dungeonVisual.transform);
 
 		// create room
