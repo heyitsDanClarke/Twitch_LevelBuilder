@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 114931489868840332}
   - component: {fileID: 50895236072677948}
   - component: {fileID: 61644859983898694}
+  - component: {fileID: 95586296528397836}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -103,7 +104,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 10
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -140,6 +141,23 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -0.1}
   serializedVersion: 2
   m_Size: {x: 0.875, y: 0.875}
+--- !u!95 &95586296528397836
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1117320666350700}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 15502deb38a774541baf9582cd3a9329, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114567024007938290
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -191,8 +209,10 @@ MonoBehaviour:
   damage: 0
   health: 8
   healthRegeneration: 0
-  savedVelocity: {x: 0, y: 0}
+  coins: 0
+  coin: {fileID: 1312639025012346, guid: f1ef7a530ac27cf49b1fb860e5f8c12d, type: 2}
   rb: {fileID: 0}
+  anim: {fileID: 0}
 --- !u!212 &212252533912542928
 SpriteRenderer:
   m_ObjectHideFlags: 1

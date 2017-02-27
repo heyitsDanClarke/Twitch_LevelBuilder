@@ -626,28 +626,6 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 613636413}
---- !u!1 &613956720 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1117320666350700, guid: a979508dc40e62742b5d7d6d91e7b5ee,
-    type: 2}
-  m_PrefabInternal: {fileID: 921715367}
---- !u!95 &613956721
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 613956720}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 15502deb38a774541baf9582cd3a9329, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &822975953
 GameObject:
   m_ObjectHideFlags: 0
@@ -787,7 +765,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomWidth: 48
   roomHeight: 32
-  roomsLeftUntilBoss: 0
+  roomsLeftUntilBoss: 5
   dungeonVisual: {fileID: 0}
   enemyVisual: {fileID: 0}
   iceTiles: {fileID: 1039489354002006, guid: 80649adce7bf6194ca88cd39e76cad4e, type: 2}
@@ -801,8 +779,8 @@ MonoBehaviour:
   hotBorderTiles: {fileID: 1579740057293280, guid: d7499b428481eea4084b371d5cddf43e,
     type: 2}
   wallTiles: {fileID: 1080544638982308, guid: 36e934f5ded3ed146b9bc57608733458, type: 2}
-  smallMob: {fileID: 1407179485245116, guid: 583f0673aa3916d43a5ba260c0675399, type: 2}
-  largeMob: {fileID: 1312217157551614, guid: 721776a4c08c3914bb7733856202d164, type: 2}
+  smallMob: {fileID: 1134070046496754, guid: 583f0673aa3916d43a5ba260c0675399, type: 2}
+  largeMob: {fileID: 1858064224081460, guid: 721776a4c08c3914bb7733856202d164, type: 2}
   lootBox: {fileID: 1858367021845136, guid: 763eedcf09fa69f44ad2dada16c9cb4b, type: 2}
   boxTiles: {fileID: 1781350274763342, guid: f4640ce2ecb5fe04890858098d5a5946, type: 2}
   pressurePlateTile: {fileID: 1654860652056372, guid: 96261d0a56310c84c9f460b81bc198b3,
@@ -843,6 +821,34 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4275252553449732, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275252553449732, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275252553449732, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275252553449732, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0.17364825
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275252553449732, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275252553449732, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4275252553449732, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 0.9848078
+      objectReference: {fileID: 0}
     - target: {fileID: 4275252553449732, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
       propertyPath: m_RootOrder
       value: 4

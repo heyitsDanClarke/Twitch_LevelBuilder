@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 58943087141547380}
   m_Layer: 0
   m_Name: Coin
-  m_TagString: Loot
+  m_TagString: Coin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -7,7 +7,6 @@ TagManager:
   - Button
   - Exit
   - GM
-  - Loot
   - Lava Floor
   - Ice Floor
   - Water
@@ -21,6 +20,8 @@ TagManager:
   - Sword
   - Gem
   - Wall
+  - Coin
+  - Loot
   layers:
   - Default
   - TransparentFX
