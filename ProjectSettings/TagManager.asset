@@ -14,7 +14,6 @@ TagManager:
   - Hot Floor
   - Enemy
   - Shout Bubble
-  - Block
   - Next Level Menu
   - Pause Menu
   - Sword
@@ -22,6 +21,7 @@ TagManager:
   - Wall
   - Coin
   - Loot
+  - Box
   layers:
   - Default
   - TransparentFX
@@ -33,7 +33,7 @@ TagManager:
   - 
   - Wall
   - Entities
-  - 
+  - Box
   - 
   - 
   - 

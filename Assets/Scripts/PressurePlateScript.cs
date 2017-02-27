@@ -4,13 +4,29 @@ using UnityEngine;
 
 public class PressurePlateScript : MonoBehaviour {
 
-    void OnTriggerEnter(Collider other)
+	void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Block"))
+        if (other.gameObject.CompareTag("Box"))
         {
-            Destroy(other);
+			
         }
     }
+
+	void OnTriggerStay2D(Collider2D other)
+	{
+		if (other.gameObject.CompareTag("Box"))
+		{
+			other.gameObject.GetComponent<SpriteRenderer> ().color = new Color (1, 0.4f, 0, 0.5f);
+		}
+	}
+
+	void OnTriggerExit2D(Collider2D other)
+	{
+		if (other.gameObject.CompareTag("Box"))
+		{
+			other.gameObject.GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, 0.5f);
+		}
+	}
 
 	// Use this for initialization
 	void Start () {

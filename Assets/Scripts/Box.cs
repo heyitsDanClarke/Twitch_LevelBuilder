@@ -7,6 +7,7 @@ public class Box : MonoBehaviour {
 
 	private Vector2 currPos; // current integer coordinates of the box
 	private Vector2 nextPos; // next integer coordinates of the box
+	private Vector2 scanPos; // integer coordinates of the box where AstarPath.active.Scan() has been called 
 	private Vector2 direction; // direction vector of the box
 
 	// whether the box is moving at that direction
@@ -25,6 +26,7 @@ public class Box : MonoBehaviour {
 
 		currPos = new Vector2((int) Mathf.Round(transform.position.x), (int) Mathf.Round(transform.position.y));
 		nextPos = currPos;
+		scanPos = currPos;
 		direction = new Vector2 (0, 0);
 
 		rb = GetComponent<Rigidbody2D>();
@@ -33,6 +35,16 @@ public class Box : MonoBehaviour {
 	}
 		
 	void FixedUpdate () {
+		// do A* path scan repeatedly when the box is moving
+		Vector2 boxPosition = new Vector2((int) Mathf.Round(transform.position.x), (int) Mathf.Round(transform.position.y));
+		if (left || right || down || up) {
+			if (boxPosition != scanPos) {
+				AstarPath.active.Scan();
+				scanPos = boxPosition;
+			}
+		}
+
+		// does not allow box to wander off the route
 		if (left) {
 			transform.position = new Vector3 (transform.position.x, nextPos.y, transform.position.z); // lock y-axis of box
 			if (transform.position.x <= nextPos.x) { // if box arrives destination
