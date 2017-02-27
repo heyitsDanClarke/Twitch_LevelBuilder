@@ -28,6 +28,8 @@ public class Player : MonoBehaviour {
 
     GameObject sword;
 
+	//private Animator anim;
+
     // Use this for initialization
     void Start () {
 		if (Instance != null)
@@ -74,6 +76,7 @@ public class Player : MonoBehaviour {
 		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
 		rb.AddForce (velocityDifference);
 
+		/*
         HandleAnimations();
 
         if (Input.GetKey("j"))
@@ -81,6 +84,7 @@ public class Player : MonoBehaviour {
             StopAllCoroutines();
             StartCoroutine(Attack());
         }
+        */
 
 	}
 
@@ -90,6 +94,28 @@ public class Player : MonoBehaviour {
 		// update camera position
 		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1] + Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, Camera.main.transform.position[2]);
 
+
+		float input_x = Input.GetAxisRaw("Horizontal");
+		float input_y = Input.GetAxisRaw("Vertical");
+
+		bool isWalking = (Mathf.Abs (input_x) + Mathf.Abs (input_y)) > 0;
+
+		anim.SetBool ("isWalking", isWalking);
+
+		if (isWalking) {
+			anim.SetFloat ("x", input_x);
+			anim.SetFloat ("y", input_y);
+
+			transform.position += new Vector3 (input_x, input_y, 0).normalized * Time.deltaTime;
+		}
+
+		if (Input.GetKeyDown (KeyCode.I)) {
+
+			//anim.transform.localScale += new Vector3 (6.3f, 6.3f, 6.3f);
+			anim.SetTrigger ("meleeAttack");
+
+
+		}
 	}
 
 	void OnTriggerEnter2D(Collider2D coll)
@@ -134,6 +160,7 @@ public class Player : MonoBehaviour {
         sword.SetActive(false);
     }
 
+	/*
     void HandleAnimations()
     {
         if((rb.velocity.x > -0.1 && rb.velocity.x <0.1) && (rb.velocity.y > -0.1 && rb.velocity.y < 0.1))
@@ -143,4 +170,5 @@ public class Player : MonoBehaviour {
         anim.SetInteger("VerticalMovement", (int)Input.GetAxisRaw("Vertical"));
         anim.SetInteger("HorizontalMovement", (int)Input.GetAxisRaw("Horizontal"));
     }
+    */
 }
