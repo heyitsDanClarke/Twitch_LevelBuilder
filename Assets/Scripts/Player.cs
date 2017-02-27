@@ -23,6 +23,8 @@ public class Player : MonoBehaviour {
 
 	[HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
+    [HideInInspector]
+    public Animator anim;
 
     GameObject sword;
 
@@ -38,7 +40,7 @@ public class Player : MonoBehaviour {
 		}
 
         sword = transform.GetChild(0).gameObject;
-
+        anim = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody2D>();
 		rb.mass = 1.0f; // mass of player
 		rb.drag = 0.0f; // drag of player
@@ -71,6 +73,8 @@ public class Player : MonoBehaviour {
 
 		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
 		rb.AddForce (velocityDifference);
+
+        HandleAnimations();
 
         if (Input.GetKey("j"))
         {
@@ -128,5 +132,15 @@ public class Player : MonoBehaviour {
         sword.SetActive(true);
         yield return new WaitForSeconds(0.25f);
         sword.SetActive(false);
+    }
+
+    void HandleAnimations()
+    {
+        if((rb.velocity.x > -0.1 && rb.velocity.x <0.1) && (rb.velocity.y > -0.1 && rb.velocity.y < 0.1))
+            anim.SetBool("Moving", false);
+        else
+            anim.SetBool("Moving", true);
+        anim.SetInteger("VerticalMovement", (int)Input.GetAxisRaw("Vertical"));
+        anim.SetInteger("HorizontalMovement", (int)Input.GetAxisRaw("Horizontal"));
     }
 }
