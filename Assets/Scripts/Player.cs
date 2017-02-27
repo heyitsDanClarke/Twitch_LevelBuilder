@@ -17,8 +17,9 @@ public class Player : MonoBehaviour {
 	public float defaultAcceleration = 20.0f; // default acceleration of player
 	public int damage; // base damage
 	public int health = 8; // base hit points
-	public int healthRegeneration; // health regeneration speed;
+	public int healthRegeneration; // health regeneration speed
 	public int coins;
+	public int boxes; // number of boxes left to push
     public GameObject coin;
 
 	[HideInInspector]
@@ -58,6 +59,7 @@ public class Player : MonoBehaviour {
 		try {
 			if (DungeonUI.Instance != null) {
 				foreach (Transform child in DungeonUI.Instance.transform) {
+					if (child.gameObject.name == "Next Level Menu" || child.gameObject.name == "Pause Menu")
 					menusActive = menusActive || child.gameObject.activeSelf;
 				}
 			}

@@ -10,8 +10,8 @@ public class PlayerUI : MonoBehaviour {
 
     void Awake()
     {
-        healthValue = transform.GetChild(0).FindChild("Health_Value").GetComponent<Text>();
-		coinValue = transform.GetChild(0).FindChild("Coin_Value").GetComponent<Text>();
+		healthValue = transform.FindChild("Player Panel").FindChild("Health Value").GetComponent<Text>();
+		coinValue = transform.FindChild("Player Panel").FindChild("Coin Value").GetComponent<Text>();
     }
 
 	void FixedUpdate()
