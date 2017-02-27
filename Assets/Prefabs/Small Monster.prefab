@@ -25,14 +25,14 @@ GameObject:
   - component: {fileID: 114953503922908050}
   - component: {fileID: 114091238033649882}
   - component: {fileID: 114912825657624748}
-  - component: {fileID: 61021143698985126}
+  - component: {fileID: 58491446632559172}
   m_Layer: 0
   m_Name: Small Monster
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1816784593914562
 GameObject:
   m_ObjectHideFlags: 0
@@ -48,7 +48,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4623306211287080
 Transform:
   m_ObjectHideFlags: 1
@@ -69,7 +69,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1134070046496754}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.8597069, y: 2.2091508, z: 0}
+  m_LocalPosition: {x: -1.1929262, y: 2.56524, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4623306211287080}
@@ -110,8 +110,8 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 7
---- !u!61 &61021143698985126
-BoxCollider2D:
+--- !u!58 &58491446632559172
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -123,7 +123,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5}
+  m_Radius: 0.25
 --- !u!114 &114091238033649882
 MonoBehaviour:
   m_ObjectHideFlags: 1

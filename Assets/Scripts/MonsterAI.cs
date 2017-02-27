@@ -15,8 +15,8 @@ public class MonsterAI : MonoBehaviour
     public float updateRate = 2f;
 
     // Caching
-    private Seeker seeker;
-    private Rigidbody2D rb;
+    Seeker seeker;
+    Rigidbody2D rb;
 
     // The calculated path
     public Path path;
@@ -38,7 +38,7 @@ public class MonsterAI : MonoBehaviour
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
 
-        target = GameObject.Find("Player").transform;
+        /*target = GameObject.Find("Player").transform;
 
         if (target == null)
         {
@@ -48,7 +48,7 @@ public class MonsterAI : MonoBehaviour
         // Start a new path to the target position, return the result to the OnPathComplete method
         seeker.StartPath(transform.position, target.position, OnPathComplete);
 
-        StartCoroutine(UpdatePath());
+        StartCoroutine(UpdatePath());*/
     }
 
     IEnumerator UpdatePath()
@@ -122,7 +122,14 @@ public class MonsterAI : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        if (coll.gameObject.tag == "Sword")
+        if(coll.gameObject.tag == "Player" && target == null)
+        {
+            target = coll.transform;
+            seeker.StartPath(transform.position, target.position, OnPathComplete);
+
+            StartCoroutine(UpdatePath());
+        }
+        else if (coll.gameObject.tag == "Sword")
         {
             Destroy(gameObject);
         }
