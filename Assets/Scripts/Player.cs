@@ -155,7 +155,7 @@ public class Player : MonoBehaviour {
             Vector3 enemyPosition = coll.transform.position;
             Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
             Destroy(coll.gameObject);
-            Instantiate(coin, coinPosition, Quaternion.identity);
+            //Instantiate(coin, coinPosition, Quaternion.identity);
         }
 
 

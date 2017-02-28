@@ -34,18 +34,20 @@ public class MonsterAI : MonoBehaviour
     // The waypoint we are currently moving towards
     private int currentWaypoint = 0;
 
+    bool aggressive;
+
     void Start()
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
 
-        /*target = GameObject.Find("Player").transform;
+        target = GameObject.Find("Player").transform;
 
         if (target == null)
         {
             return;
         }
-
+        /*
         // Start a new path to the target position, return the result to the OnPathComplete method
         seeker.StartPath(transform.position, target.position, OnPathComplete);
 
@@ -86,6 +88,14 @@ public class MonsterAI : MonoBehaviour
 
         //TODO: Always look at player?
 
+        if (Vector2.Distance(transform.position, target.transform.position) <= 7 && !aggressive)
+        {
+            seeker.StartPath(transform.position, target.position, OnPathComplete);
+
+            StartCoroutine(UpdatePath());
+            aggressive = true;
+        }
+
         if (path == null)
             return;
 
@@ -122,15 +132,16 @@ public class MonsterAI : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D coll)
-    {
+    { 
+        /*
         if(coll.gameObject.tag == "Player" && target == null)
         {
             target = coll.transform;
             seeker.StartPath(transform.position, target.position, OnPathComplete);
 
             StartCoroutine(UpdatePath());
-        }
-        else if (coll.gameObject.tag == "Sword")
+        }*/ //for demo we are removing the line of sight mechanics, making it a distance check
+        if (coll.gameObject.tag == "Sword")
         {
             Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
 			GameObject treasureObject = Instantiate(coin, coinPosition, Quaternion.identity);
