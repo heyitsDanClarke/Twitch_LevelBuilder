@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4846365819384452}
   - component: {fileID: 212897153582232218}
   - component: {fileID: 61932533580063532}
+  - component: {fileID: 114709642256323062}
   m_Layer: 0
   m_Name: LootBox
   m_TagString: Loot
@@ -55,6 +56,18 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
+--- !u!114 &114709642256323062
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1858367021845136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b3995a777e22f142a12d4ab29155579, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gem: {fileID: 0}
 --- !u!212 &212897153582232218
 SpriteRenderer:
   m_ObjectHideFlags: 1

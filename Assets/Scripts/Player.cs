@@ -21,8 +21,9 @@ public class Player : MonoBehaviour {
 	public int coins;
 	public int boxes; // number of boxes left to push
     public GameObject coin;
+    public GameObject gem;
 
-	[HideInInspector]
+    [HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
     [HideInInspector]
     public Animator anim;
@@ -137,6 +138,11 @@ public class Player : MonoBehaviour {
             coins += 5;
             Destroy(coll.gameObject);
         }
+        if (coll.gameObject.tag == "Loot")
+        {
+            Instantiate(gem, coll.gameObject.transform.position, Quaternion.identity);
+            Destroy(coll.gameObject);
+        }
 
     }
 
@@ -148,10 +154,10 @@ public class Player : MonoBehaviour {
                 health -= 1;
             Vector3 enemyPosition = coll.transform.position;
             Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
-            //float coinBounce = Random.Range(1.5f, 4.0f);
             Destroy(coll.gameObject);
             Instantiate(coin, coinPosition, Quaternion.identity);
         }
+
 
     }
 
