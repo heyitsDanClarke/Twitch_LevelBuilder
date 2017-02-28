@@ -629,6 +629,7 @@ public class Dungeon : MonoBehaviour
 							obstacleOnDownOrUp = true;
 						}
 
+						// ensure that all boxes are pushable in some way 
 						if (! (obstacleOnLeftOrRight && obstacleOnDownOrUp)) {
 							puzzleRoom [x, y].entity = box;
 							simulatePuzzleRoom [x, y].entity = box;
@@ -670,20 +671,31 @@ public class Dungeon : MonoBehaviour
 
 					// calculate the number of steps the player can move in that directoin
 					maxSteps = maxDistance (simulatePuzzleRoom, simulatePlayerPosition, dir, false);
-					if (maxSteps == 0) {
+					if (maxSteps == 0) { // cannot move in that direction if the maximum steps possible in that direction is 0
 						canMove[randomDirection] = false;
 					} else {
+						break; // direction found
+					}
+
+					// abort map and regenerate a new one if the player cannot move in all directions
+					if (!canMove[0] && !canMove[1] && !canMove[2] && !canMove[3]) {
+						satisfied = false;
 						break;
 					}
 				}
 
+				// end simulation if map is not satisfied
+				if (!satisfied) {
+					break;
+				}
+
 				previousRandomDirection = randomDirection; // update previous randomly sellected direction
-				int randomSteps = random.Next(1, maxSteps + 1); // the number of steps to simulate
+				int randomSteps = random.Next(1, maxSteps + 1); // the number of steps to simulate: between 1 and maxSteps inclusively
 
 				// simulate player movement
 				for (int step = 0; step < randomSteps; step++) {
-					push (ref simulatePuzzleRoom, ref tileIsModified, player, simulatePlayerPosition, dir);
-					simulatePlayerPosition = new Vector2(simulatePlayerPosition.x + dir.x, simulatePlayerPosition.y + dir.y);
+					push (ref simulatePuzzleRoom, ref tileIsModified, player, simulatePlayerPosition, dir); // push anything in front of the player
+					simulatePlayerPosition = new Vector2(simulatePlayerPosition.x + dir.x, simulatePlayerPosition.y + dir.y); // move player by 1 step
 				}
 
 			}
@@ -692,13 +704,13 @@ public class Dungeon : MonoBehaviour
 			int totalPlates = 0;
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < width; y++) {
-					if (!tileIsModified [x, y] && simulatePuzzleRoom [x, y].entity == box) { // convert unmoved boxes to walls
+					if (!tileIsModified [x, y] && simulatePuzzleRoom [x, y].entity == box) { // convert unmoved boxes in simulation to walls
 						simulatePuzzleRoom [x, y].entity = empty;
 						puzzleRoom [x, y].entity = empty;
 						puzzleRoom [x, y].tile = wall;
 					}
 
-					if (simulatePuzzleRoom [x, y].entity == box) {
+					if (simulatePuzzleRoom [x, y].entity == box) { // place plates according to the final position of boxes during the simulation 
 						puzzleRoom [x, y].plate = plate;
 						totalPlates += 1;
 					}
@@ -706,7 +718,7 @@ public class Dungeon : MonoBehaviour
 			}
 			Player.Instance.boxes = totalPlates; // set the number of boxes in the dungeon
 
-			satisfied = totalPlates >= (width * 2.0/3.0)? true : false; // make sure there are enough boxes in the room
+			satisfied = satisfied && totalPlates >= (width * 2.0/3.0)? true : false; // make sure there are enough boxes in the room
 
 		} while (!satisfied);
 
