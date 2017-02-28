@@ -124,12 +124,12 @@ public class Dungeon : MonoBehaviour
 
 		if (roomsLeftUntilBoss > 0) {
 			int RoomType = random.Next (0, 3);
-			if (RoomType == 0) {
+			if (RoomType == 10) {
 				roomWidth = 40;
 				roomHeight = 40;
 				GenerateCaveRoom (roomWidth, roomHeight);
 				DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(false); // hide panel containing box info
-			} else if (RoomType == 1) {
+			} else if (RoomType > - 1) {
 				roomWidth = 25;
 				roomHeight = 25;
 				GenerateHybridRoom (roomWidth, roomHeight);
@@ -560,19 +560,23 @@ public class Dungeon : MonoBehaviour
 	// generate an array containing the information of a cave room in the scene
 	RoomTile[,] GeneratePuzzleRoomArray (int width, int height, int lowerX = 0, int lowerY = 0, RoomTile [,] room = null)
 	{
-		RoomTile[,] puzzleRoom = new RoomTile[width, height];
-		RoomTile[,] simulatePuzzleRoom =  new RoomTile[width, height]; // entities array for simulation
-		bool[,] tileIsModified =  new bool[width, height]; // check whether the tiles of the room is being modified or not during the simulation
+		RoomTile[,] puzzleRoom;
+		RoomTile[,] simulatePuzzleRoom; // entities array for simulation
+		bool[,] tileIsModified; // check whether the tiles of the room is being modified or not during the simulation
+		Vector2 initialPlayerPosition; // initial position of the player
 
 		bool satisfied; // whether room is satisfied or not
 
 		do {		
 			satisfied = true;
 
+			puzzleRoom = new RoomTile[width, height];
+			simulatePuzzleRoom = new RoomTile[width, height];
+			tileIsModified = new bool[width, height];
+
 			// initializing room structure
 			for (int x = 0; x < width - 0; x++) {
 				for (int y = 0; y < height - 0; y++) {
-					tileIsModified [x, y] = false;
 					if (room == null) { // stand-alone puzzle room
 						if (random.NextDouble() < 0.1 ) {
 							puzzleRoom [x, y].tile = wall;
@@ -606,7 +610,7 @@ public class Dungeon : MonoBehaviour
 			}
 
 			// place boxes
-			for (int count = 0; count < width; count++) {
+			for (int count = 0; count < width * height / 12; count++) {
 				int placeBoxAttempt = 0; // limit the number of trials to find a position for the box to prevent an infinite loop
 				while (true) {
 					placeBoxAttempt += 1;
@@ -649,7 +653,7 @@ public class Dungeon : MonoBehaviour
 				int x = random.Next (0, width);
 				int y = random.Next (0, height);
 				if (puzzleRoom [x, y].tile != wall && puzzleRoom [x, y].entity == empty) {
-					playerStartPosition = new Vector2 (x, y);
+					initialPlayerPosition = new Vector2 (x, y);
 					break;
 				}
 			}
@@ -658,7 +662,7 @@ public class Dungeon : MonoBehaviour
 			Vector2[] directions = {new Vector2(-1, 0), new Vector2(1, 0), new Vector2(0, -1), new Vector2(0, 1)}; // left, right, down, up
 
 			// forward tracking
-			Vector2 simulatePlayerPosition = playerStartPosition;
+			Vector2 simulatePlayerPosition = initialPlayerPosition;
 			int previousRandomDirection = -1; // DO NOT MODIFY
 			for (int count = 0; count < 9001; count++) { // number of iterations for forward tracking simulation
 				bool[] canMove = {true, true, true, true}; // whether the player can move in the 4 directions
@@ -724,12 +728,13 @@ public class Dungeon : MonoBehaviour
 				}
 				Player.Instance.boxes = totalPlates; // set the number of boxes in the dungeon
 
-				satisfied = satisfied && totalPlates >= (width * 2.0/3.0)? true : false; // make sure there are enough boxes in the room
+				satisfied = satisfied && totalPlates >= (width * height / 12 * 0.65)? true : false; // make sure there are enough boxes in the room
 			}
-
 		} while (!satisfied);
 
-
+		if (room == null) { // stand-alone puzzle room
+			playerStartPosition = initialPlayerPosition; // set global variable storing the starting position of the player
+		}
 
 		return puzzleRoom;
 	}
@@ -898,12 +903,14 @@ public class Dungeon : MonoBehaviour
 		int height = room.GetLength(1); // height of dungeon;
 
 		for (int spawnCount = 0; spawnCount < width * height / 625; spawnCount++) {
-			for (int spawnAttempt = 0; spawnAttempt < 16; spawnAttempt++) {
+			for (int spawnAttempt = 0; spawnAttempt < 32; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
+				float distanceToPlayer;
 				do {
 					x = random.Next (0, width);
 					y = random.Next (0, height);
-				} while (room [x, y].tile != air || room [x, y].entity != empty || CountAdjacentTiles (room, x, y, wall, 1) <= 3);
+					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
+				} while (room [x, y].tile != air || room [x, y].entity != empty || distanceToPlayer < 10.0f || CountAdjacentTiles (room, x, y, wall, 1) <= 3);
 				if (CountAdjacentTiles (room, x, y, wall, 2) > 11 && CountAdjacentEntities (room, x, y, loot, 16) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no boxes/loot chests nearby
 					// spawn loot box
 					GameObject tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
@@ -920,7 +927,7 @@ public class Dungeon : MonoBehaviour
 		int height = room.GetLength(1); // height of dungeon;
 
 		for (int spawnCount = 0; spawnCount < width * height / 625; spawnCount++) {
-			for (int spawnAttempt = 0; spawnAttempt < 128; spawnAttempt++) {
+			for (int spawnAttempt = 0; spawnAttempt < 512; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				float distanceToPlayer;
 				do {
@@ -928,7 +935,7 @@ public class Dungeon : MonoBehaviour
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
 				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
-				if (CountAdjacentTiles (room, x, y, wall, 4) < 4 && CountAdjacentEntities (room, x, y, large, 12) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no boxes / large monsters nearby
+				if (CountAdjacentTiles (room, x, y, wall, 3) < 4 && CountAdjacentEntities (room, x, y, large, 12) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no boxes / large monsters nearby
 					// spawn large monster
 					GameObject tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(enemyVisual.transform);
@@ -943,8 +950,8 @@ public class Dungeon : MonoBehaviour
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 
-		for (int spawnCount = 0; spawnCount < width * height / 200; spawnCount++) {
-			for (int spawnAttempt = 0; spawnAttempt < 64; spawnAttempt++) {
+		for (int spawnCount = 0; spawnCount < width * height / 125; spawnCount++) {
+			for (int spawnAttempt = 0; spawnAttempt < 128; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				float distanceToPlayer;
 				do {
@@ -952,10 +959,10 @@ public class Dungeon : MonoBehaviour
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
 				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
-				if (CountAdjacentTiles (room, x, y, wall, 2) < 4 && CountAdjacentEntities (room, x, y, small, 8) == 0 && CountAdjacentEntities (room, x, y, large, 8) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no boxes / mobs nearby
+				if (CountAdjacentTiles (room, x, y, wall, 2) < 4 && CountAdjacentEntities (room, x, y, small, 7) == 0 && CountAdjacentEntities (room, x, y, large, 7) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no boxes / mobs nearby
 					// spawn small monster
 					GameObject tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
-					tempEntity.transform.SetParent(dungeonVisual.transform);
+					tempEntity.transform.SetParent(enemyVisual.transform);
 					room [x, y].entity = small;
 					int mobCluster = random.Next (3, 6); // size of mob cluster (3 to 5 inclusive)
 					for (int mobCount = 1; mobCount < mobCluster; mobCount++) {

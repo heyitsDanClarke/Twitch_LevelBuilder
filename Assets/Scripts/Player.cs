@@ -38,17 +38,14 @@ public class Player : MonoBehaviour {
         {
             Instance = this;
         }
-    }
 
-    void Start () {
-
-        anim = GetComponent<Animator>();
+		anim = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody2D>();
 		rb.mass = 1.0f; // mass of player
 		rb.drag = 0.0f; // drag of player
 		speed = defaultSpeed;
 		acceleration = defaultAcceleration;
-	}
+    }
 
 	void FixedUpdate ()
 	{

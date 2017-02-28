@@ -23,7 +23,7 @@ public class MonsterAI : MonoBehaviour
     public Path path;
 
 	public float speed = 3f; // The AI's speed per second
-	public float acceleration = 4f; // The AI's acceleration
+	public float acceleration = 20f; // The AI's acceleration
 
     [HideInInspector]
     public bool pathIsEnded = false;
@@ -38,23 +38,25 @@ public class MonsterAI : MonoBehaviour
 
     public int health;
 
-    void Start()
+    void Awake()
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
 
-        target = GameObject.Find("Player").transform;
-
-        if (target == null)
-        {
-            return;
-        }
-        /*
+		/*
         // Start a new path to the target position, return the result to the OnPathComplete method
         seeker.StartPath(transform.position, target.position, OnPathComplete);
 
         StartCoroutine(UpdatePath());*/
     }
+
+	void Start() {
+		target = GameObject.Find("Player").transform;
+		if (target == null)
+		{
+			return;
+		}
+	}
 
     IEnumerator UpdatePath()
     {
@@ -155,7 +157,7 @@ public class MonsterAI : MonoBehaviour
             }
             else
             {
-                rb.AddForce((transform.position - coll.transform.position).normalized * 5f, ForceMode2D.Impulse);
+				rb.AddForce((transform.position - coll.transform.position).normalized * rb.mass, ForceMode2D.Impulse);
             }
         }
     }
