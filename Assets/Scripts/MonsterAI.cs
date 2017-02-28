@@ -145,10 +145,18 @@ public class MonsterAI : MonoBehaviour
         }*/ //for demo we are removing the line of sight mechanics, making it a distance check
         if (coll.gameObject.tag == "Sword")
         {
-            Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
-			GameObject treasureObject = Instantiate(coin, coinPosition, Quaternion.identity);
-			treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
-            Destroy(gameObject);
+            health -= 1;
+            if (health <= 0)
+            {
+                Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
+                GameObject treasureObject = Instantiate(coin, coinPosition, Quaternion.identity);
+                treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+                Destroy(gameObject);
+            }
+            else
+            {
+                rb.AddForce((transform.position - coll.transform.position).normalized * 5f, ForceMode2D.Impulse);
+            }
         }
     }
 
