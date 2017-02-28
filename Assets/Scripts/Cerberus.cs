@@ -47,11 +47,6 @@ public class Cerberus : MonoBehaviour {
         else
             _anim.SetBool("Moving", false);
 
-        if (Input.GetKeyDown("j"))
-        {
-            GameObject tempFire = Instantiate(fireball, transform.position, transform.rotation);
-            tempFire.GetComponent<Rigidbody2D>().velocity = Vector2.down;
-        }
 
     }
 
@@ -71,7 +66,7 @@ public class Cerberus : MonoBehaviour {
         paused = true;
         yield return new WaitForSeconds(1);
         GameObject tempFire = Instantiate(fireball, new Vector2(transform.position.x, transform.position.y-0.5f), transform.rotation);
-        tempFire.GetComponent<Rigidbody2D>().velocity = Player.Instance.transform.position - transform.position;
+        tempFire.GetComponent<Rigidbody2D>().velocity = (Player.Instance.transform.position - transform.position).normalized * 5;
         _rb.velocity = ChooseDirection();
         paused = false;
     }
