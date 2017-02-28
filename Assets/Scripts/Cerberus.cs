@@ -13,9 +13,11 @@ public class Cerberus : MonoBehaviour {
 
     public float speed;
     public float damage;
-    public float health; //todo: add damage and when health = 0 make an exit
+    public int health = 5; //todo: add damage and when health = 0 make an exit
 
     public GameObject fireball;
+
+    public GameObject exit;
 
     void Start()
     {
@@ -47,7 +49,6 @@ public class Cerberus : MonoBehaviour {
         else
             _anim.SetBool("Moving", false);
 
-
     }
 
     Vector2 ChooseDirection()
@@ -69,5 +70,19 @@ public class Cerberus : MonoBehaviour {
         tempFire.GetComponent<Rigidbody2D>().velocity = (Player.Instance.transform.position - transform.position).normalized * 5;
         _rb.velocity = ChooseDirection();
         paused = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "Sword")
+        {
+            health -= 1;
+            if(health <= 0)
+            {
+                Instantiate(exit, transform.position, transform.rotation);
+                Destroy(this.gameObject);
+               
+            }
+        }
     }
 }

@@ -36,6 +36,8 @@ public class MonsterAI : MonoBehaviour
 
     bool aggressive;
 
+    public int health;
+
     void Start()
     {
         seeker = GetComponent<Seeker>();

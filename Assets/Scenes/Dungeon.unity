@@ -839,7 +839,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomWidth: 48
   roomHeight: 32
-  roomsLeftUntilBoss: 5
+  roomsLeftUntilBoss: 6
   dungeonVisual: {fileID: 0}
   enemyVisual: {fileID: 0}
   iceTiles: {fileID: 1039489354002006, guid: 80649adce7bf6194ca88cd39e76cad4e, type: 2}
@@ -2610,7 +2610,7 @@ GameObject:
   - component: {fileID: 1718542659}
   - component: {fileID: 1718542658}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Continue Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
