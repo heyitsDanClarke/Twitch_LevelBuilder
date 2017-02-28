@@ -28,12 +28,14 @@ public class LootBoxLootGenerator : MonoBehaviour
         {
             if (Random.Range(0.0f, 1.0f) > 0.8f)
             {
-                Instantiate(coin, transform.position, Quaternion.identity);
+                GameObject treasureObject = Instantiate(coin, transform.position, Quaternion.identity);
+				treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
                 Object.Destroy(this.gameObject);
             }
             else
             {
-                Instantiate(gem, transform.position, Quaternion.identity);
+				GameObject treasureObject = Instantiate(gem, transform.position, Quaternion.identity);
+				treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
                 Object.Destroy(this.gameObject);
             }
         }

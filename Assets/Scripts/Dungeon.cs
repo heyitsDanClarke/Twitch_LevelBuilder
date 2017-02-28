@@ -40,7 +40,6 @@ public class Dungeon : MonoBehaviour
 	public GameObject boxTiles; // box
 	public GameObject pressurePlateTile; // pressure plate
 	public GameObject exit; // exit of room
-    public GameObject coin; // one kind of loot in the lootBox
     public GameObject boss;
 
 	////public Sprite[] spritePlayer = new Sprite[40];
@@ -608,7 +607,13 @@ public class Dungeon : MonoBehaviour
 
 			// place boxes
 			for (int count = 0; count < width; count++) {
+				int placeBoxAttempt = 0; // limit the number of trials to find a position for the box to prevent an infinite loop
 				while (true) {
+					placeBoxAttempt += 1;
+					if (placeBoxAttempt > width * height * 10) {
+						satisfied = false;
+						break;
+					}
 					int x = random.Next (1, width - 1);
 					int y = random.Next (1, height - 1);
 					if (puzzleRoom [x, y].tile != wall && puzzleRoom [x, y].entity == empty) {
@@ -700,25 +705,27 @@ public class Dungeon : MonoBehaviour
 
 			}
 
-			// place plates
-			int totalPlates = 0;
-			for (int x = 0; x < width; x++) {
-				for (int y = 0; y < width; y++) {
-					if (!tileIsModified [x, y] && simulatePuzzleRoom [x, y].entity == box) { // convert unmoved boxes in simulation to walls
-						simulatePuzzleRoom [x, y].entity = empty;
-						puzzleRoom [x, y].entity = empty;
-						puzzleRoom [x, y].tile = wall;
-					}
+			if (satisfied) {
+				// place plates
+				int totalPlates = 0;
+				for (int x = 0; x < width; x++) {
+					for (int y = 0; y < width; y++) {
+						if (!tileIsModified [x, y] && simulatePuzzleRoom [x, y].entity == box) { // convert unmoved boxes in simulation to walls
+							simulatePuzzleRoom [x, y].entity = empty;
+							puzzleRoom [x, y].entity = empty;
+							puzzleRoom [x, y].tile = wall;
+						}
 
-					if (simulatePuzzleRoom [x, y].entity == box) { // place plates according to the final position of boxes during the simulation 
-						puzzleRoom [x, y].plate = plate;
-						totalPlates += 1;
+						if (simulatePuzzleRoom [x, y].entity == box) { // place plates according to the final position of boxes during the simulation 
+							puzzleRoom [x, y].plate = plate;
+							totalPlates += 1;
+						}
 					}
 				}
-			}
-			Player.Instance.boxes = totalPlates; // set the number of boxes in the dungeon
+				Player.Instance.boxes = totalPlates; // set the number of boxes in the dungeon
 
-			satisfied = satisfied && totalPlates >= (width * 2.0/3.0)? true : false; // make sure there are enough boxes in the room
+				satisfied = satisfied && totalPlates >= (width * 2.0/3.0)? true : false; // make sure there are enough boxes in the room
+			}
 
 		} while (!satisfied);
 

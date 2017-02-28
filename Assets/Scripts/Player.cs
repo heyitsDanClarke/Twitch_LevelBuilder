@@ -139,7 +139,8 @@ public class Player : MonoBehaviour {
         }
         if (coll.gameObject.tag == "Loot")
         {
-            Instantiate(gem, coll.gameObject.transform.position, Quaternion.identity);
+			GameObject treasureObject = Instantiate(gem, coll.gameObject.transform.position, Quaternion.identity);
+			treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
             Destroy(coll.gameObject);
         }
 

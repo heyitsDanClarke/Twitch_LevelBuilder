@@ -133,7 +133,8 @@ public class MonsterAI : MonoBehaviour
         else if (coll.gameObject.tag == "Sword")
         {
             Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
-            Instantiate(coin, coinPosition, Quaternion.identity);
+			GameObject treasureObject = Instantiate(coin, coinPosition, Quaternion.identity);
+			treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
             Destroy(gameObject);
         }
     }
