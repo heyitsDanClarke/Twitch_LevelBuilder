@@ -7,6 +7,7 @@ using Pathfinding;
 [RequireComponent(typeof(Seeker))]
 public class MonsterAI : MonoBehaviour
 {
+    public GameObject coin;
 
     // What to chase?
     public Transform target;
@@ -131,6 +132,8 @@ public class MonsterAI : MonoBehaviour
         }
         else if (coll.gameObject.tag == "Sword")
         {
+            Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
+            Instantiate(coin, coinPosition, Quaternion.identity);
             Destroy(gameObject);
         }
     }

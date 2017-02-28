@@ -28,22 +28,20 @@ public class Player : MonoBehaviour {
     [HideInInspector]
     public Animator anim;
 
-    GameObject sword;
+	void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
-	//private Animator anim;
-
-    // Use this for initialization
     void Start () {
-		if (Instance != null)
-		{
-			Destroy(gameObject);
-		}
-		else
-		{
-			Instance = this;
-		}
 
-        sword = transform.GetChild(0).gameObject;
         anim = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody2D>();
 		rb.mass = 1.0f; // mass of player
@@ -79,15 +77,15 @@ public class Player : MonoBehaviour {
 		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
 		rb.AddForce (velocityDifference);
 
-		/*
-        HandleAnimations();
+		
+        HandleMovementAnimations();
 
         if (Input.GetKey("j"))
         {
             StopAllCoroutines();
-            StartCoroutine(Attack());
+            StartCoroutine(MeleeAttack());
         }
-        */
+        
 
 	}
 
@@ -97,7 +95,7 @@ public class Player : MonoBehaviour {
 		// update camera position
 		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1] + Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, Camera.main.transform.position[2]);
 
-
+        /*
 		float input_x = Input.GetAxisRaw("Horizontal");
 		float input_y = Input.GetAxisRaw("Vertical");
 
@@ -119,6 +117,7 @@ public class Player : MonoBehaviour {
 
 
 		}
+        */
 	}
 
 	void OnTriggerEnter2D(Collider2D coll)
@@ -160,16 +159,8 @@ public class Player : MonoBehaviour {
 
 
     }
-
-    IEnumerator Attack()
-    {
-        sword.SetActive(true);
-        yield return new WaitForSeconds(0.25f);
-        sword.SetActive(false);
-    }
-
-	/*
-    void HandleAnimations()
+	
+    void HandleMovementAnimations()
     {
         if((rb.velocity.x > -0.1 && rb.velocity.x <0.1) && (rb.velocity.y > -0.1 && rb.velocity.y < 0.1))
             anim.SetBool("Moving", false);
@@ -178,5 +169,13 @@ public class Player : MonoBehaviour {
         anim.SetInteger("VerticalMovement", (int)Input.GetAxisRaw("Vertical"));
         anim.SetInteger("HorizontalMovement", (int)Input.GetAxisRaw("Horizontal"));
     }
-    */
+
+    IEnumerator MeleeAttack()
+    {
+        rb.velocity = Vector2.zero;
+        transform.GetChild(0).gameObject.SetActive(true);
+        anim.SetTrigger("Attack");
+        yield return new WaitForSeconds(0.75f);
+        transform.GetChild(0).gameObject.SetActive(false);
+    }
 }
