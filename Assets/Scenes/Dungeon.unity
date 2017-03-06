@@ -839,7 +839,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomWidth: 48
   roomHeight: 32
-  roomsLeftUntilBoss: 5
+  roomsLeftUntilBoss: 6
   dungeonVisual: {fileID: 0}
   enemyVisual: {fileID: 0}
   iceTiles: {fileID: 1039489354002006, guid: 80649adce7bf6194ca88cd39e76cad4e, type: 2}
@@ -860,7 +860,6 @@ MonoBehaviour:
   pressurePlateTile: {fileID: 1654860652056372, guid: 96261d0a56310c84c9f460b81bc198b3,
     type: 2}
   exit: {fileID: 1834166575883816, guid: 0811b3a655bef9d4cb00bd6f4eaab5d6, type: 2}
-  coin: {fileID: 1312639025012346, guid: f1ef7a530ac27cf49b1fb860e5f8c12d, type: 2}
   boss: {fileID: 1588097786618862, guid: 6a362c59c947d414788a4788617cd591, type: 2}
   air: -1
   flood: 0
@@ -2612,7 +2611,7 @@ GameObject:
   - component: {fileID: 1718542659}
   - component: {fileID: 1718542658}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Continue Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

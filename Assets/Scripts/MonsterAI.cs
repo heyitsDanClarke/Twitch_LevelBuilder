@@ -23,7 +23,7 @@ public class MonsterAI : MonoBehaviour
     public Path path;
 
 	public float speed = 3f; // The AI's speed per second
-	public float acceleration = 4f; // The AI's acceleration
+	public float acceleration = 20f; // The AI's acceleration
 
     [HideInInspector]
     public bool pathIsEnded = false;
@@ -34,23 +34,29 @@ public class MonsterAI : MonoBehaviour
     // The waypoint we are currently moving towards
     private int currentWaypoint = 0;
 
-    void Start()
+    bool aggressive;
+
+    public int health;
+
+    void Awake()
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
 
-        /*target = GameObject.Find("Player").transform;
-
-        if (target == null)
-        {
-            return;
-        }
-
+		/*
         // Start a new path to the target position, return the result to the OnPathComplete method
         seeker.StartPath(transform.position, target.position, OnPathComplete);
 
         StartCoroutine(UpdatePath());*/
     }
+
+	void Start() {
+		target = GameObject.Find("Player").transform;
+		if (target == null)
+		{
+			return;
+		}
+	}
 
     IEnumerator UpdatePath()
     {
@@ -85,6 +91,14 @@ public class MonsterAI : MonoBehaviour
         }
 
         //TODO: Always look at player?
+
+        if (Vector2.Distance(transform.position, target.transform.position) <= 7 && !aggressive)
+        {
+            seeker.StartPath(transform.position, target.position, OnPathComplete);
+
+            StartCoroutine(UpdatePath());
+            aggressive = true;
+        }
 
         if (path == null)
             return;
@@ -122,19 +136,29 @@ public class MonsterAI : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D coll)
-    {
+    { 
+        /*
         if(coll.gameObject.tag == "Player" && target == null)
         {
             target = coll.transform;
             seeker.StartPath(transform.position, target.position, OnPathComplete);
 
             StartCoroutine(UpdatePath());
-        }
-        else if (coll.gameObject.tag == "Sword")
+        }*/ //for demo we are removing the line of sight mechanics, making it a distance check
+        if (coll.gameObject.tag == "Sword")
         {
-            Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
-            Instantiate(coin, coinPosition, Quaternion.identity);
-            Destroy(gameObject);
+            health -= 1;
+            if (health <= 0)
+            {
+                Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
+                GameObject treasureObject = Instantiate(coin, coinPosition, Quaternion.identity);
+                treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+                Destroy(gameObject);
+            }
+            else
+            {
+				rb.AddForce((transform.position - coll.transform.position).normalized * rb.mass, ForceMode2D.Impulse);
+            }
         }
     }
 

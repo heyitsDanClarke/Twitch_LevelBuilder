@@ -38,17 +38,14 @@ public class Player : MonoBehaviour {
         {
             Instance = this;
         }
-    }
 
-    void Start () {
-
-        anim = GetComponent<Animator>();
+		anim = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody2D>();
 		rb.mass = 1.0f; // mass of player
 		rb.drag = 0.0f; // drag of player
 		speed = defaultSpeed;
 		acceleration = defaultAcceleration;
-	}
+    }
 
 	void FixedUpdate ()
 	{
@@ -139,7 +136,8 @@ public class Player : MonoBehaviour {
         }
         if (coll.gameObject.tag == "Loot")
         {
-            Instantiate(gem, coll.gameObject.transform.position, Quaternion.identity);
+			GameObject treasureObject = Instantiate(gem, coll.gameObject.transform.position, Quaternion.identity);
+			treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
             Destroy(coll.gameObject);
         }
 
@@ -153,8 +151,9 @@ public class Player : MonoBehaviour {
                 health -= 1;
             Vector3 enemyPosition = coll.transform.position;
             Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
-            Destroy(coll.gameObject);
-            Instantiate(coin, coinPosition, Quaternion.identity);
+            //Destroy(coll.gameObject);
+            //Instantiate(coin, coinPosition, Quaternion.identity);
+            rb.AddForce((transform.position - coll.transform.position).normalized * 10f, ForceMode2D.Impulse);
         }
 
 
@@ -175,7 +174,7 @@ public class Player : MonoBehaviour {
         rb.velocity = Vector2.zero;
         transform.GetChild(0).gameObject.SetActive(true);
         anim.SetTrigger("Attack");
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.25f);
         transform.GetChild(0).gameObject.SetActive(false);
     }
 }
