@@ -19,7 +19,8 @@ public class Fireball : MonoBehaviour {
         }
         else if(coll.gameObject.tag == "Player")
         {
-            Player.Instance.health -= 1;
+            if (Player.Instance.health > 0)
+                Player.Instance.health -= 1;
             Destroy(gameObject);
         }
     }
