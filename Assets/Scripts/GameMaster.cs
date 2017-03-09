@@ -11,6 +11,10 @@ public class GameMaster : MonoBehaviour {
     [HideInInspector]
     public int fireCount;
 
+    public int hammerCount;
+    public int daggerCount;
+    public int whipCount;
+
 	public float music;
 	public float sfx;
 

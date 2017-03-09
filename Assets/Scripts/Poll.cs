@@ -16,6 +16,7 @@ public class Poll : MonoBehaviour {
 
     public Text _iceCountDisplay;
     public Text _fireCountDisplay;
+    public Text _weaponDisplay;
 
     private List<string> _voterList;
 
@@ -68,7 +69,11 @@ public class Poll : MonoBehaviour {
 			string iceCommand = "#ice";
 			string fireCommand = "#fire";
 
-			if(msg.chatMessagePlainText.Equals(iceCommand, StringComparison.InvariantCultureIgnoreCase)) {
+            string hammerCommand = "#hammer";
+            string daggerCommand = "#dagger";
+            string whipCommand = "#whip";
+
+            if (msg.chatMessagePlainText.Equals(iceCommand, StringComparison.InvariantCultureIgnoreCase)) {
                 isValidVote = true;
 
                 ++GameMaster.Instance.iceCount;//++_iceCount;
@@ -86,6 +91,28 @@ public class Poll : MonoBehaviour {
                 _fireCountDisplay.text = "" + GameMaster.Instance.fireCount;
 
 				createShoutBubble (msg.userName, fireCommand);
+            }
+
+            else if (msg.chatMessagePlainText.Equals(hammerCommand, StringComparison.InvariantCultureIgnoreCase))
+            {
+                ++GameMaster.Instance.hammerCount;
+                if (GameMaster.Instance.hammerCount > GameMaster.Instance.daggerCount &&
+                    GameMaster.Instance.hammerCount > GameMaster.Instance.whipCount)
+                    _weaponDisplay.text = "Hammer";
+            }
+            else if (msg.chatMessagePlainText.Equals(daggerCommand, StringComparison.InvariantCultureIgnoreCase))
+            {
+                ++GameMaster.Instance.daggerCount;
+                if (GameMaster.Instance.daggerCount > GameMaster.Instance.hammerCount &&
+                    GameMaster.Instance.daggerCount > GameMaster.Instance.whipCount)
+                    _weaponDisplay.text = "Dagger";
+            }
+            else if (msg.chatMessagePlainText.Equals(whipCommand, StringComparison.InvariantCultureIgnoreCase))
+            {
+                ++GameMaster.Instance.whipCount;
+                if (GameMaster.Instance.whipCount > GameMaster.Instance.hammerCount &&
+                    GameMaster.Instance.whipCount > GameMaster.Instance.daggerCount)
+                    _weaponDisplay.text = "Whip";
             }
 
             if (isValidVote)
