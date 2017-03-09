@@ -64,9 +64,11 @@ public class Dungeon : MonoBehaviour
 	//[HideInInspector]public int empty = 0; // COMMENTED OUT, BUT STILL DO NOT MODIFY
 	[HideInInspector]public int plate = 1;
 
-	[HideInInspector]public RoomTile[,] roomStructure; // room structure
+	[HideInInspector]public RoomTile[,] initialRoomStructure; // initial room structure including mobs
+	[HideInInspector]public RoomTile[,] roomStructure; // room structure excluding mobs
 
 	private Vector2 playerStartPosition; // starting position of player
+	private Vector2 exitPosition; // position of exit
 	private System.Random random; // random numnber generator
 
 	// Use this for initialization
@@ -107,6 +109,7 @@ public class Dungeon : MonoBehaviour
 		} catch (IndexOutOfRangeException) {}
 	}
 
+	// function for generating a random dungeon
     public void GenerateRandomRoom()
     {
 		if (dungeonVisual != null)
@@ -152,6 +155,38 @@ public class Dungeon : MonoBehaviour
 		Poll.Instance.ResetVote(); // reset votes
     }
 
+	// function for resetting the dungeon
+	public void ResetRoom()
+	{
+		if (dungeonVisual != null)
+			Destroy(dungeonVisual);
+		if (enemyVisual != null)
+			Destroy(enemyVisual);
+
+		dungeonVisual = new GameObject(); 
+		dungeonVisual.transform.name = "Dungeon Visual";
+		dungeonVisual.transform.SetParent(transform);
+
+		enemyVisual = new GameObject();
+		enemyVisual.transform.name = "Enemy Visual";
+		enemyVisual.transform.SetParent(transform);
+
+		// restore room to scene
+		InstantiateCaveRoom(initialRoomStructure);
+		InstantiateRoomBorder (roomWidth, roomHeight);
+
+		// restore room structure variable
+		roomStructure = initialRoomStructure.Clone() as RoomTile[,]; // deep copy
+		RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
+
+		// spawn player and exit
+		Player.Instance.transform.position = playerStartPosition;
+		GameObject tempExit = Instantiate (exit, exitPosition, transform.rotation);
+		tempExit.transform.SetParent(dungeonVisual.transform);
+
+		AstarPath.active.Scan();
+	}
+
 	// function for creating the border of the room in the scene
 	void InstantiateRoomBorder (int roomWidth, int roomHeight) {
 		for (int i = -1; i < roomWidth + 1; i++) {
@@ -174,6 +209,7 @@ public class Dungeon : MonoBehaviour
 	{
 		// create room
 		roomStructure = GenerateBossRoomArray(roomWidth, roomHeight);
+		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
 		InstantiateBossRoom(roomStructure); // room array, fire votes, ice votes
 		InstantiateRoomBorder (roomWidth, roomHeight);
 
@@ -185,7 +221,7 @@ public class Dungeon : MonoBehaviour
 		RoomTile[,] room = new RoomTile[width, height];
 
 		playerStartPosition = new Vector2 (0.0f, 0.0f); // player spawn location
-		Vector2 exitLocation = new Vector2 (9.0f, 9.0f); // room exit location
+		exitPosition = new Vector2 (-9.0f, -9.0f); // room exit location
 
 		// initializing room
 		for (int i = 0; i < width; i++) {
@@ -229,8 +265,8 @@ public class Dungeon : MonoBehaviour
 		spawnLargeMonsters (ref roomStructure);
 		spawnSmallMonsters (ref roomStructure);
 
-		// clear mobs from room structure array
-		RemoveMonstersFromArray (ref roomStructure);
+		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
+		RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
     }
 
 	// generate an array containing the information of a cave room in the scene
@@ -239,7 +275,7 @@ public class Dungeon : MonoBehaviour
 		RoomTile[,] room = new RoomTile[width, height];
 
 		playerStartPosition = new Vector2 (0.0f, 0.0f); // player spawn location
-		Vector2 exitLocation = new Vector2 (0.0f, 0.0f); // room exit location
+		exitPosition = new Vector2 (0.0f, 0.0f); // room exit location
 
 		bool satisfied; // whether room is satisfied or not
 
@@ -264,7 +300,7 @@ public class Dungeon : MonoBehaviour
 				if (!playerSpawnAtTop) {
 					playerStartPosition = new Vector2 (position + w / 2.0f, 0.0f);
 				} else {
-					exitLocation = new Vector2 (position + w / 2.0f, 0.0f);
+					exitPosition = new Vector2 (position + w / 2.0f, 0.0f);
 				}
 				room = FillAirSquare (room, position, -w / 2, w);
 
@@ -272,7 +308,7 @@ public class Dungeon : MonoBehaviour
 				if (playerSpawnAtTop) {
 					playerStartPosition = new Vector2 (position + w / 2.0f, height - 1);
 				} else {
-					exitLocation = new Vector2 (position + w / 2.0f, height - 1);
+					exitPosition = new Vector2 (position + w / 2.0f, height - 1);
 				}
 				room = FillAirSquare (room, position, height - w / 2, w);
 			} else {
@@ -283,7 +319,7 @@ public class Dungeon : MonoBehaviour
 				if (!playerSpawnAtRight) {
 					playerStartPosition = new Vector2 (0.0f, position + w / 2.0f);
 				} else {
-					exitLocation = new Vector2 (0.0f, position + w / 2.0f);
+					exitPosition = new Vector2 (0.0f, position + w / 2.0f);
 				}
 				room = FillAirSquare (room, -w / 2, position, w);
 
@@ -291,7 +327,7 @@ public class Dungeon : MonoBehaviour
 				if (playerSpawnAtRight) {
 					playerStartPosition = new Vector2 (width - 1, position + w / 2.0f);
 				} else {
-					exitLocation = new Vector2 (width - 1, position + w / 2.0f);
+					exitPosition = new Vector2 (width - 1, position + w / 2.0f);
 				}
 				room = FillAirSquare (room, width - w / 2, position, w);
 			}
@@ -416,14 +452,14 @@ public class Dungeon : MonoBehaviour
 
         // set player and exit locations
 		Player.Instance.transform.position = playerStartPosition;
-		GameObject tempExit = Instantiate (exit, exitLocation, transform.rotation);
+		GameObject tempExit = Instantiate (exit, exitPosition, transform.rotation);
         tempExit.transform.SetParent(dungeonVisual.transform);
 
 		return room;
 	}
 
 	// function for creating a cave room in the scene
-	void InstantiateCaveRoom (RoomTile [,] room) { // array of the room, number of fire votes, number of ice votes
+	void InstantiateCaveRoom (RoomTile [,] room) { // array of the room
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 		GameObject tempTile; // temporary variable for storing the tile to be created
@@ -491,6 +527,18 @@ public class Dungeon : MonoBehaviour
 					tempTile.transform.SetParent(dungeonVisual.transform);
 				}
 
+				// place monsters and loot chests if possible
+				if (room [i, j].entity == large) {
+					tempTile = Instantiate(largeMob, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.transform.SetParent(enemyVisual.transform);
+				} else if (room [i, j].entity == small) {
+					tempTile = Instantiate(smallMob, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.transform.SetParent(enemyVisual.transform);
+				} else if (room [i, j].entity == loot) {
+					tempTile = Instantiate(lootBox, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.transform.SetParent(dungeonVisual.transform);
+				}
+
 			}
 		}
 	}
@@ -544,8 +592,8 @@ public class Dungeon : MonoBehaviour
 		spawnLargeMonsters (ref roomStructure);
 		spawnSmallMonsters (ref roomStructure);
 
-		// clear mobs from room structure array
-		RemoveMonstersFromArray (ref roomStructure);
+		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
+		RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
 	}
 
 	// function for generating a puzzle room
@@ -553,6 +601,7 @@ public class Dungeon : MonoBehaviour
 	{
 		// create room
 		roomStructure = GeneratePuzzleRoomArray (roomWidth, roomHeight);
+		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
 		InstantiatePuzzleRoom (roomStructure);
 		InstantiateRoomBorder (roomWidth, roomHeight);
 	}
@@ -980,7 +1029,7 @@ public class Dungeon : MonoBehaviour
 							}
 							tempEntity = Instantiate(smallMob, new Vector3(i, j, 0.0f), transform.rotation);
 							tempEntity.transform.SetParent(enemyVisual.transform);
-							room [x, y].entity = small;
+							room [i, j].entity = small;
 							break;
 						}
 					}
