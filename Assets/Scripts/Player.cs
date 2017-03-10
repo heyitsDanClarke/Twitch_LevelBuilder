@@ -19,6 +19,7 @@ public class Player : MonoBehaviour {
 	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed
 	public int coins;
+    public int mercuryBladeShardLevel; 
 	public int boxes; // number of boxes left to push
     public GameObject coin;
     public GameObject gem;
@@ -176,5 +177,6 @@ public class Player : MonoBehaviour {
         anim.SetTrigger("Attack");
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(0).gameObject.SetActive(false);
+        mercuryBladeShardLevel -= 1;
     }
 }
