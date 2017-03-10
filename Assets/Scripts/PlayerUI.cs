@@ -13,7 +13,8 @@ public class PlayerUI : MonoBehaviour {
     {
 		healthValue = transform.FindChild("Player Panel").FindChild("Health Value").GetComponent<Text>();
 		coinValue = transform.FindChild("Player Panel").FindChild("Coin Value").GetComponent<Text>();
-        mercuryBladeLevelValue = transform.FindChild("Player Panel").FindChild("Mercury Blade Value").GetComponent<Text>();
+		mercuryBladeLevelValue = transform.FindChild("Player Panel").FindChild("Mercury Blade Value").GetComponent<Text>();
+
     }
 
 	void FixedUpdate()

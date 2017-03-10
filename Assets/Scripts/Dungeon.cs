@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Dungeon : MonoBehaviour
@@ -126,22 +127,19 @@ public class Dungeon : MonoBehaviour
 		enemyVisual.transform.SetParent(transform);
 
 		if (roomsLeftUntilBoss > 0) {
-			int RoomType = random.Next (0, 3);
-			if (RoomType == 10) {
+			int RoomType = random.Next (0, 2);
+			if (RoomType == 0) {
 				roomWidth = 40;
 				roomHeight = 40;
 				GenerateCaveRoom (roomWidth, roomHeight);
-				DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(false); // hide panel containing box info
-			} else if (RoomType > - 1) {
+			} else if (RoomType == 1) {
 				roomWidth = 25;
 				roomHeight = 25;
 				GenerateHybridRoom (roomWidth, roomHeight);
-				DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(true); // show panel containing box info
 			} else {
 				roomWidth = 12;
 				roomHeight = 12;
 				GeneratePuzzleRoom (roomWidth, roomHeight);
-				DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(true); // show panel containing box info
 			}
 		} else if (roomsLeftUntilBoss == 0) {
 			roomWidth = 15;
@@ -151,6 +149,9 @@ public class Dungeon : MonoBehaviour
 			SceneManager.LoadScene(0);
 		}
 		roomsLeftUntilBoss -= 1;
+
+		SetNumberOfBoxesLeft (roomStructure);
+
 		AstarPath.active.Scan();
 		Poll.Instance.ResetVote(); // reset votes
     }
@@ -178,6 +179,8 @@ public class Dungeon : MonoBehaviour
 		// restore room structure variable
 		roomStructure = initialRoomStructure.Clone() as RoomTile[,]; // deep copy
 		RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
+
+		SetNumberOfBoxesLeft (roomStructure);
 
 		// spawn player and exit
 		Player.Instance.transform.position = playerStartPosition;
@@ -775,7 +778,6 @@ public class Dungeon : MonoBehaviour
 						}
 					}
 				}
-				Player.Instance.boxes = totalPlates; // set the number of boxes in the dungeon
 
 				satisfied = satisfied && totalPlates >= (width * height / 12 * 0.65)? true : false; // make sure there are enough boxes in the room
 			}
@@ -786,6 +788,25 @@ public class Dungeon : MonoBehaviour
 		}
 
 		return puzzleRoom;
+	}
+
+	// set the number of boxes that are not on pressure plates, and hide/show puzzle panel
+	void SetNumberOfBoxesLeft (RoomTile [,] room) {
+		int count = 0;
+		DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(false); // hide panel containing box info
+
+		foreach (RoomTile tile in room) {
+			if (tile.entity == box) {
+				count += 1; // increase count if box is found
+				DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(true); // show panel containing box info if box found
+				if (tile.plate == plate) {
+					count -= 1; // decrease count if box is on pressure plate
+				}
+			}
+		}
+
+		Player.Instance.boxes = count; // set the number of boxes in the dungeon
+		DungeonUI.Instance.transform.FindChild("Puzzle Panel").FindChild("Box Value").GetComponent<Text>().text = Player.Instance.boxes.ToString(); // update UI
 	}
 
 	// generate a puzzle room in the scene
