@@ -1000,6 +1000,7 @@ MonoBehaviour:
   hotFloorTiles: {fileID: 1059184092769140, guid: fc76d76c571a4be48b691c152809b760,
     type: 2}
   lavaTiles: {fileID: 1844837523870910, guid: 7648773d5ae60eb4cbc5fc1067c06b97, type: 2}
+  railTiles: {fileID: 1085086198005284, guid: 7184b0bd30454ef43af2cf43c3b33c9d, type: 2}
   borderTiles: {fileID: 1733679469997464, guid: b8936575995da874ca5eefaba0ec14f2,
     type: 2}
   hotBorderTiles: {fileID: 1579740057293280, guid: d7499b428481eea4084b371d5cddf43e,
@@ -1019,6 +1020,7 @@ MonoBehaviour:
   ice: 2
   water: 3
   lava: 4
+  rail: 5
   player: -1
   empty: 0
   loot: 1

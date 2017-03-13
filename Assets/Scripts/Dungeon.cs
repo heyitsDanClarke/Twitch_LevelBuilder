@@ -32,6 +32,7 @@ public class Dungeon : MonoBehaviour
 	public GameObject floorTiles; // floor tiles
 	public GameObject hotFloorTiles; // hot texture of floor tiles
 	public GameObject lavaTiles; // lava tiles
+	public GameObject railTiles; // rail tiles
 	public GameObject borderTiles; // border tiles
 	public GameObject hotBorderTiles; // hot texture of border tiles
 	public GameObject wallTiles; // wall tiles
@@ -52,6 +53,7 @@ public class Dungeon : MonoBehaviour
 	[HideInInspector]public int ice = 2;
 	[HideInInspector]public int water = 3;
 	[HideInInspector]public int lava = 4;
+	[HideInInspector]public int rail = 5;
 
 	// entity IDs, IDs must be different
 	[HideInInspector]public int player = -1; // the player
@@ -128,11 +130,11 @@ public class Dungeon : MonoBehaviour
 
 		if (roomsLeftUntilBoss > 0) {
 			int RoomType = random.Next (0, 2);
-			if (RoomType == 0) {
+			if (RoomType == 9001) {
 				roomWidth = 40;
 				roomHeight = 40;
 				GenerateCaveRoom (roomWidth, roomHeight);
-			} else if (RoomType == 1) {
+			} else if (RoomType > -1) {
 				roomWidth = 25;
 				roomHeight = 25;
 				GenerateHybridRoom (roomWidth, roomHeight);
@@ -479,6 +481,9 @@ public class Dungeon : MonoBehaviour
 				} else if (room [i, j].tile == ice) {
 					tempTile = Instantiate (iceTiles, new Vector3 (i, j, 0.0f), transform.rotation);
 					tempTile.transform.SetParent (dungeonVisual.transform);
+				} else if (room [i, j].tile == rail) {
+					tempTile = Instantiate (railTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.transform.SetParent (dungeonVisual.transform);
 				} else if (room [i, j].tile == air) {
 					float hotTileTransparency = Mathf.Clamp01 (room [i, j].temperature * 10 - 5);
 					if (hotTileTransparency < 1.0f) {
@@ -549,7 +554,7 @@ public class Dungeon : MonoBehaviour
 	// function for generating a hybrid room
 	void GenerateHybridRoom(int roomWidth, int roomHeight)
 	{
-		int puzzleRadius = 4; // smack a 11x11 puzzle to the room
+		int puzzleRadius = 4; // smack a 9x9 puzzle to the room
 
 		// lower left corner of puzzle in room
 		int lowerX = -1;
@@ -637,8 +642,8 @@ public class Dungeon : MonoBehaviour
 							puzzleRoom [x, y].tile = ice;
 							simulatePuzzleRoom [x, y].tile = ice;
 						} else {
-							puzzleRoom [x, y].tile = air;
-							simulatePuzzleRoom [x, y].tile = air;
+							puzzleRoom [x, y].tile = rail;
+							simulatePuzzleRoom [x, y].tile = rail;
 						}
 					} else { // puzzle for hybrid room
 						if (room[x + lowerX, y + lowerY].tile == wall) {
@@ -654,8 +659,8 @@ public class Dungeon : MonoBehaviour
 							puzzleRoom [x, y].tile = ice;
 							simulatePuzzleRoom [x, y].tile = ice;
 						} else {
-							puzzleRoom [x, y].tile = air;
-							simulatePuzzleRoom [x, y].tile = air;
+							puzzleRoom [x, y].tile = rail;
+							simulatePuzzleRoom [x, y].tile = rail;
 						}
 					}
 				}
@@ -835,6 +840,8 @@ public class Dungeon : MonoBehaviour
 					tempTile = waterTiles;
 				} else if (room [i, j].tile == lava) {
 					tempTile = lavaTiles;
+				} else if (room [i, j].tile == rail) {
+					tempTile = railTiles;
 				}
 				tempTile = Instantiate(tempTile, new Vector3(i, j, 0.0f), Quaternion.identity);
 				tempTile.transform.SetParent(dungeonVisual.transform);

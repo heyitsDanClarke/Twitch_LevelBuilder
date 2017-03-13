@@ -22,6 +22,7 @@ TagManager:
   - Coin
   - Loot
   - Box
+  - rail
   layers:
   - Default
   - TransparentFX
