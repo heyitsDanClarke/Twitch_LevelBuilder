@@ -21,6 +21,6 @@ public class PlayerUI : MonoBehaviour {
     {
         healthValue.text = Player.Instance.health.ToString();
         coinValue.text = Player.Instance.coins.ToString();
-        mercuryBladeLevelValue.text = Player.Instance.mercuryBladeShardLevel.ToString();
+        mercuryBladeLevelValue.text = Player.Instance.currentMercuryBladeShardLevel.ToString();
     }
 }

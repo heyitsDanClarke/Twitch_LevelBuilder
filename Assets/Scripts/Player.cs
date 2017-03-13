@@ -19,7 +19,8 @@ public class Player : MonoBehaviour {
 	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed
 	public int coins;
-    public int mercuryBladeShardLevel; 
+    public int currentMercuryBladeShardLevel; //
+    public int[] weaponShards = new int[4]; //(0, default) (1, hammer) (2, whip) (3, dagger) 
 	public int boxes; // number of boxes left to push
     public GameObject coin;
     public GameObject gem;
@@ -46,9 +47,17 @@ public class Player : MonoBehaviour {
 		rb.drag = 0.0f; // drag of player
 		speed = defaultSpeed;
 		acceleration = defaultAcceleration;
+        //weaponShards[0] = 0;
+        //weaponShards[1] = 1;
+        //weaponShards[2] = 2;
+        //weaponShards[3] = 3;
+        
+
+
+
     }
 
-	void FixedUpdate ()
+    void FixedUpdate ()
 	{
 		float moveHorizontal = 0.0f;
 		float moveVertictal = 0.0f;
@@ -141,6 +150,13 @@ public class Player : MonoBehaviour {
 			treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
             Destroy(coll.gameObject);
         }
+        if (coll.gameObject.tag == "Shard")
+        {
+            currentMercuryBladeShardLevel += 1;
+            int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
+
+            Destroy(coll.gameObject);
+        }
 
     }
 
@@ -151,7 +167,7 @@ public class Player : MonoBehaviour {
             if (health > 0)
                 health -= 1;
             Vector3 enemyPosition = coll.transform.position;
-            Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
+            //Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
             //Destroy(coll.gameObject);
             //Instantiate(coin, coinPosition, Quaternion.identity);
             rb.AddForce((transform.position - coll.transform.position).normalized * 10f, ForceMode2D.Impulse);
@@ -177,6 +193,6 @@ public class Player : MonoBehaviour {
         anim.SetTrigger("Attack");
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(0).gameObject.SetActive(false);
-        mercuryBladeShardLevel -= 1;
+        currentMercuryBladeShardLevel -= 1;
     }
 }
