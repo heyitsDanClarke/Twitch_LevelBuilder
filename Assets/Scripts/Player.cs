@@ -171,7 +171,7 @@ public class Player : MonoBehaviour {
 
 
     }
-	
+
     void HandleMovementAnimations()
     {
         if((rb.velocity.x > -0.1 && rb.velocity.x <0.1) && (rb.velocity.y > -0.1 && rb.velocity.y < 0.1))

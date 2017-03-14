@@ -9,8 +9,10 @@ public class DungeonUI : MonoBehaviour {
 
 	public static DungeonUI Instance;
 
-	private bool nextLevelMenuActive; // boolean value stating whether the next level menu is active or not
-	private bool pauseMenuActive; // boolean value stating whether the pause menu is active or not
+	[HideInInspector]
+	public bool nextLevelMenuActive; // boolean value stating whether the next level menu is active or not
+	[HideInInspector]
+	public bool pauseMenuActive; // boolean value stating whether the pause menu is active or not
 	private GameObject nextLevelMenu;
 
 	// Use this for initialization

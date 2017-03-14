@@ -83,19 +83,14 @@ public class Box : MonoBehaviour {
 	{
 		Collider2D collider = collision.collider;
 
-		bool menusActive = false; // is there any menus active in the scene
+		bool PauseMenuActive = false; // is there any menus active in the scene
 
 		try {
-			if (DungeonUI.Instance != null) {
-				foreach (Transform child in DungeonUI.Instance.transform) {
-					if (child.gameObject.name == "Next Level Menu" || child.gameObject.name == "Pause Menu")
-						menusActive = menusActive || child.gameObject.activeSelf;
-				}
-			}
+			PauseMenuActive = DungeonUI.Instance.transform.Find ("Pause Menu").gameObject.activeSelf;
 		} catch (NullReferenceException) {}
 
 		// if player touches the block and the player is holding down the space button
-		if(collider.gameObject.CompareTag("Player") && Input.GetKey(KeyCode.Space) && !menusActive)
+		if(collider.gameObject.CompareTag("Player") && Input.GetKey(KeyCode.Space) && !PauseMenuActive)
 		{ 
 			currPos = new Vector2((int) Mathf.Round(transform.position.x), (int) Mathf.Round(transform.position.y));
 			Vector3 contactPoint = collider.transform.position; // contact point of the player and the box, PLAYER COLLIDER MUST BE A SQUARE OR CIRCLE

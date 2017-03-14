@@ -26,6 +26,8 @@ public class Dungeon : MonoBehaviour
     public GameObject dungeonVisual; // dungeon visual
     [HideInInspector]
     public GameObject enemyVisual; //enemy visual
+	[HideInInspector]
+	public GameObject puzzleVisual; //puzzle visual
 
     public GameObject iceTiles; // ice tiles
 	public GameObject waterTiles; // water tiles
@@ -40,6 +42,7 @@ public class Dungeon : MonoBehaviour
 	public GameObject largeMob; // large monster
 	public GameObject lootBox; // loot box
 	public GameObject boxTiles; // box
+	public GameObject leverTiles; // switch
 	public GameObject pressurePlateTile; // pressure plate
 	public GameObject exit; // exit of room
     public GameObject boss;
@@ -62,6 +65,7 @@ public class Dungeon : MonoBehaviour
 	[HideInInspector]public int small = 2;
 	[HideInInspector]public int large = 3;
 	[HideInInspector]public int box = 4;
+	[HideInInspector]public int lever = 5;
 
 	// plate IDs, IDs must be different
 	//[HideInInspector]public int empty = 0; // COMMENTED OUT, BUT STILL DO NOT MODIFY
@@ -69,7 +73,13 @@ public class Dungeon : MonoBehaviour
 
 	[HideInInspector]public RoomTile[,] initialRoomStructure; // initial room structure including mobs
 	[HideInInspector]public RoomTile[,] roomStructure; // room structure excluding mobs
+	[HideInInspector]public int lowerX = -1; // x coordinate of lowest left corner of the puzzle in hybrid rooms
+	[HideInInspector]public int lowerY = -1; // y coordinate of lowest left corner of the puzzle in hybrid rooms
+	[HideInInspector]public int puzzleWidth = -1; // width of puzzle in hybrid rooms
+	[HideInInspector]public int puzzleHeight = -1; // height of puzzle in hybrid rooms
 
+	private const float switchPuzzleRefreshPeriod = 2.0f; // refresh period of switch puzzle
+	public float redrawSwitchPuzzleCountdown; // countdown for redrawing switch puzzle
 	private Vector2 playerStartPosition; // starting position of player
 	private Vector2 exitPosition; // position of exit
 	private System.Random random; // random numnber generator
@@ -110,19 +120,47 @@ public class Dungeon : MonoBehaviour
 				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make water slightly slippery if player is on ice
 			}
 		} catch (IndexOutOfRangeException) {}
+
+
+		bool PauseMenuActive = false; // is there any menus active in the scene
+		try {
+			PauseMenuActive = DungeonUI.Instance.transform.Find ("Pause Menu").gameObject.activeSelf;
+		} catch (NullReferenceException) {}
+
+		// decrement countdown if pause menu is not visible, and if switch puzzle is in the scene
+		if (redrawSwitchPuzzleCountdown >= 0.0f && !PauseMenuActive) {
+			redrawSwitchPuzzleCountdown -= Time.deltaTime;
+			if (redrawSwitchPuzzleCountdown <= 0.0f) {
+				RedrawSwitchPuzzle (ref roomStructure, lowerX, lowerY, puzzleWidth, puzzleHeight);
+				redrawSwitchPuzzleCountdown = switchPuzzleRefreshPeriod;
+			}
+		}
 	}
 
 	// function for generating a random dungeon
     public void GenerateRandomRoom()
     {
+		// reset variables
+		redrawSwitchPuzzleCountdown = -1.0f;
+		lowerX = -1;
+		lowerY = -1;
+		puzzleWidth = -1;
+		puzzleHeight = -1;
+
 		if (dungeonVisual != null)
 			Destroy(dungeonVisual);
 		if (enemyVisual != null)
 			Destroy(enemyVisual);
+		if (puzzleVisual != null)
+			Destroy(puzzleVisual);
 
 		dungeonVisual = new GameObject(); 
 		dungeonVisual.transform.name = "Dungeon Visual";
 		dungeonVisual.transform.SetParent(transform);
+
+		puzzleVisual = new GameObject(); 
+		puzzleVisual.transform.name = "Puzzle Visual";
+		puzzleVisual.transform.SetParent(dungeonVisual.transform);
 
 		enemyVisual = new GameObject();
 		enemyVisual.transform.name = "Enemy Visual";
@@ -161,14 +199,27 @@ public class Dungeon : MonoBehaviour
 	// function for resetting the dungeon
 	public void ResetRoom()
 	{
+		DungeonUI.Instance.pauseMenuActive = false;
+
+		// reset redraw switch puzzle countdown if there is switch puzzle
+		if (redrawSwitchPuzzleCountdown >= 0) {
+			redrawSwitchPuzzleCountdown = switchPuzzleRefreshPeriod;
+		}
+
 		if (dungeonVisual != null)
 			Destroy(dungeonVisual);
 		if (enemyVisual != null)
 			Destroy(enemyVisual);
+		if (puzzleVisual != null)
+			Destroy(puzzleVisual);
 
 		dungeonVisual = new GameObject(); 
 		dungeonVisual.transform.name = "Dungeon Visual";
 		dungeonVisual.transform.SetParent(transform);
+
+		puzzleVisual = new GameObject(); 
+		puzzleVisual.transform.name = "Puzzle Visual";
+		puzzleVisual.transform.SetParent(dungeonVisual.transform);
 
 		enemyVisual = new GameObject();
 		enemyVisual.transform.name = "Enemy Visual";
@@ -307,7 +358,7 @@ public class Dungeon : MonoBehaviour
 				} else {
 					exitPosition = new Vector2 (position + w / 2.0f, 0.0f);
 				}
-				room = FillAirSquare (room, position, -w / 2, w);
+				FillAirSquare (ref room, position, -w / 2, w);
 
 				position = random.Next (1, width - w - 1);
 				if (playerSpawnAtTop) {
@@ -315,7 +366,7 @@ public class Dungeon : MonoBehaviour
 				} else {
 					exitPosition = new Vector2 (position + w / 2.0f, height - 1);
 				}
-				room = FillAirSquare (room, position, height - w / 2, w);
+				FillAirSquare (ref room, position, height - w / 2, w);
 			} else {
 				bool playerSpawnAtRight = (random.NextDouble () < 0.5)? true : false;
 
@@ -326,7 +377,7 @@ public class Dungeon : MonoBehaviour
 				} else {
 					exitPosition = new Vector2 (0.0f, position + w / 2.0f);
 				}
-				room = FillAirSquare (room, -w / 2, position, w);
+				FillAirSquare (ref room, -w / 2, position, w);
 
 				position = random.Next (1, height - w - 1);
 				if (playerSpawnAtRight) {
@@ -334,7 +385,7 @@ public class Dungeon : MonoBehaviour
 				} else {
 					exitPosition = new Vector2 (width - 1, position + w / 2.0f);
 				}
-				room = FillAirSquare (room, width - w / 2, position, w);
+				FillAirSquare (ref room, width - w / 2, position, w);
 			}
 
 			// smoothen room
@@ -466,7 +517,7 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// function for creating a cave room in the scene
-	void InstantiateCaveRoom (RoomTile [,] room) { // array of the room
+	void InstantiateCaveRoom (RoomTile [,] room, int lowerX = -1, int lowerY = -1, int puzzleWidth = -1, int puzzleHeight = -1) { // array of the room, lower x/y coordinates of the puzzle, and the dimensions of the puzzle
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 		GameObject tempTile; // temporary variable for storing the tile to be created
@@ -474,67 +525,66 @@ public class Dungeon : MonoBehaviour
 		// create room
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
+				bool inPuzzleArea = i >= lowerX && i < lowerX + puzzleWidth && j >= lowerY && j < lowerY + puzzleHeight; // whether the tile is inside the area of the puzzle
+
 				if (room [i, j].tile == lava) {
 					tempTile = Instantiate (lavaTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-					tempTile.transform.SetParent (dungeonVisual.transform);
-				} else if (room [i, j].tile == water) {
+					tempTile.transform.SetParent (inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
+				} if (room [i, j].tile == water) {
 					tempTile = Instantiate (waterTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-					tempTile.transform.SetParent (dungeonVisual.transform);
+					tempTile.transform.SetParent (inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
 				} else if (room [i, j].tile == ice) {
 					tempTile = Instantiate (iceTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-					tempTile.transform.SetParent (dungeonVisual.transform);
+					tempTile.transform.SetParent (inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
 				} else if (room [i, j].tile == rail) {
 					tempTile = Instantiate (railTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-					tempTile.transform.SetParent (dungeonVisual.transform);
+					tempTile.transform.SetParent (inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
 				} else if (room [i, j].tile == air) {
 					float hotTileTransparency = Mathf.Clamp01 (room [i, j].temperature * 10 - 5);
 					if (hotTileTransparency < 1.0f) {
                         tempTile = Instantiate(floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-                        tempTile.transform.SetParent(dungeonVisual.transform);
+						tempTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
                     }
 					tempTile = Instantiate (hotFloorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
 					tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(room [i, j].temperature * 10 - 5));
-					tempTile.transform.SetParent(dungeonVisual.transform);
+					tempTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
 				}
 
 				if (room [i, j].tile == wall) { // set the walls and borders of the room
 					// see if there are air tiles in the 3x3 area
-					bool nearAir = false; // there is air tiles nearby
-					for (int row = i - 1; row <= i + 1; row++) {
-						for (int col = j - 1; col <= j + 1; col++) {
-							try {
-								if (room [row, col].tile != wall) {
-									nearAir = true;
-								}
-							} catch (IndexOutOfRangeException) {}
-						}
-					}
+					bool nearAir = CountAdjacentTiles (room, i, j, wall, 1) < 3 * 3;
 
 					if (nearAir) {
 						// set border tiles
 						float hotTileTransparency = Mathf.Clamp01 (room [i, j].temperature * 10 - 5);
 						GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // cold borders
-                        tempBorderTile.transform.SetParent(dungeonVisual.transform);
+						tempBorderTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
 						tempTile = Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // hot borders
 						tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(room [i, j].temperature * 10 - 5));
-                        tempTile.transform.SetParent(dungeonVisual.transform);
+						tempTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
                     } else {
                         // set wall tiles
                         tempTile = Instantiate(wallTiles, new Vector3 (i, j, 0.0f), transform.rotation);
-                        tempTile.transform.SetParent(dungeonVisual.transform);
+						tempTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
                     }
 				}
 
 				// place boxes
 				if (room [i, j].entity == box) {
 					tempTile = Instantiate(boxTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
+				}
+
+				// place switches
+				if (room [i, j].entity == lever) {
+					tempTile = Instantiate(leverTiles, new Vector3 (i, j, 0.0f), transform.rotation);
 					tempTile.transform.SetParent(dungeonVisual.transform);
 				}
 
 				// place plates
 				if (room [i, j].plate == plate) {
 					tempTile = Instantiate(pressurePlateTile, new Vector3 (i, j, 0.0f), transform.rotation);
-					tempTile.transform.SetParent(dungeonVisual.transform);
+					tempTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
 				}
 
 				// place monsters and loot chests if possible
@@ -559,8 +609,8 @@ public class Dungeon : MonoBehaviour
 		int puzzleRadius = 4; // smack a 9x9 puzzle to the room
 
 		// lower left corner of puzzle in room
-		int lowerX = -1;
-		int lowerY = -1;
+		lowerX = -1;
+		lowerY = -1;
 
 		// create room
 		while (true) {
@@ -568,7 +618,7 @@ public class Dungeon : MonoBehaviour
 			for (int findLargeAreaAttempt = 0; findLargeAreaAttempt < 64; findLargeAreaAttempt++) {
 				int x = random.Next (puzzleRadius * 2, roomWidth - puzzleRadius * 2);
 				int y = random.Next (puzzleRadius * 2, roomHeight - puzzleRadius * 2);
-				if (CountAdjacentTiles (roomStructure, x, y, wall, puzzleRadius) < 10) {
+				if (CountAdjacentTiles (roomStructure, x, y, wall, puzzleRadius) < 12) {
 					// set lower left corner of puzzle in room
 					lowerX = x - puzzleRadius;
 					lowerY = y - puzzleRadius;
@@ -581,14 +631,14 @@ public class Dungeon : MonoBehaviour
 			}
 		}
 
-		int puzzleWidth = puzzleRadius * 2 + 1; // width of puzzle;
-		int puzzleHeight = puzzleRadius * 2 + 1; // height of puzzle;
+		puzzleWidth = puzzleRadius * 2 + 1; // width of puzzle;
+		puzzleHeight = puzzleRadius * 2 + 1; // height of puzzle;
 
 		// get average temperature of puzzle area
 		float averageTemperature = 0.0f;
-		for (int i = lowerX; i < lowerX + puzzleWidth; i++) {
-			for (int j = lowerY; j < lowerY + puzzleHeight; j++) {
-				averageTemperature += roomStructure [i, j].temperature;
+		for (int x = lowerX; x < lowerX + puzzleWidth; x++) {
+			for (int y = lowerY; y < lowerY + puzzleHeight; y++) {
+				averageTemperature += roomStructure [x, y].temperature;
 			}
 		}
 		averageTemperature = averageTemperature / puzzleWidth / puzzleHeight;
@@ -600,7 +650,8 @@ public class Dungeon : MonoBehaviour
 			puzzle = GenerateBlockPuzzleRoomArray (puzzleWidth, puzzleHeight, lowerX, lowerY, roomStructure);
 		} else {
 			// generate switch puzzle if the area is hot
-			puzzle = GenerateBlockPuzzleRoomArray (puzzleWidth, puzzleHeight, lowerX, lowerY, roomStructure);
+			puzzle = GenerateSwitchPuzzleRoomArray (puzzleWidth, puzzleHeight, lowerX, lowerY, roomStructure);
+			redrawSwitchPuzzleCountdown = switchPuzzleRefreshPeriod;
 		}
 
 		// smack puzzle to room and convert nearby ice/water/lava blocks to floor tiles so that boxes cannot be pushed out of the puzzle area
@@ -618,7 +669,7 @@ public class Dungeon : MonoBehaviour
 			}
 		}
 
-		InstantiateCaveRoom (roomStructure);
+		InstantiateCaveRoom (roomStructure, lowerX, lowerY, puzzleWidth, puzzleHeight);
 		InstantiateRoomBorder (roomWidth, roomHeight);
 
 		// spawn chests and monsters
@@ -628,6 +679,136 @@ public class Dungeon : MonoBehaviour
 
 		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
 		RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
+
+	}
+
+	void RedrawSwitchPuzzle(ref RoomTile[,] room, int lowerX, int lowerY, int puzzleWidth, int puzzleHeight) {
+		if (puzzleVisual != null)
+			Destroy(puzzleVisual);
+
+		puzzleVisual = new GameObject(); 
+		puzzleVisual.transform.name = "Puzzle Visual";
+		puzzleVisual.transform.SetParent(dungeonVisual.transform);
+
+		// change whole area to lava but keep the walls
+		for (int x = lowerX; x < lowerX + puzzleWidth; x++) {
+			for (int y = lowerY; y < lowerY + puzzleHeight; y++) {
+				if (room [x, y].tile != wall) {
+					room [x, y].tile = lava;
+				}
+			}
+		}
+
+		// create some 2x2 air cavities
+		for (int count = 0; count < 4; count++) {
+			// choose suitable point
+			int x, y; // lower left coordinates of the cavity
+			bool airNearby; // check whether there are air tiles nearby
+			do {
+				x = random.Next (lowerX, lowerX + puzzleWidth - 1);
+				y = random.Next (lowerY, lowerY + puzzleHeight - 1);
+				airNearby = false;
+				for (int i = x - 1; i <= x + 2; i++) {
+					for (int j = y - 1; j <= y + 2; j++) {
+						bool inPuzzleArea = i >= lowerX && i < lowerX + puzzleWidth && j >= lowerY && j < lowerY + puzzleHeight; // whether the tile is inside the area of the puzzle
+						if (room [i, j].tile == air && inPuzzleArea) {
+							airNearby = true;
+						}
+					}
+				}
+			} while (airNearby || (room [x, y].tile == wall && room [x, y + 1].tile == wall && room [x + 1, y].tile == wall && room [x + 1, y + 1].tile == wall));
+
+			// create cavity
+			for (int i = x; i <= x + 1; i++) {
+				for (int j = y; j <= y + 1; j++) {
+					if (room [i, j].tile != wall) {
+						room [i, j].tile = air;
+					}
+				}
+			}
+		}
+
+		// instantiate tiles
+		for (int i = lowerX; i < lowerX + puzzleWidth; i++) {
+			for (int j = lowerY; j < lowerY + puzzleHeight; j++) {
+				GameObject tempTile;
+				if (room [i, j].tile == lava) {
+					tempTile = Instantiate (lavaTiles, new Vector2 (i, j), Quaternion.identity);
+					tempTile.transform.SetParent(puzzleVisual.transform);
+				} else if (room [i, j].tile == air) {
+					float hotTileTransparency = Mathf.Clamp01 (room [i, j].temperature * 10 - 5);
+					if (hotTileTransparency < 1.0f) {
+						tempTile = Instantiate(floorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						tempTile.transform.SetParent(puzzleVisual.transform);
+					}
+					tempTile = Instantiate (hotFloorTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+					tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(room [i, j].temperature * 10 - 5));
+					tempTile.transform.SetParent(puzzleVisual.transform);
+				} else if (room [i, j].tile == wall) {
+					// see if there are air tiles in the 3x3 area
+					bool nearAir = CountAdjacentTiles (room, i, j, wall, 1) < 3 * 3; // there is air tiles nearby
+
+					if (nearAir) {
+						// set border tiles
+						float hotTileTransparency = Mathf.Clamp01 (room [i, j].temperature * 10 - 5);
+						GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // cold borders
+						tempBorderTile.transform.SetParent(puzzleVisual.transform);
+						tempTile = Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // hot borders
+						tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(room [i, j].temperature * 10 - 5));
+						tempTile.transform.SetParent(puzzleVisual.transform);
+					} else {
+						// set wall tiles
+						tempTile = Instantiate(wallTiles, new Vector3 (i, j, 0.0f), transform.rotation);
+						tempTile.transform.SetParent(puzzleVisual.transform);
+					}
+				}
+			}
+		}
+
+	}
+
+	// generate an array containing the information of a switch puzzle room in the scene
+	RoomTile[,] GenerateSwitchPuzzleRoomArray (int width, int height, int lowerX = 0, int lowerY = 0, RoomTile [,] room = null)
+	{
+		RoomTile[,] switchPuzzleRoom;
+
+		bool satisfied; // whether room is satisfied or not
+
+		do {
+			satisfied = true;
+
+			switchPuzzleRoom = new RoomTile[width, height];
+
+			// initializing room structure
+			for (int x = 0; x < width - 0; x++) {
+				for (int y = 0; y < height - 0; y++) {
+					if (room == null) { // stand-alone puzzle room
+						switchPuzzleRoom [x, y].tile = lava;
+					} else { // puzzle for hybrid room
+						if (room[x + lowerX, y + lowerY].tile == wall) {
+							switchPuzzleRoom [x, y].tile = wall;
+						} else {
+							switchPuzzleRoom [x, y].tile = lava;
+						}
+					}
+				}
+			}
+
+			// place 4 switches
+			for (int count = 0; count < 4; count++) {
+				while (true) {
+					int x = random.Next (1, width - 1);
+					int y = random.Next (1, height - 1);
+					if (switchPuzzleRoom [x, y].tile != wall && CountAdjacentEntities(switchPuzzleRoom, x, y, lever, 1) == 0) { // tile is lava and no levers nearby
+						switchPuzzleRoom [x, y].entity = lever;
+						break;
+					}
+				}
+			}
+
+		} while (!satisfied);
+
+		return switchPuzzleRoom;
 	}
 
 	// function for generating a puzzle room
@@ -640,7 +821,7 @@ public class Dungeon : MonoBehaviour
 		InstantiateRoomBorder (roomWidth, roomHeight);
 	}
 
-	// generate an array containing the information of a cave room in the scene
+	// generate an array containing the information of a block puzzle room in the scene
 	RoomTile[,] GenerateBlockPuzzleRoomArray (int width, int height, int lowerX = 0, int lowerY = 0, RoomTile [,] room = null)
 	{
 		RoomTile[,] blockPuzzleRoom;
@@ -1014,7 +1195,7 @@ public class Dungeon : MonoBehaviour
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
 				} while (room [x, y].tile != air || room [x, y].entity != empty || distanceToPlayer < 10.0f || CountAdjacentTiles (room, x, y, wall, 1) <= 3);
-				if (CountAdjacentTiles (room, x, y, wall, 2) > 11 && CountAdjacentEntities (room, x, y, loot, 16) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there is no boxes/loot chests nearby
+				if (CountAdjacentTiles (room, x, y, wall, 2) > 11 && CountAdjacentEntities (room, x, y, loot, 16) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0 && CountAdjacentEntities (room, x, y, lever, 3) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there are no boxes/loots/switches chests nearby
 					// spawn loot box
 					GameObject tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(dungeonVisual.transform);
@@ -1124,7 +1305,7 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// fill the square area with defined size with air, with [x, y] as the bottom left corner of the square
-	RoomTile [,] FillAirSquare (RoomTile[,] room, int x, int y, int size) { // room array, x-coordinate, y-coordinate, size of square
+	void FillAirSquare (ref RoomTile[,] room, int x, int y, int size) { // room array, x-coordinate, y-coordinate, size of square
 		for (int row = x; row <= x + size; row++) {
 			for (int col = y; col <= y + size; col++) {
 				try {
@@ -1132,7 +1313,6 @@ public class Dungeon : MonoBehaviour
 				} catch (IndexOutOfRangeException) {}
 			}
 		}
-		return room;
 	}
 
 	// count the number of specific tiles in the area of a specific point
