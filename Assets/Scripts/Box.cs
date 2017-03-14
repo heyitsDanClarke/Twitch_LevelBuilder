@@ -127,6 +127,7 @@ public class Box : MonoBehaviour {
 					// cannot push block if a wall or another box is in front of the box, or if it is out of the puzzle area
 					if (Dungeon.Instance.roomStructure[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)].tile == Dungeon.Instance.wall ||
 						Dungeon.Instance.roomStructure[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)].tile == Dungeon.Instance.air ||
+						Dungeon.Instance.roomStructure[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)].tile == Dungeon.Instance.water ||
 						Dungeon.Instance.roomStructure[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)].tile == Dungeon.Instance.lava ||
 						Dungeon.Instance.roomStructure[(int) (nextPos.x + direction.x), (int) (nextPos.y + direction.y)].entity == Dungeon.Instance.box) {
 						break;

@@ -237,7 +237,7 @@ MonoBehaviour:
   target: {fileID: 0}
   updateRate: 2
   speed: 2
-  acceleration: 5
+  acceleration: 10
   pathIsEnded: 0
   nextWaypointDistance: 2
   health: 2

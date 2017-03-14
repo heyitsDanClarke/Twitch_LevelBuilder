@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
 	[HideInInspector]
 	public float defaultSpeed = 6.0f; // default speed of player
 	[HideInInspector]
-	public float defaultAcceleration = 20.0f; // default acceleration of player
+	public float defaultAcceleration = 10.0f; // default acceleration of player
 	public int damage; // base damage
 	public int health = 8; // base hit points
 	public int healthRegeneration; // health regeneration speed
@@ -51,11 +51,7 @@ public class Player : MonoBehaviour {
         //weaponShards[1] = 1;
         //weaponShards[2] = 2;
         //weaponShards[3] = 3;
-        
-
-
-
-    }
+	}
 
     void FixedUpdate ()
 	{
@@ -170,7 +166,7 @@ public class Player : MonoBehaviour {
             //Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
             //Destroy(coll.gameObject);
             //Instantiate(coin, coinPosition, Quaternion.identity);
-            rb.AddForce((transform.position - coll.transform.position).normalized * 10f, ForceMode2D.Impulse);
+			rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
         }
 
 

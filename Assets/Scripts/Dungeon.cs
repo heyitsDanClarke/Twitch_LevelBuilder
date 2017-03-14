@@ -135,13 +135,13 @@ public class Dungeon : MonoBehaviour
 				roomHeight = 40;
 				GenerateCaveRoom (roomWidth, roomHeight);
 			} else if (RoomType > -1) {
-				roomWidth = 25;
-				roomHeight = 25;
+				roomWidth = 28;
+				roomHeight = 28;
 				GenerateHybridRoom (roomWidth, roomHeight);
 			} else {
 				roomWidth = 12;
 				roomHeight = 12;
-				GeneratePuzzleRoom (roomWidth, roomHeight);
+				GenerateBlockPuzzleRoom (roomWidth, roomHeight);
 			}
 		} else if (roomsLeftUntilBoss == 0) {
 			roomWidth = 15;
@@ -407,53 +407,55 @@ public class Dungeon : MonoBehaviour
 					satisfied = satisfied && (airCount * 4.0f / width / height >= 0.4f); // at least 40% of each quarter of the room is air
 				}
 			}
-				
-		} while (!satisfied);
 
-		float xScale = 0.04f + 1.8f / Mathf.Min(width, height); // x scale of perlin noise
-		float xOffset, yOffset; // x and y offset of perlin noise;
+			float xScale = 0.04f + 1.8f / Mathf.Min(width, height); // x scale of perlin noise
+			float xOffset, yOffset; // x and y offset of perlin noise;
 
-		// set temperature map of room;
-		xOffset = (float) (random.NextDouble ()) * 200;
-		yOffset = (float) (random.NextDouble ()) * 200;
-		float heightOffset = (fireVotes + iceVotes == 0)? 0.0f : 0.3f * (fireVotes - iceVotes) / ((float) (fireVotes + iceVotes)); // height offset of perlin noise for the temperature map
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				room [i, j].temperature = (float) Mathf.Clamp01(Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, yOffset + j * xScale) * 1.5f - 0.25f) * 0.4f + 0.3f + heightOffset);
+			// set temperature map of room;
+			xOffset = (float) (random.NextDouble ()) * 200;
+			yOffset = (float) (random.NextDouble ()) * 200;
+			float heightOffset = (fireVotes + iceVotes == 0)? 0.0f : 0.3f * (fireVotes - iceVotes) / ((float) (fireVotes + iceVotes)); // height offset of perlin noise for the temperature map
+			for (int i = 0; i < width; i++) {
+				for (int j = 0; j < height; j++) {
+					room [i, j].temperature = (float) Mathf.Clamp01(Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, yOffset + j * xScale) * 1.5f - 0.25f) * 0.4f + 0.3f + heightOffset);
+				}
 			}
-		}
 
-		// set humidity map of room;
-		xOffset = (float) (random.NextDouble ()) * -200 - 400;
-		yOffset = (float) (random.NextDouble ()) * -200 - 400;
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				room [i, j].humidity = (float) Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, yOffset + j * xScale));
+			// set humidity map of room;
+			xOffset = (float) (random.NextDouble ()) * -200 - 400;
+			yOffset = (float) (random.NextDouble ()) * -200 - 400;
+			for (int i = 0; i < width; i++) {
+				for (int j = 0; j < height; j++) {
+					room [i, j].humidity = (float) Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, yOffset + j * xScale));
+				}
 			}
-		}
 
-		// thresholds for climates
-		float wetThreshold = 0.6f;
-		float dryThreshold = 0.4f;
-		float hotThreshold = 0.55f;
-		float coldThreshold = 0.45f;
+			// thresholds for climates
+			float wetThreshold = 0.6f;
+			float dryThreshold = 0.4f;
+			float hotThreshold = 0.55f;
+			float coldThreshold = 0.45f;
 
-		// transform air blocks according to the temperature and humidity
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				if (room [i, j].tile == air) { // set lava/water/floor tiles base on the temperature and humidity
-					if (room [i, j].humidity > wetThreshold && room [i, j].temperature < coldThreshold) {
-						room [i, j].tile = ice;
-					} else if (room [i, j].humidity > wetThreshold && room [i, j].temperature < hotThreshold) {
-						room [i, j].tile = water;
-					} else if (room [i, j].humidity < dryThreshold && room [i, j].temperature >= hotThreshold) {
-						room [i, j].tile = lava;
-					} else {
-						room [i, j].tile = air;
+			// transform air blocks according to the temperature and humidity
+			for (int i = 0; i < width; i++) {
+				for (int j = 0; j < height; j++) {
+					if (room [i, j].tile == air) { // set lava/water/floor tiles base on the temperature and humidity
+						if (room [i, j].humidity > wetThreshold && room [i, j].temperature < coldThreshold) {
+							room [i, j].tile = ice;
+						} else if (room [i, j].humidity > wetThreshold && room [i, j].temperature < hotThreshold) {
+							room [i, j].tile = water;
+						} else if (room [i, j].humidity < dryThreshold && room [i, j].temperature >= hotThreshold) {
+							room [i, j].tile = lava;
+						} else {
+							room [i, j].tile = air;
+						}
 					}
 				}
 			}
-		}
+
+			// player spawn location should not be lava
+			satisfied = satisfied && room [(int) playerStartPosition.x, (int) playerStartPosition.y].tile != lava;
+		} while (!satisfied);
 
         // set player and exit locations
 		Player.Instance.transform.position = playerStartPosition;
@@ -564,9 +566,9 @@ public class Dungeon : MonoBehaviour
 		while (true) {
 			roomStructure = GenerateCaveRoomArray (roomWidth, roomHeight, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount);
 			for (int findLargeAreaAttempt = 0; findLargeAreaAttempt < 64; findLargeAreaAttempt++) {
-				int x = random.Next (puzzleRadius, roomWidth - puzzleRadius);
-				int y = random.Next (puzzleRadius, roomHeight - puzzleRadius);
-				if (CountAdjacentTiles (roomStructure, x, y, wall, puzzleRadius) < 20) {
+				int x = random.Next (puzzleRadius * 2, roomWidth - puzzleRadius * 2);
+				int y = random.Next (puzzleRadius * 2, roomHeight - puzzleRadius * 2);
+				if (CountAdjacentTiles (roomStructure, x, y, wall, puzzleRadius) < 10) {
 					// set lower left corner of puzzle in room
 					lowerX = x - puzzleRadius;
 					lowerY = y - puzzleRadius;
@@ -578,17 +580,41 @@ public class Dungeon : MonoBehaviour
 				break;
 			}
 		}
-		RoomTile [,] puzzle = GeneratePuzzleRoomArray (puzzleRadius * 2 + 1, puzzleRadius * 2 + 1, lowerX, lowerY, roomStructure);
 
-		int puzzleWidth = puzzle.GetLength(0); // width of puzzle;
-		int puzzleHeight = puzzle.GetLength(1); // height of puzzle;
+		int puzzleWidth = puzzleRadius * 2 + 1; // width of puzzle;
+		int puzzleHeight = puzzleRadius * 2 + 1; // height of puzzle;
 
-		// smack puzzle to room
-		for (int i = 0; i < puzzleWidth; i++) {
-			for (int j = 0; j < puzzleHeight; j++) {
-				roomStructure [i + lowerX, j + lowerY].tile = puzzle [i, j].tile;
-				roomStructure [i + lowerX, j + lowerY].entity = puzzle [i, j].entity;
-				roomStructure [i + lowerX, j + lowerY].plate = puzzle [i, j].plate;
+		// get average temperature of puzzle area
+		float averageTemperature = 0.0f;
+		for (int i = lowerX; i < lowerX + puzzleWidth; i++) {
+			for (int j = lowerY; j < lowerY + puzzleHeight; j++) {
+				averageTemperature += roomStructure [i, j].temperature;
+			}
+		}
+		averageTemperature = averageTemperature / puzzleWidth / puzzleHeight;
+
+		// determine which puzzle to generate
+		RoomTile[,] puzzle;
+		if (averageTemperature < 0.5f) {
+			// generate block puzzle if the area is cold
+			puzzle = GenerateBlockPuzzleRoomArray (puzzleWidth, puzzleHeight, lowerX, lowerY, roomStructure);
+		} else {
+			// generate switch puzzle if the area is hot
+			puzzle = GenerateBlockPuzzleRoomArray (puzzleWidth, puzzleHeight, lowerX, lowerY, roomStructure);
+		}
+
+		// smack puzzle to room and convert nearby ice/water/lava blocks to floor tiles so that boxes cannot be pushed out of the puzzle area
+		for (int i = -1; i < puzzleWidth + 1; i++) {
+			for (int j = -1; j < puzzleHeight + 1; j++) {
+				if (i >= 0 && i < puzzleWidth && j >= 0 && j < puzzleHeight) {
+					roomStructure [i + lowerX, j + lowerY].tile = puzzle [i, j].tile;
+					roomStructure [i + lowerX, j + lowerY].entity = puzzle [i, j].entity;
+				 	roomStructure [i + lowerX, j + lowerY].plate = puzzle [i, j].plate;
+				} else if (roomStructure [i + lowerX, j + lowerY].tile == ice
+							|| roomStructure [i + lowerX, j + lowerY].tile == water
+							|| roomStructure [i + lowerX, j + lowerY].tile == lava) {
+					roomStructure [i + lowerX, j + lowerY].tile = air;
+				}
 			}
 		}
 
@@ -605,20 +631,20 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// function for generating a puzzle room
-	void GeneratePuzzleRoom (int roomWidth, int roomHeight)
+	void GenerateBlockPuzzleRoom (int roomWidth, int roomHeight)
 	{
 		// create room
-		roomStructure = GeneratePuzzleRoomArray (roomWidth, roomHeight);
+		roomStructure = GenerateBlockPuzzleRoomArray (roomWidth, roomHeight);
 		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
-		InstantiatePuzzleRoom (roomStructure);
+		InstantiateBlockPuzzleRoom (roomStructure);
 		InstantiateRoomBorder (roomWidth, roomHeight);
 	}
 
 	// generate an array containing the information of a cave room in the scene
-	RoomTile[,] GeneratePuzzleRoomArray (int width, int height, int lowerX = 0, int lowerY = 0, RoomTile [,] room = null)
+	RoomTile[,] GenerateBlockPuzzleRoomArray (int width, int height, int lowerX = 0, int lowerY = 0, RoomTile [,] room = null)
 	{
-		RoomTile[,] puzzleRoom;
-		RoomTile[,] simulatePuzzleRoom; // entities array for simulation
+		RoomTile[,] blockPuzzleRoom;
+		RoomTile[,] simulateBlockPuzzleRoom; // entities array for simulation
 		bool[,] tileIsModified; // check whether the tiles of the room is being modified or not during the simulation
 		Vector2 initialPlayerPosition; // initial position of the player
 
@@ -627,8 +653,8 @@ public class Dungeon : MonoBehaviour
 		do {		
 			satisfied = true;
 
-			puzzleRoom = new RoomTile[width, height];
-			simulatePuzzleRoom = new RoomTile[width, height];
+			blockPuzzleRoom = new RoomTile[width, height];
+			simulateBlockPuzzleRoom = new RoomTile[width, height];
 			tileIsModified = new bool[width, height];
 
 			// initializing room structure
@@ -636,38 +662,38 @@ public class Dungeon : MonoBehaviour
 				for (int y = 0; y < height - 0; y++) {
 					if (room == null) { // stand-alone puzzle room
 						if (random.NextDouble() < 0.1 ) {
-							puzzleRoom [x, y].tile = wall;
-							simulatePuzzleRoom [x, y].tile = wall;
+							blockPuzzleRoom [x, y].tile = wall;
+							simulateBlockPuzzleRoom [x, y].tile = wall;
 						} else if (random.NextDouble() < 0.8) {
-							puzzleRoom [x, y].tile = ice;
-							simulatePuzzleRoom [x, y].tile = ice;
+							blockPuzzleRoom [x, y].tile = ice;
+							simulateBlockPuzzleRoom [x, y].tile = ice;
 						} else {
-							puzzleRoom [x, y].tile = rail;
-							simulatePuzzleRoom [x, y].tile = rail;
+							blockPuzzleRoom [x, y].tile = rail;
+							simulateBlockPuzzleRoom [x, y].tile = rail;
 						}
 					} else { // puzzle for hybrid room
 						if (room[x + lowerX, y + lowerY].tile == wall) {
-							puzzleRoom [x, y].tile = wall;
-							simulatePuzzleRoom [x, y].tile = wall;
+							blockPuzzleRoom [x, y].tile = wall;
+							simulateBlockPuzzleRoom [x, y].tile = wall;
 						} else if (random.NextDouble() < 0.1) {
-							puzzleRoom [x, y].tile = wall;
-							simulatePuzzleRoom [x, y].tile = wall;
+							blockPuzzleRoom [x, y].tile = wall;
+							simulateBlockPuzzleRoom [x, y].tile = wall;
 						} else if (room[x + lowerX, y + lowerY].tile == ice) {
-							puzzleRoom [x, y].tile = ice;
-							simulatePuzzleRoom [x, y].tile = ice;
+							blockPuzzleRoom [x, y].tile = ice;
+							simulateBlockPuzzleRoom [x, y].tile = ice;
 						} else if (random.NextDouble() < 0.7) {
-							puzzleRoom [x, y].tile = ice;
-							simulatePuzzleRoom [x, y].tile = ice;
+							blockPuzzleRoom [x, y].tile = ice;
+							simulateBlockPuzzleRoom [x, y].tile = ice;
 						} else {
-							puzzleRoom [x, y].tile = rail;
-							simulatePuzzleRoom [x, y].tile = rail;
+							blockPuzzleRoom [x, y].tile = rail;
+							simulateBlockPuzzleRoom [x, y].tile = rail;
 						}
 					}
 				}
 			}
 
 			// place boxes
-			for (int count = 0; count < width * height / 12; count++) {
+			for (int count = 0; count < 6; count++) {
 				int placeBoxAttempt = 0; // limit the number of trials to find a position for the box to prevent an infinite loop
 				while (true) {
 					placeBoxAttempt += 1;
@@ -677,28 +703,28 @@ public class Dungeon : MonoBehaviour
 					}
 					int x = random.Next (1, width - 1);
 					int y = random.Next (1, height - 1);
-					if (puzzleRoom [x, y].tile != wall && puzzleRoom [x, y].entity == empty) {
+					if (blockPuzzleRoom [x, y].tile != wall && blockPuzzleRoom [x, y].entity == empty) {
 						bool obstacleOnDownOrUp = false;
 						bool obstacleOnLeftOrRight = false;
 
 						// determine whether there is obstacles on the left or right of the location
 						try {
-							obstacleOnLeftOrRight = puzzleRoom [x - 1, y].tile == wall || puzzleRoom [x - 1, y].entity != empty || puzzleRoom [x + 1, y].tile == wall || puzzleRoom [x + 1, y].entity != empty;
+							obstacleOnLeftOrRight = blockPuzzleRoom [x - 1, y].tile == wall || blockPuzzleRoom [x - 1, y].entity != empty || blockPuzzleRoom [x + 1, y].tile == wall || blockPuzzleRoom [x + 1, y].entity != empty;
 						} catch (IndexOutOfRangeException) {
 							obstacleOnLeftOrRight = true;
 						}
 
 						// determine whether there is obstacles on the bottom or top of the location
 						try {
-							obstacleOnDownOrUp = puzzleRoom [x, y - 1].tile == wall || puzzleRoom [x, y - 1].entity != empty || puzzleRoom [x, y + 1].tile == wall || puzzleRoom [x, y + 1].entity != empty;
+							obstacleOnDownOrUp = blockPuzzleRoom [x, y - 1].tile == wall || blockPuzzleRoom [x, y - 1].entity != empty || blockPuzzleRoom [x, y + 1].tile == wall || blockPuzzleRoom [x, y + 1].entity != empty;
 						} catch (IndexOutOfRangeException) {
 							obstacleOnDownOrUp = true;
 						}
 
 						// ensure that all boxes are pushable in some way 
 						if (! (obstacleOnLeftOrRight && obstacleOnDownOrUp)) {
-							puzzleRoom [x, y].entity = box;
-							simulatePuzzleRoom [x, y].entity = box;
+							blockPuzzleRoom [x, y].entity = box;
+							simulateBlockPuzzleRoom [x, y].entity = box;
 							break;
 						}
 					}
@@ -709,7 +735,7 @@ public class Dungeon : MonoBehaviour
 			while (true) {
 				int x = random.Next (0, width);
 				int y = random.Next (0, height);
-				if (puzzleRoom [x, y].tile != wall && puzzleRoom [x, y].entity == empty) {
+				if (blockPuzzleRoom [x, y].tile != wall && blockPuzzleRoom [x, y].entity == empty) {
 					initialPlayerPosition = new Vector2 (x, y);
 					break;
 				}
@@ -736,7 +762,7 @@ public class Dungeon : MonoBehaviour
 					dir = directions[randomDirection];
 
 					// calculate the number of steps the player can move in that directoin
-					maxSteps = maxDistance (simulatePuzzleRoom, simulatePlayerPosition, dir, false);
+					maxSteps = maxDistance (simulateBlockPuzzleRoom, simulatePlayerPosition, dir, false);
 					if (maxSteps == 0) { // cannot move in that direction if the maximum steps possible in that direction is 0
 						canMove[randomDirection] = false;
 					} else {
@@ -760,7 +786,7 @@ public class Dungeon : MonoBehaviour
 
 				// simulate player movement
 				for (int step = 0; step < randomSteps; step++) {
-					push (ref simulatePuzzleRoom, ref tileIsModified, player, simulatePlayerPosition, dir); // push anything in front of the player
+					push (ref simulateBlockPuzzleRoom, ref tileIsModified, player, simulatePlayerPosition, dir); // push anything in front of the player
 					simulatePlayerPosition = new Vector2(simulatePlayerPosition.x + dir.x, simulatePlayerPosition.y + dir.y); // move player by 1 step
 				}
 
@@ -771,20 +797,20 @@ public class Dungeon : MonoBehaviour
 				int totalPlates = 0;
 				for (int x = 0; x < width; x++) {
 					for (int y = 0; y < width; y++) {
-						if (!tileIsModified [x, y] && simulatePuzzleRoom [x, y].entity == box) { // convert unmoved boxes in simulation to walls
-							simulatePuzzleRoom [x, y].entity = empty;
-							puzzleRoom [x, y].entity = empty;
-							puzzleRoom [x, y].tile = wall;
+						if (!tileIsModified [x, y] && simulateBlockPuzzleRoom [x, y].entity == box) { // convert unmoved boxes in simulation to walls
+							simulateBlockPuzzleRoom [x, y].entity = empty;
+							blockPuzzleRoom [x, y].entity = empty;
+							blockPuzzleRoom [x, y].tile = wall;
 						}
 
-						if (simulatePuzzleRoom [x, y].entity == box) { // place plates according to the final position of boxes during the simulation 
-							puzzleRoom [x, y].plate = plate;
+						if (simulateBlockPuzzleRoom [x, y].entity == box) { // place plates according to the final position of boxes during the simulation 
+							blockPuzzleRoom [x, y].plate = plate;
 							totalPlates += 1;
 						}
 					}
 				}
 
-				satisfied = satisfied && totalPlates >= (width * height / 12 * 0.65)? true : false; // make sure there are enough boxes in the room
+				satisfied = satisfied && totalPlates >= 4? true : false; // make sure there are enough boxes in the room
 			}
 		} while (!satisfied);
 
@@ -792,7 +818,7 @@ public class Dungeon : MonoBehaviour
 			playerStartPosition = initialPlayerPosition; // set global variable storing the starting position of the player
 		}
 
-		return puzzleRoom;
+		return blockPuzzleRoom;
 	}
 
 	// set the number of boxes that are not on pressure plates, and hide/show puzzle panel
@@ -815,7 +841,7 @@ public class Dungeon : MonoBehaviour
 	}
 
 	// generate a puzzle room in the scene
-	void InstantiatePuzzleRoom (RoomTile [,] room) { // height of room, width of room
+	void InstantiateBlockPuzzleRoom (RoomTile [,] room) { // height of room, width of room
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 
