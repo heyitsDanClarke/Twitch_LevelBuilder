@@ -78,8 +78,12 @@ public class Dungeon : MonoBehaviour
 	[HideInInspector]public int puzzleWidth = -1; // width of puzzle in hybrid rooms
 	[HideInInspector]public int puzzleHeight = -1; // height of puzzle in hybrid rooms
 
+	public bool containsBlockPuzzle; // whether the room has a block puzzle or not
+	public bool containsSwitchPuzzle; // whether the room has a switch puzzle or not
+
 	private const float switchPuzzleRefreshPeriod = 2.0f; // refresh period of switch puzzle
 	public float redrawSwitchPuzzleCountdown; // countdown for redrawing switch puzzle
+
 	private Vector2 playerStartPosition; // starting position of player
 	private Vector2 exitPosition; // position of exit
 	private System.Random random; // random numnber generator
@@ -128,7 +132,7 @@ public class Dungeon : MonoBehaviour
 		} catch (NullReferenceException) {}
 
 		// decrement countdown if pause menu is not visible, and if switch puzzle is in the scene
-		if (redrawSwitchPuzzleCountdown >= 0.0f && !PauseMenuActive) {
+		if (containsSwitchPuzzle && !PauseMenuActive) {
 			redrawSwitchPuzzleCountdown -= Time.deltaTime;
 			if (redrawSwitchPuzzleCountdown <= 0.0f) {
 				RedrawSwitchPuzzle (ref roomStructure, lowerX, lowerY, puzzleWidth, puzzleHeight);
@@ -141,11 +145,8 @@ public class Dungeon : MonoBehaviour
     public void GenerateRandomRoom()
     {
 		// reset variables
-		redrawSwitchPuzzleCountdown = -1.0f;
-		lowerX = -1;
-		lowerY = -1;
-		puzzleWidth = -1;
-		puzzleHeight = -1;
+		containsBlockPuzzle = false;
+		containsSwitchPuzzle = false;
 
 		if (dungeonVisual != null)
 			Destroy(dungeonVisual);
@@ -190,7 +191,7 @@ public class Dungeon : MonoBehaviour
 		}
 		roomsLeftUntilBoss -= 1;
 
-		SetNumberOfBoxesLeft (roomStructure);
+		SetNumberOfBoxesorSwitchesLeft (roomStructure);
 
 		AstarPath.active.Scan();
 		Poll.Instance.ResetVote(); // reset votes
@@ -199,8 +200,6 @@ public class Dungeon : MonoBehaviour
 	// function for resetting the dungeon
 	public void ResetRoom()
 	{
-		DungeonUI.Instance.pauseMenuActive = false;
-
 		// reset redraw switch puzzle countdown if there is switch puzzle
 		if (redrawSwitchPuzzleCountdown >= 0) {
 			redrawSwitchPuzzleCountdown = switchPuzzleRefreshPeriod;
@@ -233,7 +232,7 @@ public class Dungeon : MonoBehaviour
 		roomStructure = initialRoomStructure.Clone() as RoomTile[,]; // deep copy
 		RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
 
-		SetNumberOfBoxesLeft (roomStructure);
+		SetNumberOfBoxesorSwitchesLeft (roomStructure);
 
 		// spawn player and exit
 		Player.Instance.transform.position = playerStartPosition;
@@ -525,8 +524,14 @@ public class Dungeon : MonoBehaviour
 		// create room
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				bool inPuzzleArea = i >= lowerX && i < lowerX + puzzleWidth && j >= lowerY && j < lowerY + puzzleHeight; // whether the tile is inside the area of the puzzle
 
+				// determine whether the tile is in the puzzle area
+				bool inPuzzleArea = false;
+				if (containsBlockPuzzle || containsSwitchPuzzle) {
+					inPuzzleArea = i >= lowerX && i < lowerX + puzzleWidth && j >= lowerY && j < lowerY + puzzleHeight;
+				}
+
+				// instantiate tiles
 				if (room [i, j].tile == lava) {
 					tempTile = Instantiate (lavaTiles, new Vector3 (i, j, 0.0f), transform.rotation);
 					tempTile.transform.SetParent (inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
@@ -647,24 +652,33 @@ public class Dungeon : MonoBehaviour
 		RoomTile[,] puzzle;
 		if (averageTemperature < 0.5f) {
 			// generate block puzzle if the area is cold
+			containsBlockPuzzle = true;
 			puzzle = GenerateBlockPuzzleRoomArray (puzzleWidth, puzzleHeight, lowerX, lowerY, roomStructure);
+
 		} else {
 			// generate switch puzzle if the area is hot
+			containsSwitchPuzzle = true;
 			puzzle = GenerateSwitchPuzzleRoomArray (puzzleWidth, puzzleHeight, lowerX, lowerY, roomStructure);
 			redrawSwitchPuzzleCountdown = switchPuzzleRefreshPeriod;
+
 		}
 
 		// smack puzzle to room and convert nearby ice/water/lava blocks to floor tiles so that boxes cannot be pushed out of the puzzle area
 		for (int i = -1; i < puzzleWidth + 1; i++) {
 			for (int j = -1; j < puzzleHeight + 1; j++) {
-				if (i >= 0 && i < puzzleWidth && j >= 0 && j < puzzleHeight) {
+				if (i >= 0 && i < puzzleWidth && j >= 0 && j < puzzleHeight) { // in puzzle area
 					roomStructure [i + lowerX, j + lowerY].tile = puzzle [i, j].tile;
 					roomStructure [i + lowerX, j + lowerY].entity = puzzle [i, j].entity;
-				 	roomStructure [i + lowerX, j + lowerY].plate = puzzle [i, j].plate;
-				} else if (roomStructure [i + lowerX, j + lowerY].tile == ice
-							|| roomStructure [i + lowerX, j + lowerY].tile == water
-							|| roomStructure [i + lowerX, j + lowerY].tile == lava) {
-					roomStructure [i + lowerX, j + lowerY].tile = air;
+					roomStructure [i + lowerX, j + lowerY].plate = puzzle [i, j].plate;
+				} else { // boundary of puzzle
+					if (containsBlockPuzzle && (roomStructure [i + lowerX, j + lowerY].tile == ice || roomStructure [i + lowerX, j + lowerY].tile == lava)) {
+						roomStructure [i + lowerX, j + lowerY].tile = air;
+					}
+
+					if (containsSwitchPuzzle && (roomStructure [i + lowerX, j + lowerY].tile == ice || roomStructure [i + lowerX, j + lowerY].tile == water)) {
+						roomStructure [i + lowerX, j + lowerY].tile = air;
+					}
+
 				}
 			}
 		}
@@ -1002,23 +1016,35 @@ public class Dungeon : MonoBehaviour
 		return blockPuzzleRoom;
 	}
 
-	// set the number of boxes that are not on pressure plates, and hide/show puzzle panel
-	void SetNumberOfBoxesLeft (RoomTile [,] room) {
+	// set the number of boxes/switches that are not on pressure plates, and hide/show puzzle panel
+	void SetNumberOfBoxesorSwitchesLeft (RoomTile [,] room) {
 		int count = 0;
-		DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(false); // hide panel containing box info
+		DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(containsBlockPuzzle || containsSwitchPuzzle); // show panel containing box/switch info if there is a puzzle in the room
 
-		foreach (RoomTile tile in room) {
-			if (tile.entity == box) {
-				count += 1; // increase count if box is found
-				DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(true); // show panel containing box info if box found
-				if (tile.plate == plate) {
-					count -= 1; // decrease count if box is on pressure plate
+		if (containsBlockPuzzle) {
+
+			foreach (RoomTile tile in room) {
+				if (tile.entity == box) {
+					count += 1; // increase count if box is found
+					if (tile.plate == plate) {
+						count -= 1; // decrease count if box is on pressure plate
+					}
 				}
 			}
-		}
 
-		Player.Instance.boxes = count; // set the number of boxes in the dungeon
-		DungeonUI.Instance.transform.FindChild("Puzzle Panel").FindChild("Box Value").GetComponent<Text>().text = Player.Instance.boxes.ToString(); // update UI
+			Player.Instance.boxes = count; // set the number of boxes in the dungeon
+
+			// update UI
+			DungeonUI.Instance.transform.FindChild ("Puzzle Panel").FindChild ("Box Or Switch Label").GetComponent<Text> ().text = "Boxes Left:";
+			DungeonUI.Instance.transform.FindChild ("Puzzle Panel").FindChild ("Box Or Switch Value").GetComponent<Text> ().text = Player.Instance.boxes.ToString ();
+		
+		} else if (containsSwitchPuzzle) {
+			Player.Instance.levers = 4;
+
+			// update UI
+			DungeonUI.Instance.transform.FindChild ("Puzzle Panel").FindChild ("Box Or Switch Label").GetComponent<Text> ().text = "Switches Left:";
+			DungeonUI.Instance.transform.FindChild ("Puzzle Panel").FindChild ("Box Or Switch Value").GetComponent<Text> ().text = Player.Instance.levers.ToString ();
+		}
 	}
 
 	// generate a puzzle room in the scene

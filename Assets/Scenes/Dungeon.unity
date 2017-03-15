@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 65234737}
   - component: {fileID: 65234736}
   m_Layer: 5
-  m_Name: Box Value
+  m_Name: Box Or Switch Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -994,6 +994,7 @@ MonoBehaviour:
   roomsLeftUntilBoss: 6
   dungeonVisual: {fileID: 0}
   enemyVisual: {fileID: 0}
+  puzzleVisual: {fileID: 0}
   iceTiles: {fileID: 1039489354002006, guid: 80649adce7bf6194ca88cd39e76cad4e, type: 2}
   waterTiles: {fileID: 1837050098405006, guid: 9475b0d78588b8e4e9a2b4d875c2bb20, type: 2}
   floorTiles: {fileID: 1341882960205880, guid: ba4185f3aa2e2ec45aba63de74ac53c0, type: 2}
@@ -1030,6 +1031,13 @@ MonoBehaviour:
   box: 4
   lever: 5
   plate: 1
+  lowerX: -1
+  lowerY: -1
+  puzzleWidth: -1
+  puzzleHeight: -1
+  containsBlockPuzzle: 0
+  containsSwitchPuzzle: 0
+  redrawSwitchPuzzleCountdown: 0
 --- !u!4 &836625401
 Transform:
   m_ObjectHideFlags: 0
@@ -2183,6 +2191,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1712929964}
+        m_MethodName: SetPauseMenuActiveToFalse
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1413944126
@@ -2305,7 +2324,7 @@ GameObject:
   - component: {fileID: 1461235629}
   - component: {fileID: 1461235628}
   m_Layer: 0
-  m_Name: Box Label
+  m_Name: Box Or Switch Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2327,7 +2346,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -21.02, y: 0}
-  m_SizeDelta: {x: 77, y: 30}
+  m_SizeDelta: {x: 100, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1461235628
 MonoBehaviour:
@@ -2879,6 +2898,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e88c7ba4f49c77448bf9dbc08f5201d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nextLevelMenuActive: 0
+  pauseMenuActive: 0
 --- !u!114 &1712929965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3411,6 +3432,7 @@ GameObject:
   - component: {fileID: 1956388692}
   - component: {fileID: 1956388691}
   - component: {fileID: 1956388690}
+  - component: {fileID: 1956388693}
   m_Layer: 5
   m_Name: Continue Button
   m_TagString: Untagged
@@ -3487,6 +3509,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1712929964}
+        m_MethodName: SetPauseMenuActiveToFalse
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1956388691
@@ -3522,6 +3555,16 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1956388688}
+--- !u!154 &1956388693
+TerrainCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1956388688}
+  m_Material: {fileID: 0}
+  m_Enabled: 1
+  m_TerrainData: {fileID: 0}
+  m_EnableTreeColliders: 1
 --- !u!1 &1972220844
 GameObject:
   m_ObjectHideFlags: 0

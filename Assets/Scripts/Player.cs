@@ -22,6 +22,7 @@ public class Player : MonoBehaviour {
     public int currentMercuryBladeShardLevel; //
     public int[] weaponShards = new int[4]; //(0, default) (1, hammer) (2, whip) (3, dagger) 
 	public int boxes; // number of boxes left to push
+	public int levers; // number of switches left to switch
     public GameObject coin;
     public GameObject gem;
 

@@ -93,6 +93,10 @@ public class DungeonUI : MonoBehaviour {
 		}
 	}
 
+	public void SetPauseMenuActiveToFalse() {
+		DungeonUI.Instance.pauseMenuActive = false;
+	}
+
 	public void quitDungeon () {
 		SceneManager.LoadScene(0);
 	}
