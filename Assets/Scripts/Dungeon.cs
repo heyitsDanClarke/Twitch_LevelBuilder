@@ -40,6 +40,7 @@ public class Dungeon : MonoBehaviour
 	public GameObject wallTiles; // wall tiles
 	public GameObject smallMob; // small monster
 	public GameObject largeMob; // large monster
+    public GameObject eyeBat; // swooping monster
 	public GameObject lootBox; // loot box
 	public GameObject boxTiles; // box
 	public GameObject leverTiles; // switch
@@ -66,6 +67,7 @@ public class Dungeon : MonoBehaviour
 	[HideInInspector]public int large = 3;
 	[HideInInspector]public int box = 4;
 	[HideInInspector]public int lever = 5;
+    [HideInInspector]public int eyeBatEntity = 6;
 
 	// plate IDs, IDs must be different
 	//[HideInInspector]public int empty = 0; // COMMENTED OUT, BUT STILL DO NOT MODIFY
@@ -319,6 +321,7 @@ public class Dungeon : MonoBehaviour
 		spawnLootChests (ref roomStructure);
 		spawnLargeMonsters (ref roomStructure);
 		spawnSmallMonsters (ref roomStructure);
+        SpawnEyeBats(ref roomStructure);
 
 		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
 		RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
@@ -690,8 +693,9 @@ public class Dungeon : MonoBehaviour
 		spawnLootChests (ref roomStructure);
 		spawnLargeMonsters (ref roomStructure);
 		spawnSmallMonsters (ref roomStructure);
+        SpawnEyeBats(ref roomStructure);
 
-		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
+        initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
 		RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
 
 	}
@@ -1271,7 +1275,7 @@ public class Dungeon : MonoBehaviour
 				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
 				if (CountAdjacentTiles (room, x, y, wall, 2) < 4 && CountAdjacentEntities (room, x, y, small, 7) == 0 && CountAdjacentEntities (room, x, y, large, 7) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no boxes / mobs nearby
 					// spawn small monster
-					GameObject tempEntity = (GameObject)Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
+					GameObject tempEntity = Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(enemyVisual.transform);
 					room [x, y].entity = small;
 					int mobCluster = random.Next (3, 6); // size of mob cluster (3 to 5 inclusive)
@@ -1299,15 +1303,26 @@ public class Dungeon : MonoBehaviour
 			}
 		}
 	}
-	
-	// clear all monsters from the array
-	void RemoveMonstersFromArray (ref RoomTile[,] room) {
+
+    void SpawnEyeBats(ref RoomTile[,] room)
+    {
+        int width = room.GetLength(0); // width of dungeon;
+        int height = room.GetLength(1); // height of dungeon;
+
+        Instantiate(eyeBat, new Vector3(width, height, 0.0f), transform.rotation).transform.SetParent(enemyVisual.transform);
+        Instantiate(eyeBat, new Vector3(0, height, 0.0f), transform.rotation).transform.SetParent(enemyVisual.transform);
+        Instantiate(eyeBat, new Vector3(0, 0, 0.0f), transform.rotation).transform.SetParent(enemyVisual.transform);
+        Instantiate(eyeBat, new Vector3(width, 0, 0.0f), transform.rotation).transform.SetParent(enemyVisual.transform);
+    }
+
+        // clear all monsters from the array
+        void RemoveMonstersFromArray (ref RoomTile[,] room) {
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 		
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				if (room[i, j].entity == large || room[i, j].entity == small) {
+				if (room[i, j].entity == large || room[i, j].entity == small || room[i,j].entity == eyeBatEntity) {
 					room[i, j].entity = empty;
 				}
 			}
