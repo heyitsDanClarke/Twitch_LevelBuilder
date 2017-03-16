@@ -9,10 +9,10 @@ public class DungeonUI : MonoBehaviour {
 
 	public static DungeonUI Instance;
 
-	[HideInInspector]
-	public bool nextLevelMenuActive; // boolean value stating whether the next level menu is active or not
-	[HideInInspector]
-	public bool pauseMenuActive; // boolean value stating whether the pause menu is active or not
+	[HideInInspector] public bool nextLevelMenuActive; // boolean value stating whether the next level menu is active or not
+	[HideInInspector] public bool pauseMenuActive; // boolean value stating whether the pause menu is active or not
+	[HideInInspector] public bool settingsMenuActive; // boolean value stating whether the settings menu is active or not
+
 	private GameObject nextLevelMenu;
 
 	// Use this for initialization
@@ -28,10 +28,24 @@ public class DungeonUI : MonoBehaviour {
 
 		nextLevelMenuActive = false;
 		pauseMenuActive = false;
+		settingsMenuActive = false;
+	}
+
+	void Start() {
+		// import variables from GameMaster
+		transform.FindChild ("Settings Menu").FindChild ("Music Volume Slider").GetComponent<Slider> ().value = GameMaster.Instance.music;
+		transform.FindChild("Settings Menu").FindChild("SFX Volume Slider").GetComponent<Slider>().value = GameMaster.Instance.sfx;
+
 	}
 
 	void Update () {
-		if (Input.GetKeyDown (KeyCode.Escape) && !nextLevelMenuActive) { // if user presses the ESC key and next level menu is not active
+		// update variables of GameMaster
+		GameMaster.Instance.music = transform.FindChild ("Settings Menu").FindChild ("Music Volume Slider").GetComponent<Slider> ().value;
+		GameMaster.Instance.sfx = transform.FindChild("Settings Menu").FindChild("SFX Volume Slider").GetComponent<Slider>().value;
+
+		if (Input.GetKeyDown (KeyCode.Escape) && settingsMenuActive) { // if user presses the ESC key and the settings menu is active
+			HideSettingsMenu();
+		} else if (Input.GetKeyDown (KeyCode.Escape) && !nextLevelMenuActive) { // if user presses the ESC key and the next level menu is not active
 			pauseMenuActive = !pauseMenuActive;
 			if (pauseMenuActive) {
 				showPauselMenu ();
@@ -91,6 +105,16 @@ public class DungeonUI : MonoBehaviour {
 				}
 			} catch (NullReferenceException) {}
 		}
+	}
+
+	public void ShowSettingsMenu() {
+		settingsMenuActive = true;
+		transform.FindChild("Settings Menu").gameObject.SetActive(true);
+	}
+
+	public void HideSettingsMenu() {
+		settingsMenuActive = false;
+		transform.FindChild("Settings Menu").gameObject.SetActive(false);
 	}
 
 	public void SetPauseMenuActiveToFalse() {

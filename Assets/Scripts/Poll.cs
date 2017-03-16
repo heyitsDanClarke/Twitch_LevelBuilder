@@ -8,12 +8,15 @@ using System;
 
 public class Poll : MonoBehaviour {
 
-	public GameObject iceBubble;
-	public GameObject fireBubble;
+
+
+
+	public Sprite iceIcon;
+	public Sprite fireIcon;
 
     public static Poll Instance;
 
-    [HideInInspector] public string _channel;
+    public string _channel;
 
     public Text _iceCountDisplay;
     public Text _fireCountDisplay;
@@ -41,6 +44,8 @@ public class Poll : MonoBehaviour {
     }
 
     void Start () {
+		_channel = GameMaster.Instance.username;
+
         if (TwitchChatClient.singleton != null)
         {
             TwitchChatClient.singleton.AddChatListener(OnChatMessage);
@@ -151,13 +156,18 @@ public class Poll : MonoBehaviour {
 		float y = UnityEngine.Random.Range (-CanvasHeight * 0.22f, -CanvasHeight * 0.33f);
 	
 		// instantiate shout bubble
-		GameObject newShoutBubble = instantiateBubble ((command == iceCommand)? iceBubble : fireBubble, x, y, bubbleSize, bubbleSize);
+		instantiateBubble ((command == iceCommand)? iceIcon : fireIcon, x, y, bubbleSize, bubbleSize);
 	}
 
 	// create UI element based on the lowerleft coordinates (x, y), and its width and height
-	private GameObject instantiateBubble(GameObject child, float x, float y, float width, float height)
+	private GameObject instantiateBubble(Sprite sprite, float x, float y, float width, float height)
 	{
-		GameObject newUI = Instantiate (child);
+		GameObject bubble = new GameObject ();
+		bubble.AddComponent<RectTransform> ();
+		bubble.AddComponent<Image> ();
+		bubble.GetComponent<Image> ().sprite = sprite;
+		bubble.tag = "Shout Bubble";
+		GameObject newUI = Instantiate (bubble);
 		newUI.transform.SetParent (transform);
 		newUI.GetComponent<RectTransform> ().anchoredPosition = new Vector2(x, y);
 		newUI.GetComponent<RectTransform> ().sizeDelta = new Vector2 (width, height);

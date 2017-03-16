@@ -149,6 +149,8 @@ public class Dungeon : MonoBehaviour
 		// reset variables
 		containsBlockPuzzle = false;
 		containsSwitchPuzzle = false;
+		Player.Instance.health = Player.Instance.maxHealth;
+		Player.Instance.charges = 0;
 
 		if (dungeonVisual != null)
 			Destroy(dungeonVisual);
@@ -170,19 +172,14 @@ public class Dungeon : MonoBehaviour
 		enemyVisual.transform.SetParent(transform);
 
 		if (roomsLeftUntilBoss > 0) {
-			int RoomType = random.Next (0, 2);
-			if (RoomType == 9001) {
+			if (random.NextDouble() < - 9001) {
 				roomWidth = 40;
 				roomHeight = 40;
 				GenerateCaveRoom (roomWidth, roomHeight);
-			} else if (RoomType > -1) {
+			} else {
 				roomWidth = 28;
 				roomHeight = 28;
 				GenerateHybridRoom (roomWidth, roomHeight);
-			} else {
-				roomWidth = 12;
-				roomHeight = 12;
-				GenerateBlockPuzzleRoom (roomWidth, roomHeight);
 			}
 		} else if (roomsLeftUntilBoss == 0) {
 			roomWidth = 15;
@@ -202,6 +199,10 @@ public class Dungeon : MonoBehaviour
 	// function for resetting the dungeon
 	public void ResetRoom()
 	{
+		// reset variables
+		Player.Instance.health = Player.Instance.maxHealth;
+		Player.Instance.charges = 0;
+
 		// reset redraw switch puzzle countdown if there is switch puzzle
 		if (redrawSwitchPuzzleCountdown >= 0) {
 			redrawSwitchPuzzleCountdown = switchPuzzleRefreshPeriod;
@@ -287,7 +288,7 @@ public class Dungeon : MonoBehaviour
 			}
 		}
 
-		// set player and exit locations
+		// set player
 		Player.Instance.transform.position = playerStartPosition;
 
 		return room;
@@ -510,11 +511,6 @@ public class Dungeon : MonoBehaviour
 			satisfied = satisfied && room [(int) playerStartPosition.x, (int) playerStartPosition.y].tile != lava;
 		} while (!satisfied);
 
-        // set player and exit locations
-		Player.Instance.transform.position = playerStartPosition;
-		GameObject tempExit = Instantiate (exit, exitPosition, transform.rotation);
-        tempExit.transform.SetParent(dungeonVisual.transform);
-
 		return room;
 	}
 
@@ -609,6 +605,11 @@ public class Dungeon : MonoBehaviour
 
 			}
 		}
+
+		// set player and exit locations
+		Player.Instance.transform.position = playerStartPosition;
+		GameObject tempExit = Instantiate (exit, exitPosition, transform.rotation);
+		tempExit.transform.SetParent(dungeonVisual.transform);
 	}
 
 	// function for generating a hybrid room
@@ -829,16 +830,6 @@ public class Dungeon : MonoBehaviour
 		return switchPuzzleRoom;
 	}
 
-	// function for generating a puzzle room
-	void GenerateBlockPuzzleRoom (int roomWidth, int roomHeight)
-	{
-		// create room
-		roomStructure = GenerateBlockPuzzleRoomArray (roomWidth, roomHeight);
-		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
-		InstantiateBlockPuzzleRoom (roomStructure);
-		InstantiateRoomBorder (roomWidth, roomHeight);
-	}
-
 	// generate an array containing the information of a block puzzle room in the scene
 	RoomTile[,] GenerateBlockPuzzleRoomArray (int width, int height, int lowerX = 0, int lowerY = 0, RoomTile [,] room = null)
 	{
@@ -1022,79 +1013,45 @@ public class Dungeon : MonoBehaviour
 
 	// set the number of boxes/switches that are not on pressure plates, and hide/show puzzle panel
 	void SetNumberOfBoxesorSwitchesLeft (RoomTile [,] room) {
-		int count = 0;
-		DungeonUI.Instance.transform.FindChild("Puzzle Panel").gameObject.SetActive(containsBlockPuzzle || containsSwitchPuzzle); // show panel containing box/switch info if there is a puzzle in the room
+
+		// reset variables
+		Player.Instance.boxes = 0;
+		Player.Instance.maxBoxes = 0;
+		Player.Instance.levers = 0;
+		Player.Instance.maxLevers = 0;
+
+		PlayerUI.Instance.transform.FindChild("Puzzle Bar").gameObject.SetActive(containsBlockPuzzle || containsSwitchPuzzle); // show panel containing box/switch info if there is a puzzle in the room
 
 		if (containsBlockPuzzle) {
+			int boxCount = 0;
+			int boxAtRightLocationCount = 0;
 
 			foreach (RoomTile tile in room) {
 				if (tile.entity == box) {
-					count += 1; // increase count if box is found
-					if (tile.plate == plate) {
-						count -= 1; // decrease count if box is on pressure plate
+					boxCount += 1; // increase count if box is found
+					boxAtRightLocationCount += 1;
+					if (tile.plate != plate) {
+						boxAtRightLocationCount -= 1; // decrease count if box is not on pressure plate
 					}
 				}
 			}
 
-			Player.Instance.boxes = count; // set the number of boxes in the dungeon
+			Player.Instance.boxes = boxAtRightLocationCount; // set the number of boxes at the right locations in the dungeon
+			Player.Instance.maxBoxes = boxCount; // set the number of boxes in the dungeon
 
 			// update UI
-			DungeonUI.Instance.transform.FindChild ("Puzzle Panel").FindChild ("Box Or Switch Label").GetComponent<Text> ().text = "Boxes Left:";
-			DungeonUI.Instance.transform.FindChild ("Puzzle Panel").FindChild ("Box Or Switch Value").GetComponent<Text> ().text = Player.Instance.boxes.ToString ();
+			PlayerUI.Instance.transform.FindChild ("Puzzle Bar").FindChild ("Icon").GetComponent<Image> ().sprite = PlayerUI.Instance.boxIcon;
+			PlayerUI.Instance.transform.FindChild ("Puzzle Bar").FindChild ("Value").GetComponent<Text> ().text = Player.Instance.boxes.ToString ();
+			PlayerUI.Instance.transform.FindChild ("Puzzle Bar").FindChild ("Max Value").GetComponent<Text> ().text = Player.Instance.maxBoxes.ToString ();
 		
 		} else if (containsSwitchPuzzle) {
-			Player.Instance.levers = 4;
+			Player.Instance.levers = 0;
+			Player.Instance.maxLevers = 4;
 
 			// update UI
-			DungeonUI.Instance.transform.FindChild ("Puzzle Panel").FindChild ("Box Or Switch Label").GetComponent<Text> ().text = "Switches Left:";
-			DungeonUI.Instance.transform.FindChild ("Puzzle Panel").FindChild ("Box Or Switch Value").GetComponent<Text> ().text = Player.Instance.levers.ToString ();
-		}
-	}
-
-	// generate a puzzle room in the scene
-	void InstantiateBlockPuzzleRoom (RoomTile [,] room) { // height of room, width of room
-		int width = room.GetLength(0); // width of dungeon;
-		int height = room.GetLength(1); // height of dungeon;
-
-		// reposition player
-		Player.Instance.transform.position = new Vector3(playerStartPosition.x, playerStartPosition.y + 0.05f, Player.Instance.transform.position.z);
-
-		// generate exit
-		GameObject tempExit = Instantiate (exit, new Vector2 (0f, 0f), transform.rotation);
-		tempExit.transform.SetParent(dungeonVisual.transform);
-
-		// create room
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				GameObject tempTile = null;
-				if (room [i, j].tile == air) {
-					tempTile = floorTiles;
-				} else if (room [i, j].tile == wall) {
-					tempTile = wallTiles;
-				} else if (room [i, j].tile == ice) {
-					tempTile = iceTiles;
-				} else if (room [i, j].tile == water) {
-					tempTile = waterTiles;
-				} else if (room [i, j].tile == lava) {
-					tempTile = lavaTiles;
-				} else if (room [i, j].tile == rail) {
-					tempTile = railTiles;
-				}
-				tempTile = Instantiate(tempTile, new Vector3(i, j, 0.0f), Quaternion.identity);
-				tempTile.transform.SetParent(dungeonVisual.transform);
-
-				GameObject tempEntity = null;
-				if (room [i, j].entity == box) {
-					tempEntity = boxTiles;
-					tempEntity = Instantiate (tempEntity, new Vector3 (i, j, 0.0f), Quaternion.identity);
-					tempEntity.transform.SetParent (dungeonVisual.transform);
-				}
-				if (room [i, j].plate == plate) {
-					tempEntity = pressurePlateTile;
-					tempEntity = Instantiate(tempEntity, new Vector3(i, j, 0.0f), Quaternion.identity);
-					tempEntity.transform.SetParent(dungeonVisual.transform);
-				}
-			}
+			PlayerUI.Instance.transform.FindChild ("Puzzle Bar").FindChild ("Icon").GetComponent<Image> ().sprite = PlayerUI.Instance.leverIcon;
+			PlayerUI.Instance.transform.FindChild ("Puzzle Bar").FindChild ("Value").GetComponent<Text> ().text = Player.Instance.levers.ToString ();
+			PlayerUI.Instance.transform.FindChild ("Puzzle Bar").FindChild ("Max Value").GetComponent<Text> ().text = Player.Instance.maxLevers.ToString ();
 		}
 	}
 
@@ -1217,7 +1174,7 @@ public class Dungeon : MonoBehaviour
 		int height = room.GetLength(1); // height of dungeon;
 
 		for (int spawnCount = 0; spawnCount < width * height / 625; spawnCount++) {
-			for (int spawnAttempt = 0; spawnAttempt < 32; spawnAttempt++) {
+			for (int spawnAttempt = 0; spawnAttempt < 128; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				float distanceToPlayer;
 				do {
@@ -1225,7 +1182,7 @@ public class Dungeon : MonoBehaviour
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
 				} while (room [x, y].tile != air || room [x, y].entity != empty || distanceToPlayer < 10.0f || CountAdjacentTiles (room, x, y, wall, 1) <= 3);
-				if (CountAdjacentTiles (room, x, y, wall, 2) > 11 && CountAdjacentEntities (room, x, y, loot, 16) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0 && CountAdjacentEntities (room, x, y, lever, 3) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there are no boxes/loots/switches chests nearby
+				if (CountAdjacentTiles (room, x, y, wall, 2) > 11 && CountAdjacentEntities (room, x, y, loot, 14) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0 && CountAdjacentEntities (room, x, y, lever, 3) == 0) { // if there are more than 11 wall tiles in the 5x5 square area and there are no boxes/loots/switches chests nearby
 					// spawn loot box
 					GameObject tempEntity = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(dungeonVisual.transform);
@@ -1241,7 +1198,7 @@ public class Dungeon : MonoBehaviour
 		int height = room.GetLength(1); // height of dungeon;
 
 		for (int spawnCount = 0; spawnCount < width * height / 625; spawnCount++) {
-			for (int spawnAttempt = 0; spawnAttempt < 512; spawnAttempt++) {
+			for (int spawnAttempt = 0; spawnAttempt < 128; spawnAttempt++) {
 				int x, y; // x and y coordinates of the room
 				float distanceToPlayer;
 				do {
@@ -1249,7 +1206,7 @@ public class Dungeon : MonoBehaviour
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
 				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
-				if (CountAdjacentTiles (room, x, y, wall, 3) < 4 && CountAdjacentEntities (room, x, y, large, 12) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no boxes / large monsters nearby
+				if (CountAdjacentTiles (room, x, y, wall, 3) < 6 && CountAdjacentEntities (room, x, y, large, 10) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no boxes / large monsters nearby
 					// spawn large monster
 					GameObject tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
 					tempEntity.transform.SetParent(enemyVisual.transform);

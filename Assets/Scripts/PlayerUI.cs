@@ -5,22 +5,42 @@ using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour {
 
+	public static PlayerUI Instance;
+
     Text healthValue;
 	Text coinValue;
-    Text mercuryBladeLevelValue;
+	Text iceValue;
+	Text fireValue;
+    Text chargesValue;
 
-    void Awake()
-    {
-		healthValue = transform.FindChild("Player Panel").FindChild("Health Value").GetComponent<Text>();
-		coinValue = transform.FindChild("Player Panel").FindChild("Coin Value").GetComponent<Text>();
-		mercuryBladeLevelValue = transform.FindChild("Player Panel").FindChild("Mercury Blade Value").GetComponent<Text>();
+	public Sprite boxIcon;
+	public Sprite leverIcon;
 
+    void Awake() {
+
+		if (Instance != null)
+		{
+			Destroy(gameObject);
+		}
+		else
+		{
+			Instance = this;
+		}
+
+		healthValue = transform.FindChild("Health Bar").FindChild("Value").GetComponent<Text>();
+		chargesValue = transform.FindChild("Charges Bar").FindChild("Value").GetComponent<Text>();
+		coinValue = transform.FindChild("Coins Panel").FindChild("Value").GetComponent<Text>();
+		iceValue = transform.FindChild("Ice Talisman Panel").FindChild("Value").GetComponent<Text>();
+		fireValue = transform.FindChild("Fire Talisman Panel").FindChild("Value").GetComponent<Text>();
     }
 
-	void FixedUpdate()
-    {
+	void Update() {
+		transform.FindChild("Health Bar").FindChild("Max Value").GetComponent<Text>().text = Player.Instance.maxHealth.ToString();
+		transform.FindChild("Charges Bar").FindChild("Max Value").GetComponent<Text>().text = Player.Instance.maxCharges.ToString();
         healthValue.text = Player.Instance.health.ToString();
+		chargesValue.text = Player.Instance.charges.ToString();
         coinValue.text = Player.Instance.coins.ToString();
-        mercuryBladeLevelValue.text = Player.Instance.currentMercuryBladeShardLevel.ToString();
+		iceValue.text = Player.Instance.iceTalismans.ToString();
+		fireValue.text = Player.Instance.fireTalismans.ToString();        
     }
 }

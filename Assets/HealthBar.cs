@@ -12,7 +12,10 @@ public class HealthBar : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(GetComponent<RectTransform>().localScale.x > 0)
-            GetComponent<RectTransform>().localScale = new Vector2(Mathf.Max( GetComponent<RectTransform>().localScale.x - Time.deltaTime,0),1);
+
+		float value = float.Parse (transform.FindChild ("Value").GetComponent<Text> ().text);
+		float maxValue = float.Parse(transform.FindChild ("Max Value").GetComponent<Text> ().text);
+
+		transform.FindChild("Bar").GetComponent<RectTransform> ().localScale = new Vector2 (Mathf.Max (value / maxValue, 0), 1);
 	}
 }

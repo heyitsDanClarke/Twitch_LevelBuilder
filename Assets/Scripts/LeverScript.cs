@@ -39,8 +39,8 @@ public class LeverScript : MonoBehaviour {
 			// activate/deactivate the switch
 			isActive = !isActive;
 			GetComponent<SpriteRenderer> ().color = isActive? new Color (0.3f, 0.3f, 1.0f): new Color (1.0f, 1.0f, 1.0f);
-			Player.Instance.levers += isActive? -1 : 1;
-			DungeonUI.Instance.transform.FindChild("Puzzle Panel").FindChild("Box Or Switch Value").GetComponent<Text>().text = Player.Instance.levers.ToString();
+			Player.Instance.levers += isActive? 1 : -1;
+			PlayerUI.Instance.transform.FindChild("Puzzle Bar").FindChild ("Value").GetComponent<Text>().text = Player.Instance.levers.ToString();
 
 		}
 	}
