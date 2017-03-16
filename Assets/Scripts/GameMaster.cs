@@ -15,10 +15,11 @@ public class GameMaster : MonoBehaviour {
     public int daggerCount;
     public int whipCount;
 
-	public float music;
-	public float sfx;
+	public float music; // music volume
+	public float sfx; // sfx volume
+	public string username; // twitch username
 
-	void Start ()
+	void Awake ()
     {
 		if (Instance != null) {
 			Destroy (gameObject);
@@ -26,5 +27,9 @@ public class GameMaster : MonoBehaviour {
 			Instance = this;
 			DontDestroyOnLoad(gameObject);
 		}
+
+		music = 0.4f;
+		sfx = 0.8f;
+		username = "uldrendan";
     }
 }

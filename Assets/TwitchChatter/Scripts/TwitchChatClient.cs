@@ -488,6 +488,9 @@ public class TwitchChatClient : MonoBehaviour
 
 	private void Awake()
 	{
+		// get twitch username from GameMaster
+		_autoJoinChannels = new string[] {GameMaster.Instance.username};
+
 		Debug.Assert(_singleton == null, "Attempting to create multiple instances of TwitchChatter.TwitchChatClient! Only one instance can exist at any time.");
 
 		_singleton = this;

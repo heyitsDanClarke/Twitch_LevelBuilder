@@ -8,15 +8,24 @@ using System;
 
 public class Poll : MonoBehaviour {
 
-	public GameObject shoutBubble;
+	public GameObject iceBubble;
+	public GameObject fireBubble;
 
     public static Poll Instance;
 
-    public string _channel;
+    [HideInInspector] public string _channel;
 
     public Text _iceCountDisplay;
     public Text _fireCountDisplay;
     public Text _weaponDisplay;
+
+
+	public const string iceCommand = "#ice";
+	public const string fireCommand = "#fire";
+
+	public const string hammerCommand = "#hammer";
+	public const string daggerCommand = "#dagger";
+	public const string whipCommand = "#whip";
 
     private List<string> _voterList;
 
@@ -48,8 +57,24 @@ public class Poll : MonoBehaviour {
 			
     }
 
-	void FixedUpdate() {
+	void Update() {
+		float CanvasWidth = GetComponent<CanvasScaler>().referenceResolution.x;
+		float CanvasHeight = GetComponent<CanvasScaler>().referenceResolution.y;
 
+		// make shout bubbles float
+		foreach (Transform child in transform) {
+			if (child.CompareTag ("Shout Bubble")) {
+				Vector2 bubbleAnchoredPosition = child.GetComponent<RectTransform> ().anchoredPosition;
+
+				// delete bubble if it is out of the screen
+				if (bubbleAnchoredPosition.x < -CanvasWidth * 0.55f) {
+					Destroy (child.gameObject);
+				} else {
+					// move bubble
+					child.GetComponent<RectTransform> ().anchoredPosition = new Vector2 (bubbleAnchoredPosition.x - Time.deltaTime * CanvasWidth / 3, bubbleAnchoredPosition.y);
+				}
+			}
+		}
 	}
 		
     private void OnDestroy()
@@ -66,13 +91,6 @@ public class Poll : MonoBehaviour {
         {
             bool isValidVote = false;
 
-			string iceCommand = "#ice";
-			string fireCommand = "#fire";
-
-            string hammerCommand = "#hammer";
-            string daggerCommand = "#dagger";
-            string whipCommand = "#whip";
-
             if (msg.chatMessagePlainText.Equals(iceCommand, StringComparison.InvariantCultureIgnoreCase)) {
                 isValidVote = true;
 
@@ -80,7 +98,7 @@ public class Poll : MonoBehaviour {
 
                 _iceCountDisplay.text = "" + GameMaster.Instance.iceCount;
 
-				createShoutBubble (msg.userName, iceCommand);
+				createShoutBubble (iceCommand);
             }
 
 			else if (msg.chatMessagePlainText.Equals(fireCommand, StringComparison.InvariantCultureIgnoreCase)) {
@@ -90,7 +108,7 @@ public class Poll : MonoBehaviour {
 
                 _fireCountDisplay.text = "" + GameMaster.Instance.fireCount;
 
-				createShoutBubble (msg.userName, fireCommand);
+				createShoutBubble (fireCommand);
             }
 
             else if (msg.chatMessagePlainText.Equals(hammerCommand, StringComparison.InvariantCultureIgnoreCase))
@@ -122,41 +140,30 @@ public class Poll : MonoBehaviour {
         }
     }
 
-	private void createShoutBubble (string username, string command) {
+	private void createShoutBubble (string command) {
 
-		float bubbleSize = 0.2f; // size of shout bubble relative to screen size;
+		float CanvasWidth = GetComponent<CanvasScaler>().referenceResolution.x;
+		float CanvasHeight = GetComponent<CanvasScaler>().referenceResolution.y;
+		float bubbleSize = CanvasHeight / 7.0f; // size of shout bubble relative to screen size;
 
-		float x = 0.0f, y = 0.0f; // lowerleft coordinates (x, y) of the shoutbubble
-
-		// determine lowerleft coordinates (x, y) of the shoutbubble randomly
-		float tempRandom = UnityEngine.Random.Range (0.0f, (Screen.width + Screen.height) * (1 - bubbleSize)); // random variable for determining the position of the shout bubble
-		if (UnityEngine.Random.Range (0.0f, 1.0f) < 0.5f) {
-			x = Math.Min (tempRandom, (Screen.width) * (1 - bubbleSize));
-			y = Math.Max (tempRandom - (Screen.width) * (1 - bubbleSize), 0.0f);
-		} else {
-			y = Math.Min (tempRandom, (Screen.height) * (1 - bubbleSize));
-			x = Math.Max (tempRandom - (Screen.height) * (1 - bubbleSize), 0.0f);
-		}
-
+		// center coordinates (x, y) of the icon bubble
+		float x = UnityEngine.Random.Range (CanvasWidth * 0.55f, CanvasWidth * 0.60f);
+		float y = UnityEngine.Random.Range (-CanvasHeight * 0.22f, -CanvasHeight * 0.33f);
+	
 		// instantiate shout bubble
-		GameObject newShoutBubble = instantiateUI (shoutBubble, x, y, Screen.width * bubbleSize, Screen.height * bubbleSize);
-		newShoutBubble.GetComponent<Image> ().color = (command == "#fire")? new Color (1.0f, 0.5f, 0.5f): new Color (0.5f, 0.5f, 1.0f);
-		newShoutBubble.transform.GetChild(0).GetComponent<Text>().text = username;
-		newShoutBubble.transform.GetChild(1).GetComponent<Text>().text = (command == "#fire")? "FIRE!" : "ICE!";
-		Destroy (newShoutBubble, 3.0f);
+		GameObject newShoutBubble = instantiateBubble ((command == iceCommand)? iceBubble : fireBubble, x, y, bubbleSize, bubbleSize);
 	}
 
 	// create UI element based on the lowerleft coordinates (x, y), and its width and height
-	private GameObject instantiateUI(GameObject child, float x, float y, float width, float height)
+	private GameObject instantiateBubble(GameObject child, float x, float y, float width, float height)
 	{
 		GameObject newUI = Instantiate (child);
 		newUI.transform.SetParent (transform);
-		newUI.GetComponent<RectTransform> ().anchoredPosition = new Vector2(0, 0);
-		newUI.GetComponent<RectTransform> ().offsetMax = new Vector2 (x + width, y + height);
-		newUI.GetComponent<RectTransform> ().offsetMin = new Vector2 (x, y);
-		newUI.GetComponent<RectTransform> ().anchorMax = new Vector2 (0.0f, 0.0f);
-		newUI.GetComponent<RectTransform> ().anchorMin = new Vector2 (0.0f, 0.0f);
-		newUI.GetComponent<RectTransform> ().pivot = new Vector2 (0.0f, 0.0f);
+		newUI.GetComponent<RectTransform> ().anchoredPosition = new Vector2(x, y);
+		newUI.GetComponent<RectTransform> ().sizeDelta = new Vector2 (width, height);
+		newUI.GetComponent<RectTransform> ().anchorMax = new Vector2 (0.5f, 0.5f);
+		newUI.GetComponent<RectTransform> ().anchorMin = new Vector2 (0.5f, 0.5f);
+		newUI.GetComponent<RectTransform> ().pivot = new Vector2 (0.5f, 0.5f);
 
 		return newUI;
 	}
