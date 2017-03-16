@@ -155,6 +155,17 @@ public class Player : MonoBehaviour {
             Destroy(coll.gameObject);
         }
 
+        if(coll.gameObject.tag == "Enemy")
+        {
+            if (health > 0)
+                health -= 1;
+            Vector3 enemyPosition = coll.transform.position;
+            //Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
+            //Destroy(coll.gameObject);
+            //Instantiate(coin, coinPosition, Quaternion.identity);
+            rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
+        }
+
     }
 
     void OnCollisionEnter2D(Collision2D coll)
