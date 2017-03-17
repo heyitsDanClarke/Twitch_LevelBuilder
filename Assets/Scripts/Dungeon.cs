@@ -112,22 +112,6 @@ public class Dungeon : MonoBehaviour
 
 	void FixedUpdate () {
 
-		// modify player's acceleration and drag
-		Player.Instance.acceleration = Player.Instance.defaultAcceleration;
-		Player.Instance.rb.drag = 0.0f;
-		try {
-			int x = (int) Math.Round(Player.Instance.transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
-			int y = (int) Math.Round(Player.Instance.transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
-			if (roomStructure[x, y].tile == ice) {
-				Player.Instance.acceleration = 2.0f; // make floor slippery if player is on ice
-			}
-			if (roomStructure[x, y].tile == water) {
-				Player.Instance.rb.drag = 25.0f; // slow down player if player is in water
-				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make water slightly slippery if player is on ice
-			}
-		} catch (IndexOutOfRangeException) {}
-
-
 		bool PauseMenuActive = false; // is there any menus active in the scene
 		try {
 			PauseMenuActive = DungeonUI.Instance.transform.Find ("Pause Menu").gameObject.activeSelf;
@@ -141,6 +125,62 @@ public class Dungeon : MonoBehaviour
 				redrawSwitchPuzzleCountdown = switchPuzzleRefreshPeriod;
 			}
 		}
+
+		// modify player's acceleration and drag
+		Player.Instance.acceleration = Player.Instance.defaultAcceleration;
+		Player.Instance.rb.drag = 0.0f;
+		try {
+			int x = (int) Math.Round(Player.Instance.transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			int y = (int) Math.Round(Player.Instance.transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			if (roomStructure[x, y].tile == ice) {
+				Player.Instance.acceleration = 2.0f; // make floor slippery if player is on ice
+			} else if (roomStructure[x, y].tile == water) {
+				Player.Instance.rb.drag = 25.0f; // slow down player if player is in water
+				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make water slightly slippery
+			}
+
+			// player on lava
+			if (roomStructure[x, y].tile == lava) {
+				Player.Instance.rb.drag = 5.0f; // slow down player a bit if player is in lava
+				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make lava slightly slippery
+				Player.Instance.fireResistanceCooldown = Player.Instance.maxFireResistanceCooldown; // reset cooldown;
+
+				Player.Instance.fireResistance = Mathf.Max(0.0f, Player.Instance.fireResistance - (PauseMenuActive? 0.0f : Time.deltaTime / 2.5f));
+
+				if (Player.Instance.fireResistance <= 0.0f) { // player is on fire if the fire resistance meter is empty
+					Player.Instance.onFire = true;
+				}
+			} else {
+				Player.Instance.fireResistanceCooldown = Mathf.Max(0.0f, Player.Instance.fireResistanceCooldown - (PauseMenuActive? 0.0f : Time.deltaTime));
+
+				// regenerate fire resistance meter if the cooldown is over
+				if (Player.Instance.fireResistanceCooldown <= 0.0f) {
+					Player.Instance.onFire = false;
+					Player.Instance.fireResistance = Mathf.Min(1.0f, Player.Instance.fireResistance + (PauseMenuActive? 0.0f : Time.deltaTime / 10.0f));
+				}
+			}
+				
+			// apply lava damage over time
+			if (Player.Instance.onFire) {
+				Player.Instance.fireDamageCooldown = Mathf.Max(0.0f, Player.Instance.fireDamageCooldown - (PauseMenuActive? 0.0f : Time.deltaTime));
+				if (Player.Instance.fireDamageCooldown <= 0.0f) { // player is being damaged after the damage cooldown
+					ApplyLavaDamage();
+					Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown; // resets cooldown
+				}
+			} else {
+				Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown;
+			}
+
+		} catch (IndexOutOfRangeException) {}
+
+
+
+	}
+
+	public void ApplyLavaDamage() {
+		if (Player.Instance.health > 0) {
+			Player.Instance.health -= 1;
+		}
 	}
 
 	// function for generating a random dungeon
@@ -151,6 +191,8 @@ public class Dungeon : MonoBehaviour
 		containsSwitchPuzzle = false;
 		Player.Instance.health = Player.Instance.maxHealth;
 		Player.Instance.charges = 0;
+		Player.Instance.fireResistance = 1.0f;
+		Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown;
 
 		if (dungeonVisual != null)
 			Destroy(dungeonVisual);
@@ -202,6 +244,8 @@ public class Dungeon : MonoBehaviour
 		// reset variables
 		Player.Instance.health = Player.Instance.maxHealth;
 		Player.Instance.charges = 0;
+		Player.Instance.fireResistance = 1.0f;
+		Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown;
 
 		// reset redraw switch puzzle countdown if there is switch puzzle
 		if (redrawSwitchPuzzleCountdown >= 0) {

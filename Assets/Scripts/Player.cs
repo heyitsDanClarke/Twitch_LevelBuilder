@@ -21,6 +21,13 @@ public class Player : MonoBehaviour {
 	public int healthRegeneration; // health regeneration speed
 	public int maxCharges; // max charges
 	public int charges; // current charges
+	public float fireResistance; // current fire resistance
+	public float maxFireResistance; // max fire resistance
+	public float fireResistanceCooldown; // cooldown for fire resistance meter to regenerate if the player was on lava
+	public float maxFireResistanceCooldown; // max cooldown time
+	public float fireDamageCooldown; // fire damagee cooldown
+	public float maxFireDamageCooldown; // max fire damage cooldown time
+	public bool onFire;
 	public int coins;
 	public int iceTalismans;
 	public int fireTalismans;
@@ -55,9 +62,15 @@ public class Player : MonoBehaviour {
 		speed = defaultSpeed;
 		acceleration = defaultAcceleration;
 
-		maxHealth = 20;
+		maxHealth = 42;
 		maxCharges = 10;
+		maxFireResistance = 1.0f;
+		maxFireResistanceCooldown = 0.5f;
+		maxFireDamageCooldown = 0.5f;
 		health = maxHealth;
+		fireResistance = maxFireResistance;
+		fireDamageCooldown = maxFireDamageCooldown;
+		onFire = false;
 
         //weaponShards[0] = 0;
         //weaponShards[1] = 1;

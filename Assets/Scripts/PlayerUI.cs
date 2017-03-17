@@ -12,6 +12,7 @@ public class PlayerUI : MonoBehaviour {
 	Text iceValue;
 	Text fireValue;
     Text chargesValue;
+	Text fireResistanceValue;
 
 	public Sprite boxIcon;
 	public Sprite leverIcon;
@@ -29,18 +30,21 @@ public class PlayerUI : MonoBehaviour {
 
 		healthValue = transform.FindChild("Health Bar").FindChild("Value").GetComponent<Text>();
 		chargesValue = transform.FindChild("Charges Bar").FindChild("Value").GetComponent<Text>();
+		fireResistanceValue = transform.FindChild("Fire Resistance Bar").FindChild("Value").GetComponent<Text>();
 		coinValue = transform.FindChild("Coins Panel").FindChild("Value").GetComponent<Text>();
 		iceValue = transform.FindChild("Ice Talisman Panel").FindChild("Value").GetComponent<Text>();
 		fireValue = transform.FindChild("Fire Talisman Panel").FindChild("Value").GetComponent<Text>();
     }
 
 	void Update() {
-		transform.FindChild("Health Bar").FindChild("Max Value").GetComponent<Text>().text = Player.Instance.maxHealth.ToString();
-		transform.FindChild("Charges Bar").FindChild("Max Value").GetComponent<Text>().text = Player.Instance.maxCharges.ToString();
-        healthValue.text = Player.Instance.health.ToString();
-		chargesValue.text = Player.Instance.charges.ToString();
-        coinValue.text = Player.Instance.coins.ToString();
-		iceValue.text = Player.Instance.iceTalismans.ToString();
-		fireValue.text = Player.Instance.fireTalismans.ToString();        
+		transform.FindChild("Health Bar").FindChild("Max Value").GetComponent<Text>().text = Player.Instance.maxHealth.ToString ();
+		transform.FindChild("Charges Bar").FindChild("Max Value").GetComponent<Text>().text = Player.Instance.maxCharges.ToString ();
+		transform.FindChild ("Fire Resistance Bar").FindChild ("Max Value").GetComponent<Text> ().text = Player.Instance.maxFireResistance.ToString ();
+		healthValue.text = Player.Instance.health.ToString ();
+		chargesValue.text = Player.Instance.charges.ToString ();
+		fireResistanceValue.text = Player.Instance.fireResistance.ToString ();
+		coinValue.text = Player.Instance.coins.ToString ();
+		iceValue.text = Player.Instance.iceTalismans.ToString ();
+		fireValue.text = Player.Instance.fireTalismans.ToString ();
     }
 }
