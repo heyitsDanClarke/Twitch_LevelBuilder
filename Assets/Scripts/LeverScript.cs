@@ -27,14 +27,21 @@ public class LeverScript : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) 
 	{
-		bool PauseMenuActive = false; // is there any menus active in the scene
-
+		bool nextLevelMenuActive = false; // is the next level menu active in the scene
+		bool pauseMenuActive = false; // is the pause menu active in the scene
+		bool deathMenuActive = false; // is the death menu active in the scene
 		try {
-			PauseMenuActive = DungeonUI.Instance.transform.Find ("Pause Menu").gameObject.activeSelf;
+			nextLevelMenuActive = DungeonUI.Instance.transform.Find ("Next Level Menu").gameObject.activeSelf;
+		} catch (NullReferenceException) {}
+		try {
+			pauseMenuActive = DungeonUI.Instance.transform.Find ("Pause Menu").gameObject.activeSelf;
+		} catch (NullReferenceException) {}
+		try {
+			deathMenuActive = DungeonUI.Instance.transform.Find ("Death Menu").gameObject.activeSelf;
 		} catch (NullReferenceException) {}
 
 		// if player touches the block and the player is holding down the space button
-		if (other.gameObject.CompareTag("Player") && !PauseMenuActive && Input.GetKeyDown(KeyCode.Space) )
+		if (other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.Space) && !nextLevelMenuActive && !pauseMenuActive && !deathMenuActive)
 		{ 
 			// activate/deactivate the switch
 			isActive = !isActive;

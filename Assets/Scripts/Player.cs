@@ -88,7 +88,7 @@ public class Player : MonoBehaviour {
 		try {
 			if (DungeonUI.Instance != null) {
 				foreach (Transform child in DungeonUI.Instance.transform) {
-					if (child.gameObject.name == "Next Level Menu" || child.gameObject.name == "Pause Menu")
+					if (child.gameObject.name == "Next Level Menu" || child.gameObject.name == "Pause Menu" || child.gameObject.name == "Death Menu")
 					menusActive = menusActive || child.gameObject.activeSelf;
 				}
 			}

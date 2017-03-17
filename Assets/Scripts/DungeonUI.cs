@@ -12,6 +12,7 @@ public class DungeonUI : MonoBehaviour {
 	[HideInInspector] public bool nextLevelMenuActive; // boolean value stating whether the next level menu is active or not
 	[HideInInspector] public bool pauseMenuActive; // boolean value stating whether the pause menu is active or not
 	[HideInInspector] public bool settingsMenuActive; // boolean value stating whether the settings menu is active or not
+	[HideInInspector] public bool deathMenuActive; // boolean value stating whether the death menu is active or not
 
 	private GameObject nextLevelMenu;
 
@@ -29,6 +30,7 @@ public class DungeonUI : MonoBehaviour {
 		nextLevelMenuActive = false;
 		pauseMenuActive = false;
 		settingsMenuActive = false;
+		deathMenuActive = false;
 	}
 
 	void Start() {
@@ -45,13 +47,17 @@ public class DungeonUI : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.Escape) && settingsMenuActive) { // if user presses the ESC key and the settings menu is active
 			HideSettingsMenu();
-		} else if (Input.GetKeyDown (KeyCode.Escape) && !nextLevelMenuActive) { // if user presses the ESC key and the next level menu is not active
+		} else if (Input.GetKeyDown (KeyCode.Escape) && !nextLevelMenuActive && !deathMenuActive) { // if user presses the ESC key and the next level menu is not active
 			pauseMenuActive = !pauseMenuActive;
 			if (pauseMenuActive) {
 				showPauselMenu ();
 			} else {
 				hidePauseMenu ();
 			}
+		}
+
+		if (Player.Instance.health <= 0 && !nextLevelMenuActive && !pauseMenuActive) {
+			ShowDeathMenu ();
 		}
 	}
 
@@ -115,6 +121,16 @@ public class DungeonUI : MonoBehaviour {
 	public void HideSettingsMenu() {
 		settingsMenuActive = false;
 		transform.FindChild("Settings Menu").gameObject.SetActive(false);
+	}
+
+	public void ShowDeathMenu() {
+		deathMenuActive = true;
+		transform.FindChild("Death Menu").gameObject.SetActive(true);
+	}
+
+	public void HideDeathMenu() {
+		deathMenuActive = false;
+		transform.FindChild("Death Menu").gameObject.SetActive(false);
 	}
 
 	public void SetPauseMenuActiveToFalse() {
