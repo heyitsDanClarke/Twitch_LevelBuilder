@@ -34,7 +34,7 @@ public class LeverScript : MonoBehaviour {
 		} catch (NullReferenceException) {}
 
 		// if player touches the block and the player is holding down the space button
-		if (other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.Space) && !PauseMenuActive)
+		if (other.gameObject.CompareTag("Player") && !PauseMenuActive && Input.GetKeyDown(KeyCode.Space) )
 		{ 
 			// activate/deactivate the switch
 			isActive = !isActive;
