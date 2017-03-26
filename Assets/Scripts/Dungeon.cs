@@ -1280,26 +1280,28 @@ public class Dungeon : MonoBehaviour
 					tempEntity.transform.SetParent(enemyVisual.transform);
 					room [x, y].entity = small;
 					int mobCluster = random.Next (3, 6); // size of mob cluster (3 to 5 inclusive)
-					for (int mobCount = 1; mobCount < mobCluster; mobCount++) {
-						for (int spawnClusterAttempt = 0; spawnClusterAttempt < 12; spawnClusterAttempt++) {
-							int i, j; // x and y coordinates of the room
-							while (true) {
-								// choose a point within 2 distance from the first small mob in the cluster
-								i = random.Next (x - 2, x + 2 + 1);
-								j = random.Next (y - 2, y + 2 + 1);
-								try {
-									if (room [i, j].tile != wall && room [i, j].entity != small && room [i, j].entity != large && room [i, j].entity != loot) {
-										break;
-									}
-								} catch (IndexOutOfRangeException) {}
-							}
-							tempEntity = Instantiate(smallMob, new Vector3(i, j, 0.0f), transform.rotation);
-							tempEntity.transform.SetParent(enemyVisual.transform);
-							room [i, j].entity = small;
-							break;
-						}
-					}
-					break;
+                    for (int mobCount = 1; mobCount < mobCluster; mobCount++)
+                    {
+                        int i, j; // x and y coordinates of the room
+                        while (true)
+                        {
+                            // choose a point within 2 distance from the first small mob in the cluster
+                            i = random.Next(x - 2, x + 2 + 1);
+                            j = random.Next(y - 2, y + 2 + 1);
+                            try
+                            {
+                                if (room[i, j].tile != wall && room[i, j].entity != small && room[i, j].entity != large && room[i, j].entity != loot)
+                                {
+                                    break;
+                                }
+                            }
+                            catch (IndexOutOfRangeException) { }
+                        }
+                        tempEntity = Instantiate(smallMob, new Vector3(i, j, 0.0f), transform.rotation);
+                        tempEntity.transform.SetParent(enemyVisual.transform);
+                        room[i, j].entity = small;
+                    }
+                    break;
 				}
 			}
 		}
