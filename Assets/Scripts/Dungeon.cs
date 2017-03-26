@@ -604,7 +604,6 @@ public class Dungeon : MonoBehaviour
 
 					if (nearAir) {
 						// set border tiles
-						float hotTileTransparency = Mathf.Clamp01 (room [i, j].temperature * 10 - 5);
 						GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // cold borders
 						tempBorderTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
 						tempTile = Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // hot borders
@@ -813,7 +812,6 @@ public class Dungeon : MonoBehaviour
 
 					if (nearAir) {
 						// set border tiles
-						float hotTileTransparency = Mathf.Clamp01 (room [i, j].temperature * 10 - 5);
 						GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // cold borders
 						tempBorderTile.transform.SetParent(puzzleVisual.transform);
 						tempTile = Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // hot borders

@@ -1986,12 +1986,12 @@ MonoBehaviour:
   dungeonVisual: {fileID: 0}
   enemyVisual: {fileID: 0}
   puzzleVisual: {fileID: 0}
-  iceTiles: {fileID: 1039489354002006, guid: 80649adce7bf6194ca88cd39e76cad4e, type: 2}
+  iceTiles: {fileID: 1739702424432232, guid: 88af11e5d6902d14cbe1c23f4d436306, type: 2}
   waterTiles: {fileID: 1837050098405006, guid: 9475b0d78588b8e4e9a2b4d875c2bb20, type: 2}
   floorTiles: {fileID: 1341882960205880, guid: ba4185f3aa2e2ec45aba63de74ac53c0, type: 2}
   hotFloorTiles: {fileID: 1059184092769140, guid: fc76d76c571a4be48b691c152809b760,
     type: 2}
-  lavaTiles: {fileID: 1844837523870910, guid: 7648773d5ae60eb4cbc5fc1067c06b97, type: 2}
+  lavaTiles: {fileID: 1441546135964624, guid: 77ad987bef89ab845bac7bc4a274dc18, type: 2}
   railTiles: {fileID: 1085086198005284, guid: 7184b0bd30454ef43af2cf43c3b33c9d, type: 2}
   borderTiles: {fileID: 1733679469997464, guid: b8936575995da874ca5eefaba0ec14f2,
     type: 2}

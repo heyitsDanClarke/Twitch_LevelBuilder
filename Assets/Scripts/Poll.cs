@@ -64,7 +64,6 @@ public class Poll : MonoBehaviour {
 
 	void Update() {
 		float CanvasWidth = GetComponent<CanvasScaler>().referenceResolution.x;
-		float CanvasHeight = GetComponent<CanvasScaler>().referenceResolution.y;
 
 		// make shout bubbles float
 		foreach (Transform child in transform) {
