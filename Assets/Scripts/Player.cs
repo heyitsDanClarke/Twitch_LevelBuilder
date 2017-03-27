@@ -39,10 +39,21 @@ public class Player : MonoBehaviour {
     public GameObject coin;
     public GameObject gem;
 
+	/* weapon type attribute: 0 - sword ;  1-spear ; 2-polearm ; 3-dagger */
+	public int weaponType;
+
     [HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
     [HideInInspector]
     public Animator anim;
+
+
+
+	public RuntimeAnimatorController Spear_RAC;
+	public RuntimeAnimatorController Polearm_RAC;
+	public RuntimeAnimatorController Sword_RAC;
+	public RuntimeAnimatorController Dagger_RAC;
+
 
 	void Awake()
     {
@@ -56,6 +67,12 @@ public class Player : MonoBehaviour {
         }
 
 		anim = GetComponent<Animator>();
+
+		//anim.runtimeAnimatorController = Resources.Load ("Assets/Animations/Player/SwordAC") as RuntimeAnimatorController;
+
+
+		anim.runtimeAnimatorController = Sword_RAC; 
+
 		rb = GetComponent<Rigidbody2D>();
 		rb.mass = 1.0f; // mass of player
 		rb.drag = 0.0f; // drag of player
@@ -72,6 +89,7 @@ public class Player : MonoBehaviour {
 		fireDamageCooldown = maxFireDamageCooldown;
 		onFire = false;
 
+		weaponType = 0;
         //weaponShards[0] = 0;
         //weaponShards[1] = 1;
         //weaponShards[2] = 2;
@@ -106,13 +124,34 @@ public class Player : MonoBehaviour {
 		rb.AddForce (velocityDifference);
 
 		
-        HandleMovementAnimations();
+        //HandleMovementAnimations();
+
+		HandleMovement ();
 
         if (Input.GetKey("j"))
         {
             StopAllCoroutines();
             StartCoroutine(MeleeAttack());
         }
+
+		if (Input.GetKey ("r")) {
+			StopAllCoroutines ();
+			switch (weaponType) {
+			case 0:
+				anim.runtimeAnimatorController = Sword_RAC; 
+				break;
+			case 1:
+				anim.runtimeAnimatorController = Spear_RAC; 
+				break;
+			case 2:
+				anim.runtimeAnimatorController = Polearm_RAC; 
+				break;
+			case 3:
+				anim.runtimeAnimatorController = Dagger_RAC; 
+				break;
+			}
+
+		}
         
 
 	}
@@ -217,6 +256,32 @@ public class Player : MonoBehaviour {
         anim.SetInteger("VerticalMovement", (int)Input.GetAxisRaw("Vertical"));
         anim.SetInteger("HorizontalMovement", (int)Input.GetAxisRaw("Horizontal"));
     }
+
+	void HandleMovement()
+	{
+		
+		float input_x = Input.GetAxisRaw("Horizontal");
+		float input_y = Input.GetAxisRaw("Vertical");
+
+		bool isWalking = (Mathf.Abs (input_x) + Mathf.Abs (input_y)) > 0.1f;
+
+		anim.SetBool ("isWalking", isWalking);
+
+		if (isWalking) {
+			anim.SetFloat ("x", input_x);
+			anim.SetFloat ("y", input_y);
+
+			transform.position += new Vector3 (input_x, input_y, 0).normalized * Time.deltaTime;
+		}
+
+		if (Input.GetKeyDown (KeyCode.I)) {
+
+			//anim.transform.localScale += new Vector3 (6.3f, 6.3f, 6.3f);
+			anim.SetTrigger ("meleeAttack");
+
+
+		}
+	}
 
     IEnumerator MeleeAttack()
     {
