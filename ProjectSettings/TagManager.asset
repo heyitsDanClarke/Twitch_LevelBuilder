@@ -12,7 +12,6 @@ TagManager:
   - Water
   - Cold Floor
   - Hot Floor
-  - Enemy
   - Shout Bubble
   - Next Level Menu
   - Pause Menu
@@ -23,6 +22,10 @@ TagManager:
   - Loot
   - Box
   - rail
+  - Large Monster
+  - Small Monster
+  - Undefined
+  - Eyebat
   layers:
   - Default
   - TransparentFX

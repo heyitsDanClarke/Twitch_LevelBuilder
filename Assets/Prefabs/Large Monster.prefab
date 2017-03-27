@@ -61,7 +61,7 @@ GameObject:
   - component: {fileID: 58882197496843636}
   m_Layer: 0
   m_Name: Large Monster
-  m_TagString: Enemy
+  m_TagString: Large Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -228,6 +228,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coin: {fileID: 1312639025012346, guid: f1ef7a530ac27cf49b1fb860e5f8c12d, type: 2}
+  lootBox: {fileID: 1858367021845136, guid: 763eedcf09fa69f44ad2dada16c9cb4b, type: 2}
   target: {fileID: 0}
   updateRate: 2
   speed: 1.5

@@ -179,7 +179,7 @@ public class Player : MonoBehaviour {
             Destroy(coll.gameObject);
         }
 
-        if(coll.gameObject.tag == "Enemy")
+		if(coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
         {
             if (health > 0)
                 health -= 1;
@@ -194,7 +194,7 @@ public class Player : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == "Enemy")
+		if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
         {
             if (health > 0)
                 health -= 1;

@@ -8,6 +8,7 @@ using Pathfinding;
 public class MonsterAI : MonoBehaviour
 {
     public GameObject coin;
+	public GameObject lootBox;
 
     // What to chase?
     public Transform target;
@@ -149,10 +150,21 @@ public class MonsterAI : MonoBehaviour
         {
             health -= 1;
             if (health <= 0)
-            {
-                Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
-                GameObject treasureObject = Instantiate(coin, coinPosition, Quaternion.identity);
-                treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+			{
+				if (CompareTag ("Small Monster")) {
+					Vector2 coinPosition = new Vector2 (transform.position.x + 1, transform.position.y + 1);
+					GameObject treasureObject = Instantiate (coin, coinPosition, Quaternion.identity);
+					treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+				} else if (CompareTag ("Large Monster")) {
+					// set integer positions of the loot chest
+					int x = (int) transform.position.x;
+					int y = (int) transform.position.y;
+
+					// spawn loot box
+					GameObject treasureObject = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
+					treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+				}
+
                 Destroy(gameObject);
             }
             else

@@ -18,7 +18,7 @@ public class PressurePlateScript : MonoBehaviour {
 	{
 		if (other.gameObject.CompareTag("Box"))
 		{
-			other.gameObject.GetComponent<SpriteRenderer> ().color = new Color (1, 0.4f, 0, 0.5f);
+			other.gameObject.GetComponent<SpriteRenderer> ().color = new Color (0.9f, 0.7f, 0.4f);
 		}
 	}
 
@@ -26,7 +26,7 @@ public class PressurePlateScript : MonoBehaviour {
 	{
 		if (other.gameObject.CompareTag("Box"))
 		{
-			other.gameObject.GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, 0.5f);
+			other.gameObject.GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1);
 			Player.Instance.boxes -= 1;
 			PlayerUI.Instance.transform.FindChild("Puzzle Bar").FindChild ("Value").GetComponent<Text>().text = Player.Instance.boxes.ToString();
 		}
