@@ -27,20 +27,27 @@ public class LeverScript : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) 
 	{
-		bool PauseMenuActive = false; // is there any menus active in the scene
-
+		bool nextLevelMenuActive = false; // is the next level menu active in the scene
+		bool pauseMenuActive = false; // is the pause menu active in the scene
+		bool deathMenuActive = false; // is the death menu active in the scene
 		try {
-			PauseMenuActive = DungeonUI.Instance.transform.Find ("Pause Menu").gameObject.activeSelf;
+			nextLevelMenuActive = DungeonUI.Instance.transform.Find ("Next Level Menu").gameObject.activeSelf;
+		} catch (NullReferenceException) {}
+		try {
+			pauseMenuActive = DungeonUI.Instance.transform.Find ("Pause Menu").gameObject.activeSelf;
+		} catch (NullReferenceException) {}
+		try {
+			deathMenuActive = DungeonUI.Instance.transform.Find ("Death Menu").gameObject.activeSelf;
 		} catch (NullReferenceException) {}
 
 		// if player touches the block and the player is holding down the space button
-		if (other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.Space) && !PauseMenuActive)
+		if (other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.Space) && !nextLevelMenuActive && !pauseMenuActive && !deathMenuActive)
 		{ 
 			// activate/deactivate the switch
 			isActive = !isActive;
 			GetComponent<SpriteRenderer> ().color = isActive? new Color (0.3f, 0.3f, 1.0f): new Color (1.0f, 1.0f, 1.0f);
-			Player.Instance.levers += isActive? -1 : 1;
-			DungeonUI.Instance.transform.FindChild("Puzzle Panel").FindChild("Box Or Switch Value").GetComponent<Text>().text = Player.Instance.levers.ToString();
+			Player.Instance.levers += isActive? 1 : -1;
+			PlayerUI.Instance.transform.FindChild("Puzzle Bar").FindChild ("Value").GetComponent<Text>().text = Player.Instance.levers.ToString();
 
 		}
 	}

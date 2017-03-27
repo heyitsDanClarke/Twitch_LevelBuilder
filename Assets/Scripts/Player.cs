@@ -16,13 +16,26 @@ public class Player : MonoBehaviour {
 	[HideInInspector]
 	public float defaultAcceleration = 10.0f; // default acceleration of player
 	public int damage; // base damage
-	public int health = 8; // base hit points
+	public int maxHealth; // max hit points
+	public int health; // current hit points
 	public int healthRegeneration; // health regeneration speed
+	public int maxCharges; // max charges
+	public int charges; // current charges
+	public float fireResistance; // current fire resistance
+	public float maxFireResistance; // max fire resistance
+	public float fireResistanceCooldown; // cooldown for fire resistance meter to regenerate if the player was on lava
+	public float maxFireResistanceCooldown; // max cooldown time
+	public float fireDamageCooldown; // fire damagee cooldown
+	public float maxFireDamageCooldown; // max fire damage cooldown time
+	public bool onFire;
 	public int coins;
-    public int currentMercuryBladeShardLevel; //
+	public int iceTalismans;
+	public int fireTalismans;
     public int[] weaponShards = new int[4]; //(0, default) (1, hammer) (2, whip) (3, dagger) 
-	public int boxes; // number of boxes left to push
+	public int boxes; // number of boxes pushed to correct places
+	public int maxBoxes; // number of boxes in the puzzle
 	public int levers; // number of switches left to switch
+	public int maxLevers; // number of switches in the puzzle
     public GameObject coin;
     public GameObject gem;
 
@@ -48,6 +61,17 @@ public class Player : MonoBehaviour {
 		rb.drag = 0.0f; // drag of player
 		speed = defaultSpeed;
 		acceleration = defaultAcceleration;
+
+		maxHealth = 42;
+		maxCharges = 10;
+		maxFireResistance = 1.0f;
+		maxFireResistanceCooldown = 0.5f;
+		maxFireDamageCooldown = 0.5f;
+		health = maxHealth;
+		fireResistance = maxFireResistance;
+		fireDamageCooldown = maxFireDamageCooldown;
+		onFire = false;
+
         //weaponShards[0] = 0;
         //weaponShards[1] = 1;
         //weaponShards[2] = 2;
@@ -64,7 +88,7 @@ public class Player : MonoBehaviour {
 		try {
 			if (DungeonUI.Instance != null) {
 				foreach (Transform child in DungeonUI.Instance.transform) {
-					if (child.gameObject.name == "Next Level Menu" || child.gameObject.name == "Pause Menu")
+					if (child.gameObject.name == "Next Level Menu" || child.gameObject.name == "Pause Menu" || child.gameObject.name == "Death Menu")
 					menusActive = menusActive || child.gameObject.activeSelf;
 				}
 			}
@@ -149,7 +173,7 @@ public class Player : MonoBehaviour {
         }
         if (coll.gameObject.tag == "Shard")
         {
-            currentMercuryBladeShardLevel += 1;
+            charges += 1;
             int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
 
             Destroy(coll.gameObject);
@@ -201,6 +225,6 @@ public class Player : MonoBehaviour {
         anim.SetTrigger("Attack");
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(0).gameObject.SetActive(false);
-        currentMercuryBladeShardLevel -= 1;
+        charges -= 1;
     }
 }
