@@ -38,6 +38,7 @@ public class MonsterAI : MonoBehaviour
     bool aggressive;
 
     public int health;
+	public int maxHealth;
 
     void Awake()
     {

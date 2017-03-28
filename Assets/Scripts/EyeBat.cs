@@ -10,6 +10,7 @@ public class EyeBat : MonoBehaviour {
     public float seekSpeed = 2;
     public float swoopSpeed = 5;
     public int health = 1;
+	public int maxHealth = 1;
     public GameObject coin;
 	
 	void Start () {
