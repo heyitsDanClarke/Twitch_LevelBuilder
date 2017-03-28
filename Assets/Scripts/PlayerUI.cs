@@ -32,8 +32,8 @@ public class PlayerUI : MonoBehaviour {
 		chargesValue = transform.FindChild("Charges Bar").FindChild("Value").GetComponent<Text>();
 		fireResistanceValue = transform.FindChild("Fire Resistance Bar").FindChild("Value").GetComponent<Text>();
 		coinValue = transform.FindChild("Coins Panel").FindChild("Value").GetComponent<Text>();
-		iceValue = transform.FindChild("Ice Talisman Panel").FindChild("Value").GetComponent<Text>();
-		fireValue = transform.FindChild("Fire Talisman Panel").FindChild("Value").GetComponent<Text>();
+		iceValue = transform.FindChild("Ice Power Panel").FindChild("Value").GetComponent<Text>();
+		fireValue = transform.FindChild("Fire Power Panel").FindChild("Value").GetComponent<Text>();
     }
 
 	void Update() {

@@ -164,6 +164,8 @@ public class MonsterAI : MonoBehaviour
 					// spawn loot box
 					GameObject treasureObject = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
 					treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+
+					AstarPath.active.Scan();
 				}
 
                 Destroy(gameObject);
