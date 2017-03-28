@@ -231,7 +231,7 @@ MonoBehaviour:
   swoopSpeed: 5
   health: 1
   maxHealth: 1
-  coin: {fileID: 1312639025012346, guid: f1ef7a530ac27cf49b1fb860e5f8c12d, type: 2}
+  shard: {fileID: 1991159433803578, guid: ab02381479d4b0c468ba853ffa860764, type: 2}
 --- !u!114 &114961604032610684
 MonoBehaviour:
   m_ObjectHideFlags: 1

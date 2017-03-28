@@ -11,7 +11,7 @@ public class EyeBat : MonoBehaviour {
     public float swoopSpeed = 5;
     public int health = 1;
 	public int maxHealth = 1;
-    public GameObject coin;
+    public GameObject shard;
 	
 	void Start () {
         _rb = GetComponent<Rigidbody2D>();
@@ -41,8 +41,8 @@ public class EyeBat : MonoBehaviour {
             health -= 1;
             if (health <= 0)
             {
-                Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
-                GameObject treasureObject = Instantiate(coin, coinPosition, Quaternion.identity);
+                Vector2 shardPosition = new Vector2(transform.position.x + 1, transform.position.y);
+                GameObject treasureObject = Instantiate(shard, shardPosition, Quaternion.identity);
                 treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
                 Destroy(gameObject);
             }

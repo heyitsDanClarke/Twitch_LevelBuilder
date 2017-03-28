@@ -336,7 +336,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0edfe59b131fd54ba5b638873ed8caf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coin: {fileID: 1312639025012346, guid: f1ef7a530ac27cf49b1fb860e5f8c12d, type: 2}
+  shard: {fileID: 1991159433803578, guid: ab02381479d4b0c468ba853ffa860764, type: 2}
   lootBox: {fileID: 1858367021845136, guid: 763eedcf09fa69f44ad2dada16c9cb4b, type: 2}
   target: {fileID: 0}
   updateRate: 2

@@ -7,7 +7,7 @@ using Pathfinding;
 [RequireComponent(typeof(Seeker))]
 public class MonsterAI : MonoBehaviour
 {
-    public GameObject coin;
+    public GameObject shard;
 	public GameObject lootBox;
 
     // What to chase?
@@ -153,8 +153,8 @@ public class MonsterAI : MonoBehaviour
             if (health <= 0)
 			{
 				if (CompareTag ("Small Monster")) {
-					Vector2 coinPosition = new Vector2 (transform.position.x + 1, transform.position.y + 1);
-					GameObject treasureObject = Instantiate (coin, coinPosition, Quaternion.identity);
+					Vector2 shardPosition = new Vector2 (transform.position.x + 1, transform.position.y + 1);
+					GameObject treasureObject = Instantiate (shard, shardPosition, Quaternion.identity);
 					treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
 				} else if (CompareTag ("Large Monster")) {
 					// set integer positions of the loot chest

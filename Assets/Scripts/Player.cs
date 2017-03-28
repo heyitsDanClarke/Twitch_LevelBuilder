@@ -215,6 +215,7 @@ public class Player : MonoBehaviour {
         {
             charges += 1;
             int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
+            
 
             Destroy(coll.gameObject);
         }
