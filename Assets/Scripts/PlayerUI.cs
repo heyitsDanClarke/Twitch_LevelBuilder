@@ -44,7 +44,7 @@ public class PlayerUI : MonoBehaviour {
 		chargesValue.text = Player.Instance.charges.ToString ();
 		fireResistanceValue.text = Player.Instance.fireResistance.ToString ();
 		coinValue.text = Player.Instance.coins.ToString ();
-		iceValue.text = Player.Instance.iceTalismans.ToString ();
-		fireValue.text = Player.Instance.fireTalismans.ToString ();
+		iceValue.text = Player.Instance.icePower.ToString ();
+		fireValue.text = Player.Instance.firePower.ToString ();
     }
 }

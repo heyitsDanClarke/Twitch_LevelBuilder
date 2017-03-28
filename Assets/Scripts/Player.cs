@@ -29,8 +29,8 @@ public class Player : MonoBehaviour {
 	public float maxFireDamageCooldown; // max fire damage cooldown time
 	public bool onFire;
 	public int coins;
-	public int iceTalismans;
-	public int fireTalismans;
+	public int icePower;
+	public int firePower;
     public int[] weaponShards = new int[4]; //(0, default) (1, hammer) (2, whip) (3, dagger) 
 	public int boxes; // number of boxes pushed to correct places
 	public int maxBoxes; // number of boxes in the puzzle
@@ -201,7 +201,8 @@ public class Player : MonoBehaviour {
 		}
         if (coll.gameObject.tag == "Gem")
         {
-            coins += 5;
+			firePower += coll.gameObject.GetComponent<GemController>().firePower;
+			icePower += coll.gameObject.GetComponent<GemController>().icePower;
             Destroy(coll.gameObject);
         }
         if (coll.gameObject.tag == "Loot")

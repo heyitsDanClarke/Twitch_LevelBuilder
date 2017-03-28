@@ -12,6 +12,8 @@ public class Dungeon : MonoBehaviour
     public int roomWidth = 48; // width of room
     public int roomHeight = 32; // height of room
 	public int roomsLeftUntilBoss; // number of rooms left before boss room
+	public int currentFireVotes; // number of fire votes of the current room
+	public int currentIceVotes; // number of ice votes of the current room
 
 	public struct RoomTile // structure for every pixel of the room
 	{
@@ -311,7 +313,7 @@ public class Dungeon : MonoBehaviour
 		// create room
 		roomStructure = GenerateBossRoomArray(roomWidth, roomHeight);
 		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
-		InstantiateBossRoom(roomStructure); // room array, fire votes, ice votes
+		InstantiateBossRoom(roomStructure); // room array
 		InstantiateRoomBorder (roomWidth, roomHeight);
 
 	}
@@ -373,6 +375,10 @@ public class Dungeon : MonoBehaviour
 	// generate an array containing the information of a cave room in the scene
 	RoomTile [,] GenerateCaveRoomArray (int width, int height, int fireVotes, int iceVotes) // height of room, width of room
 	{
+		//set the number of votes of the current room
+		currentFireVotes = fireVotes;
+		currentIceVotes = iceVotes;
+
 		RoomTile[,] room = new RoomTile[width, height];
 
 		playerStartPosition = new Vector2 (0.0f, 0.0f); // player spawn location
