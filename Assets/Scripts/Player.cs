@@ -287,7 +287,6 @@ public class Player : MonoBehaviour {
 
     IEnumerator MeleeAttack()
     {
-        rb.velocity = Vector2.zero;
         transform.GetChild(0).gameObject.SetActive(true);
         anim.SetTrigger("Attack");
         yield return new WaitForSeconds(0.25f);
