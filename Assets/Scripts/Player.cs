@@ -291,6 +291,6 @@ public class Player : MonoBehaviour {
         anim.SetTrigger("Attack");
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(0).gameObject.SetActive(false);
-        charges -= 1;
+        //charges -= 1;
     }
 }
