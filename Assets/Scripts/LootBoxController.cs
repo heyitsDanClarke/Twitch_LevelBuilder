@@ -17,11 +17,11 @@ public class LootBoxController : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        if (coll.gameObject.tag == "Player")
+        if (coll.gameObject.tag == "Sword")
         {
             Destroy(this.gameObject);
-            //Vector3 gemPosition = (transform.position + new Vector3 (0, 0, 5));
-            //Instantiate(gem, gemPosition, Quaternion.identity);
+            
+			AstarPath.active.Scan ();
         }
 
     }

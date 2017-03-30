@@ -7,7 +7,8 @@ using Pathfinding;
 [RequireComponent(typeof(Seeker))]
 public class MonsterAI : MonoBehaviour
 {
-    public GameObject coin;
+    public GameObject shard;
+	public GameObject lootBox;
 
     // What to chase?
     public Transform target;
@@ -37,6 +38,7 @@ public class MonsterAI : MonoBehaviour
     bool aggressive;
 
     public int health;
+	public int maxHealth;
 
     void Awake()
     {
@@ -135,6 +137,17 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
+    void CollisionEnter2D(Collision2D coll)
+    {
+                if (coll.gameObject.tag == "Player")
+        {
+            if (Player.Instance.health > 0)
+                Player.Instance.health -= 1;
+
+            rb.AddForce((coll.transform.position - transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D coll)
     { 
         /*
@@ -149,10 +162,23 @@ public class MonsterAI : MonoBehaviour
         {
             health -= 1;
             if (health <= 0)
-            {
-                Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
-                GameObject treasureObject = Instantiate(coin, coinPosition, Quaternion.identity);
-                treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+			{
+				if (CompareTag ("Small Monster")) {
+					Vector2 shardPosition = new Vector2 (transform.position.x + 1, transform.position.y + 1);
+					GameObject treasureObject = Instantiate (shard, shardPosition, Quaternion.identity);
+					treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+				} else if (CompareTag ("Large Monster")) {
+					// set integer positions of the loot chest
+					int x = (int) transform.position.x;
+					int y = (int) transform.position.y;
+
+					// spawn loot box
+					GameObject treasureObject = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
+					treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+
+					AstarPath.active.Scan();
+				}
+
                 Destroy(gameObject);
             }
             else

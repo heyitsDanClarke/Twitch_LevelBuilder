@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212897153582232218}
   - component: {fileID: 61932533580063532}
   - component: {fileID: 114709642256323062}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LootBox
   m_TagString: Loot
   m_Icon: {fileID: 0}
@@ -51,7 +51,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2

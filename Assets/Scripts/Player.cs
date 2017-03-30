@@ -29,8 +29,8 @@ public class Player : MonoBehaviour {
 	public float maxFireDamageCooldown; // max fire damage cooldown time
 	public bool onFire;
 	public int coins;
-	public int iceTalismans;
-	public int fireTalismans;
+	public int icePower;
+	public int firePower;
     public int[] weaponShards = new int[4]; //(0, default) (1, hammer) (2, whip) (3, dagger) 
 	public int boxes; // number of boxes pushed to correct places
 	public int maxBoxes; // number of boxes in the puzzle
@@ -71,7 +71,7 @@ public class Player : MonoBehaviour {
 		//anim.runtimeAnimatorController = Resources.Load ("Assets/Animations/Player/SwordAC") as RuntimeAnimatorController;
 
 
-		anim.runtimeAnimatorController = Sword_RAC; 
+		//anim.runtimeAnimatorController = Sword_RAC; 
 
 		rb = GetComponent<Rigidbody2D>();
 		rb.mass = 1.0f; // mass of player
@@ -127,6 +127,10 @@ public class Player : MonoBehaviour {
         //HandleMovementAnimations();
 
 		HandleMovement ();
+        if (rb.velocity.x < 0)
+            transform.localScale = new Vector3(-1, 1, 1);
+        else if (rb.velocity.x > 0)
+            transform.localScale = new Vector3(1, 1, 1);
 
         if (Input.GetKey("j"))
         {
@@ -201,7 +205,8 @@ public class Player : MonoBehaviour {
 		}
         if (coll.gameObject.tag == "Gem")
         {
-            coins += 5;
+			firePower += coll.gameObject.GetComponent<GemController>().firePower;
+			icePower += coll.gameObject.GetComponent<GemController>().icePower;
             Destroy(coll.gameObject);
         }
         if (coll.gameObject.tag == "Loot")
@@ -214,11 +219,17 @@ public class Player : MonoBehaviour {
         {
             charges += 1;
             int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
+            
+			// activate next weapon panel for 3.0 seconds
+			if (charges >= maxCharges) {
+				charges = 0;
+				PlayerUI.Instance.nextWeaponPanelCountdown = 3.0f;
+			}
 
             Destroy(coll.gameObject);
         }
 
-        if(coll.gameObject.tag == "Enemy")
+		if(coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
         {
             if (health > 0)
                 health -= 1;
@@ -233,7 +244,7 @@ public class Player : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == "Enemy")
+		if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
         {
             if (health > 0)
                 health -= 1;
@@ -244,7 +255,7 @@ public class Player : MonoBehaviour {
 			rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
         }
 
-
+        
     }
 
     void HandleMovementAnimations()
@@ -285,11 +296,10 @@ public class Player : MonoBehaviour {
 
     IEnumerator MeleeAttack()
     {
-        rb.velocity = Vector2.zero;
         transform.GetChild(0).gameObject.SetActive(true);
         anim.SetTrigger("Attack");
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(0).gameObject.SetActive(false);
-        charges -= 1;
+        //charges -= 1;
     }
 }

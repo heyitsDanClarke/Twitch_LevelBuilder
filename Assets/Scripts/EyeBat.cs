@@ -9,21 +9,38 @@ public class EyeBat : MonoBehaviour {
 
     public float seekSpeed = 2;
     public float swoopSpeed = 5;
+    public float swoopRange = 4;
     public int health = 1;
-    public GameObject coin;
-	
+	public int maxHealth = 1;
+    public GameObject shard;
+
+    bool swooping = false;
+
 	void Start () {
         _rb = GetComponent<Rigidbody2D>();
         target = Player.Instance.gameObject;
 	}
 	
 	void Update () {
-        _rb.velocity = (target.transform.position - transform.position).normalized * seekSpeed;
+        if (Vector2.Distance(transform.position, Player.Instance.transform.position) > swoopRange && !swooping)
+            _rb.velocity = (target.transform.position - transform.position).normalized * seekSpeed;
+        else {
+            swooping = true;
+            StartCoroutine(Swoop());
+        }
         if (_rb.velocity.x > 0)
             transform.localScale = new Vector3(-1, 1, 1);
         else
             transform.localScale = new Vector3(1, 1, 1);
 	}
+
+    IEnumerator Swoop()
+    {
+        yield return new WaitForSeconds(2);
+        _rb.velocity = (target.transform.position - transform.position).normalized * swoopSpeed;
+        yield return new WaitForSeconds(1);
+        swooping = false;
+    }
 
     void OnTriggerEnter2D(Collider2D coll)
     {
@@ -40,8 +57,8 @@ public class EyeBat : MonoBehaviour {
             health -= 1;
             if (health <= 0)
             {
-                Vector2 coinPosition = new Vector2(transform.position.x + 1, transform.position.y);
-                GameObject treasureObject = Instantiate(coin, coinPosition, Quaternion.identity);
+                Vector2 shardPosition = new Vector2(transform.position.x + 1, transform.position.y);
+                GameObject treasureObject = Instantiate(shard, shardPosition, Quaternion.identity);
                 treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
                 Destroy(gameObject);
             }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,8 @@ public class PlayerUI : MonoBehaviour {
 	public Sprite boxIcon;
 	public Sprite leverIcon;
 
+	public float nextWeaponPanelCountdown;
+
     void Awake() {
 
 		if (Instance != null)
@@ -32,8 +35,8 @@ public class PlayerUI : MonoBehaviour {
 		chargesValue = transform.FindChild("Charges Bar").FindChild("Value").GetComponent<Text>();
 		fireResistanceValue = transform.FindChild("Fire Resistance Bar").FindChild("Value").GetComponent<Text>();
 		coinValue = transform.FindChild("Coins Panel").FindChild("Value").GetComponent<Text>();
-		iceValue = transform.FindChild("Ice Talisman Panel").FindChild("Value").GetComponent<Text>();
-		fireValue = transform.FindChild("Fire Talisman Panel").FindChild("Value").GetComponent<Text>();
+		iceValue = transform.FindChild("Ice Power Panel").FindChild("Value").GetComponent<Text>();
+		fireValue = transform.FindChild("Fire Power Panel").FindChild("Value").GetComponent<Text>();
     }
 
 	void Update() {
@@ -44,7 +47,40 @@ public class PlayerUI : MonoBehaviour {
 		chargesValue.text = Player.Instance.charges.ToString ();
 		fireResistanceValue.text = Player.Instance.fireResistance.ToString ();
 		coinValue.text = Player.Instance.coins.ToString ();
-		iceValue.text = Player.Instance.iceTalismans.ToString ();
-		fireValue.text = Player.Instance.fireTalismans.ToString ();
+		iceValue.text = Player.Instance.icePower.ToString ();
+		fireValue.text = Player.Instance.firePower.ToString ();
+
+		bool PauseMenuActive = false; // is there any menus active in the scene
+		try {
+			PauseMenuActive = DungeonUI.Instance.transform.Find ("Pause Menu").gameObject.activeSelf;
+		} catch (NullReferenceException) {}
+
+		if (!PauseMenuActive) {
+			nextWeaponPanelCountdown = Mathf.Max (nextWeaponPanelCountdown - Time.deltaTime, 0.0f); // reduce next weapon panel countdown
+		}
+
+		// show next weapon panel when the next weapon panel countdown timer is still on
+		if (nextWeaponPanelCountdown > 0.0f) {
+			// apdate weapon durability panel
+			if (!transform.FindChild ("Next Weapon Panel").gameObject.activeSelf) {
+				transform.FindChild ("Next Weapon Panel").FindChild("Text").GetComponent<Text> ().text = "You are about\nto get a\n" + Poll.Instance._weaponDisplay.text + "!";
+			}
+			transform.FindChild ("Next Weapon Panel").gameObject.SetActive (true);
+		} else {
+			// show and update weapon durability timer
+			if (transform.FindChild ("Next Weapon Panel").gameObject.activeSelf) {
+				transform.FindChild ("Weapon Timer").gameObject.SetActive (true);
+				float weaponTimerValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Value").GetComponent<Text> ().text); // value of the pie chart
+				float weaponTimerMaxValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Max Value").GetComponent<Text> ().text); // max value of the pie chart
+				transform.FindChild ("Weapon Timer").FindChild ("Value").GetComponent<Text> ().text = string.Format ("{0:F1}", weaponTimerMaxValue);
+				Debug.Log (transform.FindChild ("Weapon Timer").FindChild ("Value").GetComponent<Text> ().text);
+				print (weaponTimerMaxValue);
+			}
+			transform.FindChild ("Next Weapon Panel").gameObject.SetActive (false);
+		}
+
+
+
+
     }
 }
