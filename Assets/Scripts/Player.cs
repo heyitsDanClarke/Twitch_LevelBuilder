@@ -71,7 +71,7 @@ public class Player : MonoBehaviour {
 		//anim.runtimeAnimatorController = Resources.Load ("Assets/Animations/Player/SwordAC") as RuntimeAnimatorController;
 
 
-		anim.runtimeAnimatorController = Sword_RAC; 
+		//anim.runtimeAnimatorController = Sword_RAC; 
 
 		rb = GetComponent<Rigidbody2D>();
 		rb.mass = 1.0f; // mass of player
@@ -127,6 +127,10 @@ public class Player : MonoBehaviour {
         //HandleMovementAnimations();
 
 		HandleMovement ();
+        if (rb.velocity.x < 0)
+            transform.localScale = new Vector3(-1, 1, 1);
+        else if (rb.velocity.x > 0)
+            transform.localScale = new Vector3(1, 1, 1);
 
         if (Input.GetKey("j"))
         {
@@ -240,7 +244,7 @@ public class Player : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-		/*if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
+		if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
         {
             if (health > 0)
                 health -= 1;
@@ -251,7 +255,7 @@ public class Player : MonoBehaviour {
 			rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
         }
 
-     */   
+        
     }
 
     void HandleMovementAnimations()

@@ -137,6 +137,17 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
+    void CollisionEnter2D(Collision2D coll)
+    {
+                if (coll.gameObject.tag == "Player")
+        {
+            if (Player.Instance.health > 0)
+                Player.Instance.health -= 1;
+
+            rb.AddForce((coll.transform.position - transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D coll)
     { 
         /*
@@ -174,13 +185,6 @@ public class MonsterAI : MonoBehaviour
             {
 				rb.AddForce((transform.position - coll.transform.position).normalized * rb.mass, ForceMode2D.Impulse);
             }
-        }
-        else if(coll.gameObject.tag == "Player")
-        {
-            if (Player.Instance.health > 0)
-                Player.Instance.health -= 1;
-
-            rb.AddForce((coll.transform.position - transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
         }
     }
 
