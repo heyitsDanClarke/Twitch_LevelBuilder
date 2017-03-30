@@ -216,6 +216,11 @@ public class Player : MonoBehaviour {
             charges += 1;
             int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
             
+			// activate next weapon panel for 3.0 seconds
+			if (charges >= maxCharges) {
+				charges = 0;
+				PlayerUI.Instance.nextWeaponPanelCountdown = 3.0f;
+			}
 
             Destroy(coll.gameObject);
         }
