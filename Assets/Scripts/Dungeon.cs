@@ -718,6 +718,7 @@ public class Dungeon : MonoBehaviour
 					roomStructure [i + lowerX, j + lowerY].tile = puzzle [i, j].tile;
 					roomStructure [i + lowerX, j + lowerY].entity = puzzle [i, j].entity;
 					roomStructure [i + lowerX, j + lowerY].plate = puzzle [i, j].plate;
+					roomStructure [i + lowerX, j + lowerY].temperature = puzzle [i, j].temperature;
 				} else { // boundary of puzzle
 					if (containsBlockPuzzle && (roomStructure [i + lowerX, j + lowerY].tile == ice || roomStructure [i + lowerX, j + lowerY].tile == lava)) {
 						roomStructure [i + lowerX, j + lowerY].tile = air;
@@ -843,6 +844,8 @@ public class Dungeon : MonoBehaviour
 			// initializing room structure
 			for (int x = 0; x < width - 0; x++) {
 				for (int y = 0; y < height - 0; y++) {
+					switchPuzzleRoom [x, y].temperature = 1.0f; // make room hot
+
 					if (room == null) { // stand-alone puzzle room
 						switchPuzzleRoom [x, y].tile = lava;
 					} else { // puzzle for hybrid room
@@ -892,6 +895,8 @@ public class Dungeon : MonoBehaviour
 			// initializing room structure
 			for (int x = 0; x < width - 0; x++) {
 				for (int y = 0; y < height - 0; y++) {
+					blockPuzzleRoom [x, y].temperature = 0.0f; // make room cold
+
 					if (room == null) { // stand-alone puzzle room
 						if (random.NextDouble() < 0.1 ) {
 							blockPuzzleRoom [x, y].tile = wall;
