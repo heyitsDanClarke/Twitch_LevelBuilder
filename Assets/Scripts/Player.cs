@@ -263,7 +263,7 @@ public class Player : MonoBehaviour {
 		float input_x = Input.GetAxisRaw("Horizontal");
 		float input_y = Input.GetAxisRaw("Vertical");
 
-		bool isWalking = (Mathf.Abs (input_x) + Mathf.Abs (input_y)) > 0.1f;
+		bool isWalking = (Mathf.Abs (input_x) + Mathf.Abs (input_y)) > 0.01f;
 
 		anim.SetBool ("isWalking", isWalking);
 
