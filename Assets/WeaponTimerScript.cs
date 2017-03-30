@@ -15,7 +15,7 @@ public class WeaponTimerScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		float value = float.Parse(transform.FindChild ("Value").GetComponent<Text> ().text); // value of the pie chart
+		float value = float.Parse(transform.FindChild ("Real Value").GetComponent<Text> ().text); // value of the pie chart
 		float maxValue = float.Parse(transform.FindChild ("Max Value").GetComponent<Text> ().text); // max value of the pie chart
 
 		// show timer if there is a countdown, else hide it
@@ -32,8 +32,8 @@ public class WeaponTimerScript : MonoBehaviour {
 
 		// update pie chart
 		if (!PauseMenuActive) {
-			transform.FindChild ("Value").GetComponent<Text> ().text = string.Format ("{0:F1}", Mathf.Max (value - Time.deltaTime, 0.0f));
-			value = float.Parse (transform.FindChild ("Value").GetComponent<Text> ().text);
+			transform.FindChild ("Real Value").GetComponent<Text> ().text = Mathf.Max (value - Time.deltaTime, 0.0f).ToString();
+			value = float.Parse (transform.FindChild ("Real Value").GetComponent<Text> ().text);
 		}
 		transform.FindChild("Pie").GetComponent<Image> ().fillAmount = Mathf.Clamp01(value / maxValue);
 

@@ -70,15 +70,15 @@ public class PlayerUI : MonoBehaviour {
 			// show and update weapon durability timer
 			if (transform.FindChild ("Next Weapon Panel").gameObject.activeSelf) {
 				transform.FindChild ("Weapon Timer").gameObject.SetActive (true);
-				float weaponTimerValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Value").GetComponent<Text> ().text); // value of the pie chart
+				float weaponTimerValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text); // value of the pie chart
 				float weaponTimerMaxValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Max Value").GetComponent<Text> ().text); // max value of the pie chart
-				transform.FindChild ("Weapon Timer").FindChild ("Value").GetComponent<Text> ().text = string.Format ("{0:F1}", weaponTimerMaxValue);
-				Debug.Log (transform.FindChild ("Weapon Timer").FindChild ("Value").GetComponent<Text> ().text);
-				print (weaponTimerMaxValue);
+				transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text = string.Format ("{0:F1}", weaponTimerMaxValue);
 			}
 			transform.FindChild ("Next Weapon Panel").gameObject.SetActive (false);
 		}
 
+		// update displayed value on timer
+		transform.FindChild ("Weapon Timer").FindChild ("Value").GetComponent<Text> ().text = string.Format ("{0:F1}", float.Parse(transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text));
 
 
 
