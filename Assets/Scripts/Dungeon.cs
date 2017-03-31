@@ -38,7 +38,6 @@ public class Dungeon : MonoBehaviour
 	public GameObject lavaTiles; // lava tiles
 	public GameObject railTiles; // rail tiles
 	public GameObject borderTiles; // border tiles
-	public GameObject hotBorderTiles; // hot texture of border tiles
 	public GameObject wallTiles; // wall tiles
 	public GameObject smallMob; // small monster
 	public GameObject largeMob; // large monster
@@ -49,6 +48,10 @@ public class Dungeon : MonoBehaviour
 	public GameObject pressurePlateTile; // pressure plate
 	public GameObject exit; // exit of room
     public GameObject boss;
+
+	public Material coldBorderMaterial;
+	public Material hotBorderMaterial;
+	public Shader borderShader;
 
 	////public Sprite[] spritePlayer = new Sprite[40];
 
@@ -603,16 +606,11 @@ public class Dungeon : MonoBehaviour
 				}
 
 				if (room [i, j].tile == wall) { // set the walls and borders of the room
-					// see if there are air tiles in the 3x3 area
-					bool nearAir = CountAdjacentTiles (room, i, j, wall, 1) < 3 * 3;
-
-					if (nearAir) {
+					if (NearAir (room, i, j)) { // see if there are air tiles in the 3x3 area
 						// set border tiles
-						GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // cold borders
-						tempBorderTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
-						tempTile = Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // hot borders
-						tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(room [i, j].temperature * 10 - 5));
-						tempTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
+						GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // borders
+						tempBorderTile.transform.SetParent(puzzleVisual.transform);
+						tempBorderTile.GetComponentInChildren<MeshRenderer> ().material.SetFloat("_Blend", Mathf.Clamp01 (room [i, j].temperature * 10 - 5));
                     } else {
                         // set wall tiles
                         tempTile = Instantiate(wallTiles, new Vector3 (i, j, 0.0f), transform.rotation);
@@ -808,16 +806,11 @@ public class Dungeon : MonoBehaviour
 					tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(room [i, j].temperature * 10 - 5));
 					tempTile.transform.SetParent(puzzleVisual.transform);
 				} else if (room [i, j].tile == wall) {
-					// see if there are air tiles in the 3x3 area
-					bool nearAir = CountAdjacentTiles (room, i, j, wall, 1) < 3 * 3; // there is air tiles nearby
-
-					if (nearAir) {
+					if (NearAir (room, i, j)) { // see if there are air tiles in the 3x3 area
 						// set border tiles
-						GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // cold borders
+						GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // borders
 						tempBorderTile.transform.SetParent(puzzleVisual.transform);
-						tempTile = Instantiate (hotBorderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // hot borders
-						tempTile.GetComponent<SpriteRenderer>().color = new Color (1, 1, 1, Mathf.Clamp01(room [i, j].temperature * 10 - 5));
-						tempTile.transform.SetParent(puzzleVisual.transform);
+						tempBorderTile.GetComponentInChildren<MeshRenderer> ().material.SetFloat("_Blend", Mathf.Clamp01 (room [i, j].temperature * 10 - 5));
 					} else {
 						// set wall tiles
 						tempTile = Instantiate(wallTiles, new Vector3 (i, j, 0.0f), transform.rotation);
@@ -1381,6 +1374,17 @@ public class Dungeon : MonoBehaviour
 			}
 		}
 		return tileCounter;
+	}
+
+	// determine whether the tile is adjacent to non-wall tiles
+	bool NearAir (RoomTile [,] room, int x, int y) { // room array, x-coordinate, y-coordinate
+		bool nearAir = false;
+		for (int tile = air; tile < rail; tile++) {
+			if (tile != wall) {
+				nearAir = nearAir || CountAdjacentTiles (room, x, y, tile, 1) != 0;
+			}
+		}
+		return nearAir;
 	}
 
 }

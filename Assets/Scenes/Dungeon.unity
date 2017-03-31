@@ -2495,11 +2495,9 @@ MonoBehaviour:
     type: 2}
   lavaTiles: {fileID: 1441546135964624, guid: 77ad987bef89ab845bac7bc4a274dc18, type: 2}
   railTiles: {fileID: 1085086198005284, guid: 7184b0bd30454ef43af2cf43c3b33c9d, type: 2}
-  borderTiles: {fileID: 1733679469997464, guid: b8936575995da874ca5eefaba0ec14f2,
+  borderTiles: {fileID: 1261354876855464, guid: e2fd175f80e0e8e4a994b36a35c71606,
     type: 2}
-  hotBorderTiles: {fileID: 1579740057293280, guid: d7499b428481eea4084b371d5cddf43e,
-    type: 2}
-  wallTiles: {fileID: 1060660594505944, guid: 7312f81e9d0d0324ba0be82be425532e, type: 2}
+  wallTiles: {fileID: 1829480008217176, guid: a37479df087116b4ebbbbf7407cf701f, type: 2}
   smallMob: {fileID: 1134070046496754, guid: 583f0673aa3916d43a5ba260c0675399, type: 2}
   largeMob: {fileID: 1858064224081460, guid: 721776a4c08c3914bb7733856202d164, type: 2}
   eyeBat: {fileID: 1317841232743186, guid: f908453b441b8ae4da9100c1fe316009, type: 2}
@@ -2510,6 +2508,8 @@ MonoBehaviour:
     type: 2}
   exit: {fileID: 1834166575883816, guid: 0811b3a655bef9d4cb00bd6f4eaab5d6, type: 2}
   boss: {fileID: 1588097786618862, guid: 6a362c59c947d414788a4788617cd591, type: 2}
+  coldBorderMaterial: {fileID: 2100000, guid: f2c528f91f5301849a371c6eba006ee1, type: 2}
+  hotBorderMaterial: {fileID: 2100000, guid: 6dada1345f9e07d459b7d45e4a50cf65, type: 2}
   air: -1
   flood: 0
   wall: 1
