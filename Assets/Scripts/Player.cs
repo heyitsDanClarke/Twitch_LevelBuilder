@@ -106,7 +106,6 @@ public class Player : MonoBehaviour {
 		try {
 			if (DungeonUI.Instance != null) {
 				foreach (Transform child in DungeonUI.Instance.transform) {
-					if (child.gameObject.name == "Next Level Menu" || child.gameObject.name == "Pause Menu" || child.gameObject.name == "Death Menu")
 					menusActive = menusActive || child.gameObject.activeSelf;
 				}
 			}
@@ -281,8 +280,6 @@ public class Player : MonoBehaviour {
 		if (isWalking) {
 			anim.SetFloat ("x", input_x);
 			anim.SetFloat ("y", input_y);
-
-			transform.position += new Vector3 (input_x, input_y, 0).normalized * Time.deltaTime;
 		}
 
 		if (Input.GetKeyDown (KeyCode.I)) {

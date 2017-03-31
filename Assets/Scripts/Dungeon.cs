@@ -609,7 +609,7 @@ public class Dungeon : MonoBehaviour
 					if (NearAir (room, i, j)) { // see if there are air tiles in the 3x3 area
 						// set border tiles
 						GameObject tempBorderTile = Instantiate (borderTiles, new Vector3 (i, j, 0.0f), transform.rotation); // borders
-						tempBorderTile.transform.SetParent(puzzleVisual.transform);
+						tempBorderTile.transform.SetParent(inPuzzleArea? puzzleVisual.transform : dungeonVisual.transform);
 						tempBorderTile.GetComponentInChildren<MeshRenderer> ().material.SetFloat("_Blend", Mathf.Clamp01 (room [i, j].temperature * 10 - 5));
                     } else {
                         // set wall tiles

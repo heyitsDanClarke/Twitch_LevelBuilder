@@ -1,9 +1,9 @@
-﻿Shader "BorderShader" {
+﻿Shader "LerpShader" {
 
 	Properties {
 		_Blend ("Blend", Range (0, 1)) = 0.5
-		_MainTex ("ColdBorder", 2D) = ""
-		_Texture2 ("HotBorder", 2D) = ""
+		_MainTex ("MainTex", 2D) = ""
+		_Texture2 ("Texture2", 2D) = ""
 	}
 
 	SubShader {
