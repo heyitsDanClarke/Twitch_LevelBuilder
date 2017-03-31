@@ -173,14 +173,35 @@ MonoBehaviour:
   defaultSpeed: 6
   defaultAcceleration: 20
   damage: 0
+  maxHealth: 0
   health: 8
   healthRegeneration: 0
+  maxCharges: 0
+  charges: 0
+  fireResistance: 0
+  maxFireResistance: 0
+  fireResistanceCooldown: 0
+  maxFireResistanceCooldown: 0
+  fireDamageCooldown: 0
+  maxFireDamageCooldown: 0
+  onFire: 0
   coins: 0
+  icePower: 0
+  firePower: 0
+  weaponShards: 
   boxes: 0
+  maxBoxes: 0
+  levers: 0
+  maxLevers: 0
   coin: {fileID: 1312639025012346, guid: f1ef7a530ac27cf49b1fb860e5f8c12d, type: 2}
   gem: {fileID: 1006891613377954, guid: 53c3d79e6e7267b4eb6d229a41b6c125, type: 2}
+  weaponType: 0
   rb: {fileID: 0}
   anim: {fileID: 0}
+  Spear_RAC: {fileID: 0}
+  Polearm_RAC: {fileID: 0}
+  Sword_RAC: {fileID: 0}
+  Dagger_RAC: {fileID: 0}
 --- !u!114 &114920145250783530
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -243,8 +264,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -781912349
-  m_SortingOrder: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 72edbcbf88f302f43ae41b3497e1a62b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

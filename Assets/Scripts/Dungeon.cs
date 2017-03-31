@@ -367,8 +367,8 @@ public class Dungeon : MonoBehaviour
 		InstantiateRoomBorder (roomWidth, roomHeight);
 
 		// spawn and monsters
-		spawnLargeMonster (ref roomStructure);
-		spawnSmallMonsters (ref roomStructure);
+		SpawnLargeMonster (ref roomStructure);
+		SpawnSmallMonsters (ref roomStructure);
         SpawnEyeBats(ref roomStructure);
 
 		initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
@@ -734,8 +734,8 @@ public class Dungeon : MonoBehaviour
 		InstantiateRoomBorder (roomWidth, roomHeight);
 
 		// spawn and monsters
-		spawnLargeMonster (ref roomStructure);
-		spawnSmallMonsters (ref roomStructure);
+		SpawnLargeMonster (ref roomStructure);
+		SpawnSmallMonsters (ref roomStructure);
         SpawnEyeBats(ref roomStructure);
 
         initialRoomStructure = roomStructure.Clone() as RoomTile[,]; // deep copy
@@ -1205,7 +1205,7 @@ public class Dungeon : MonoBehaviour
 		}
 	}
 
-	void spawnLargeMonster (ref RoomTile [,] room) {
+	void SpawnLargeMonster (ref RoomTile [,] room) {
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 
@@ -1246,7 +1246,7 @@ public class Dungeon : MonoBehaviour
 		}
 	}
 
-	void spawnSmallMonsters (ref RoomTile [,] room) {
+	void SpawnSmallMonsters (ref RoomTile [,] room) {
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 
@@ -1297,10 +1297,10 @@ public class Dungeon : MonoBehaviour
         int width = room.GetLength(0); // width of dungeon;
         int height = room.GetLength(1); // height of dungeon;
 
-        Instantiate(eyeBat, new Vector3(width, height, 0.0f), transform.rotation).transform.SetParent(enemyVisual.transform);
-        Instantiate(eyeBat, new Vector3(0, height, 0.0f), transform.rotation).transform.SetParent(enemyVisual.transform);
-        Instantiate(eyeBat, new Vector3(0, 0, 0.0f), transform.rotation).transform.SetParent(enemyVisual.transform);
-        Instantiate(eyeBat, new Vector3(width, 0, 0.0f), transform.rotation).transform.SetParent(enemyVisual.transform);
+        Instantiate(eyeBat, new Vector3(width, height, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
+		Instantiate(eyeBat, new Vector3(0, height,-1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
+		Instantiate(eyeBat, new Vector3(0, 0, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
+		Instantiate(eyeBat, new Vector3(width, 0, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
     }
 
         // clear all monsters from the array
