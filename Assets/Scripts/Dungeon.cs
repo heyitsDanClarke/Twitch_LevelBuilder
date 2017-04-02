@@ -49,10 +49,6 @@ public class Dungeon : MonoBehaviour
 	public GameObject exit; // exit of room
     public GameObject boss;
 
-	public Material coldBorderMaterial;
-	public Material hotBorderMaterial;
-	public Shader borderShader;
-
 	////public Sprite[] spritePlayer = new Sprite[40];
 
 	// tile IDs, IDs must be different

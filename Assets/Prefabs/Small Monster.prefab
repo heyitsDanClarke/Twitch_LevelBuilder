@@ -337,7 +337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shard: {fileID: 1991159433803578, guid: ab02381479d4b0c468ba853ffa860764, type: 2}
-  lootBox: {fileID: 1858367021845136, guid: 763eedcf09fa69f44ad2dada16c9cb4b, type: 2}
+  lootBox: {fileID: 1829480008217176, guid: c2f407b20a359234984e922dbd906912, type: 2}
   target: {fileID: 0}
   updateRate: 2
   speed: 2

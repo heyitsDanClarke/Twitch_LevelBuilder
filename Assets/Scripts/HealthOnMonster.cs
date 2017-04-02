@@ -18,10 +18,15 @@ public class HealthOnMonster : MonoBehaviour {
 		try {
 		value = gameObject.GetComponentInParent<MonsterAI>().health;
 		maxValue = gameObject.GetComponentInParent<MonsterAI>().maxHealth;
-		} catch (NullReferenceException) {
+		} catch (NullReferenceException) {}
+		try {
 			value = gameObject.GetComponentInParent<EyeBat>().health;
 			maxValue = gameObject.GetComponentInParent<EyeBat>().maxHealth;
-		}
+		} catch (NullReferenceException) {}
+		try {
+			value = gameObject.GetComponentInParent<LootBoxController>().health;
+			maxValue = gameObject.GetComponentInParent<LootBoxController>().maxHealth;
+		} catch (NullReferenceException) {}
 
 
 

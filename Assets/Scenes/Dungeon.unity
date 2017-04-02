@@ -2508,9 +2508,6 @@ MonoBehaviour:
     type: 2}
   exit: {fileID: 1834166575883816, guid: 0811b3a655bef9d4cb00bd6f4eaab5d6, type: 2}
   boss: {fileID: 1588097786618862, guid: 6a362c59c947d414788a4788617cd591, type: 2}
-  coldBorderMaterial: {fileID: 2100000, guid: f2c528f91f5301849a371c6eba006ee1, type: 2}
-  hotBorderMaterial: {fileID: 2100000, guid: 6dada1345f9e07d459b7d45e4a50cf65, type: 2}
-  borderShader: {fileID: 0}
   air: -1
   flood: 0
   wall: 1
@@ -2584,20 +2581,6 @@ Prefab:
     - target: {fileID: 4964389186740822, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
       propertyPath: m_RootOrder
       value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 95586296528397836, guid: a979508dc40e62742b5d7d6d91e7b5ee,
-        type: 2}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: ebcbd981e50c54bd68650d016dacfde3, type: 2}
-    - target: {fileID: 95195843981994314, guid: a979508dc40e62742b5d7d6d91e7b5ee,
-        type: 2}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 8d2ad8951b3b50a4fbbe567f44cfaff2, type: 2}
-    - target: {fileID: 1623097365396398, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}

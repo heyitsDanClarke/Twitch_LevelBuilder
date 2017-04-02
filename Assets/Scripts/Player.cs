@@ -37,7 +37,7 @@ public class Player : MonoBehaviour {
 	public int levers; // number of switches left to switch
 	public int maxLevers; // number of switches in the puzzle
     public GameObject coin;
-    public GameObject gem;
+	public GameObject gem;
 
 	/* weapon type attribute: 0 - sword ;  1-spear ; 2-polearm ; 3-dagger */
 	public int weaponType;
@@ -192,30 +192,17 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.gameObject.tag == "Exit")
-		{
+		if (coll.gameObject.tag == "Exit") {
 			DungeonUI.Instance.showNextLevelMenu ();
-		}
-
-		if (coll.gameObject.tag == "Coin") {
+		} else if (coll.gameObject.tag == "Coin") {
 			coins += 1;
 			Destroy (coll.gameObject);
             
-		}
-        if (coll.gameObject.tag == "Gem")
-        {
+		} else if (coll.gameObject.tag == "Gem") {
 			firePower += coll.gameObject.GetComponent<GemController>().firePower;
 			icePower += coll.gameObject.GetComponent<GemController>().icePower;
             Destroy(coll.gameObject);
-        }
-        if (coll.gameObject.tag == "Loot")
-        {
-			GameObject treasureObject = Instantiate(gem, coll.gameObject.transform.position, Quaternion.identity);
-			treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
-            Destroy(coll.gameObject);
-        }
-        if (coll.gameObject.tag == "Shard")
-        {
+		} else if (coll.gameObject.tag == "Shard") {
             charges += 1;
             int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
             
@@ -226,10 +213,7 @@ public class Player : MonoBehaviour {
 			}
 
             Destroy(coll.gameObject);
-        }
-
-		if(coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
-        {
+        } else if(coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster")) {
             if (health > 0)
                 health -= 1;
             Vector3 enemyPosition = coll.transform.position;
@@ -237,7 +221,19 @@ public class Player : MonoBehaviour {
             //Destroy(coll.gameObject);
             //Instantiate(coin, coinPosition, Quaternion.identity);
             rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
-        }
+		} else if (coll.gameObject.tag == "Loot") {
+			coll.gameObject.GetComponent<LootBoxController>().health -= 1;
+			if (coll.gameObject.GetComponent<LootBoxController>().health <= 0) {
+				// spawn gem
+				GameObject treasureObject = Instantiate (gem, coll.gameObject.transform.position, Quaternion.identity);
+				treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+
+				// destroy loot box
+				Destroy (coll.gameObject);
+
+				AstarPath.active.Scan ();
+			}
+		}
 
     }
 
