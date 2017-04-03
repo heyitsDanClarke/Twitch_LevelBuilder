@@ -170,77 +170,30 @@ public class Player : MonoBehaviour {
 		// update camera position
 		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1] + Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, Camera.main.transform.position[2]);
 
-        /*
-		float input_x = Input.GetAxisRaw("Horizontal");
-		float input_y = Input.GetAxisRaw("Vertical");
-
-		bool isWalking = (Mathf.Abs (input_x) + Mathf.Abs (input_y)) > 0;
-
-		anim.SetBool ("isWalking", isWalking);
-
-		if (isWalking) {
-			anim.SetFloat ("x", input_x);
-			anim.SetFloat ("y", input_y);
-
-			transform.position += new Vector3 (input_x, input_y, 0).normalized * Time.deltaTime;
-		}
-
-		if (Input.GetKeyDown (KeyCode.I)) {
-
-			//anim.transform.localScale += new Vector3 (6.3f, 6.3f, 6.3f);
-			anim.SetTrigger ("meleeAttack");
-
-
-		}
-        */
 	}
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.gameObject.tag == "Exit") {
-			DungeonUI.Instance.showNextLevelMenu ();
-            SoundController.instance.PlaySingle(exitFoundSound);
-        } else if (coll.gameObject.tag == "Coin") {
-			coins += 1;
-			Destroy (coll.gameObject);
-            
-		} else if (coll.gameObject.tag == "Gem") {
-            SoundController.instance.PlaySingle(treasureFoundSound);
-            firePower += coll.gameObject.GetComponent<GemController>().firePower;
-			icePower += coll.gameObject.GetComponent<GemController>().icePower;
-            Destroy(coll.gameObject);
-		} else if (coll.gameObject.tag == "Shard") {
-            charges += 1;
-            int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
-            
-			// activate next weapon panel for 3.0 seconds
-			if (charges >= maxCharges) {
-				charges = 0;
-				PlayerUI.Instance.nextWeaponPanelCountdown = 3.0f;
-			}
-
-            Destroy(coll.gameObject);
-        } else if(coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster")) {
-			// show health bar of enemy
-			coll.transform.FindChild("Health Bar").gameObject.SetActive(true);
-
-            if (health > 0)
-                health -= 1;
-            Vector3 enemyPosition = coll.transform.position;
-            //Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
-            //Destroy(coll.gameObject);
-            //Instantiate(coin, coinPosition, Quaternion.identity);
-            rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
-		} else if (coll.gameObject.tag == "Loot") {
+		if (coll.gameObject.tag == "Loot") {
 			// show health bar of loot box
 			coll.transform.FindChild("Health Bar").gameObject.SetActive(true);
 
 			coll.gameObject.GetComponent<LootBoxController>().health -= 1;
 
 			if (coll.gameObject.GetComponent<LootBoxController>().health <= 0) {
-				// spawn gem
-				GameObject treasureObject = Instantiate (gem, coll.gameObject.transform.position, Quaternion.identity);
-				treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+				// spawn gems
+				Vector3 boxPosition = coll.gameObject.transform.position;
+				bool firstGemOnLeft = Random.Range (0.0f, 1.0f) > 0.5f;
+				bool firstGemIsFireGem = Dungeon.Instance.currentFireVotes >= Dungeon.Instance.currentIceVotes; // determine element of first gem
+				bool secondGemIsFireGem = Dungeon.Instance.currentFireVotes > Dungeon.Instance.currentIceVotes; // determine element of second gem
+				GameObject firstGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? -0.6f : 0.6f), boxPosition.y, 0.0f), Quaternion.identity); // spawn first gem
+				firstGem.GetComponent<GemController> ().firePower = firstGemIsFireGem? 1 : 0;
+				firstGem.GetComponent<GemController> ().icePower = firstGemIsFireGem? 0 : 1;
+				firstGem.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+				GameObject secondGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? 0.6f : -0.6f), boxPosition.y, 0.0f), Quaternion.identity); // spawn second gem
+				secondGem.GetComponent<GemController> ().firePower = secondGemIsFireGem? 1 : 0;
+				secondGem.GetComponent<GemController> ().icePower = secondGemIsFireGem? 0 : 1;
+				secondGem.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
 
 				// destroy loot box
 				Destroy (coll.gameObject);
@@ -253,7 +206,28 @@ public class Player : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-		if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
+		if (coll.gameObject.tag == "Gem") {
+			SoundController.instance.PlaySingle(treasureFoundSound);
+			firePower += coll.gameObject.GetComponent<GemController>().firePower;
+			icePower += coll.gameObject.GetComponent<GemController>().icePower;
+			Destroy(coll.gameObject);
+		} else if (coll.gameObject.tag == "Shard") {
+			charges += 1;
+			int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
+
+			// activate next weapon panel for 3.0 seconds
+			if (charges >= maxCharges) {
+				charges = 0;
+				PlayerUI.Instance.nextWeaponPanelCountdown = 3.0f;
+			}
+
+			Destroy(coll.gameObject);
+		} else if (coll.gameObject.tag == "Exit") {
+			if (boxes == maxBoxes && levers == maxLevers) { // if all puzzles are being solved
+				DungeonUI.Instance.showNextLevelMenu ();
+				SoundController.instance.PlaySingle(exitFoundSound);
+			}
+		} else if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
         {
 
             if (health > 0)
@@ -299,15 +273,13 @@ public class Player : MonoBehaviour {
 
 			//anim.transform.localScale += new Vector3 (6.3f, 6.3f, 6.3f);
 			anim.SetTrigger ("meleeAttack");
-
-
 		}
 	}
 
     IEnumerator MeleeAttack()
     {
         transform.GetChild(0).gameObject.SetActive(true);
-        anim.SetTrigger("Attack");
+        anim.SetTrigger("attack");
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(0).gameObject.SetActive(false);
         //charges -= 1;

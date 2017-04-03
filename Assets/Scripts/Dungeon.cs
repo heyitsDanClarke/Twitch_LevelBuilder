@@ -1106,7 +1106,6 @@ public class Dungeon : MonoBehaviour
 
 			// update UI
 			PlayerUI.Instance.transform.FindChild ("Puzzle Bar").FindChild ("Icon").GetComponent<Image> ().sprite = PlayerUI.Instance.boxIcon;
-			PlayerUI.Instance.transform.FindChild ("Puzzle Bar").FindChild ("Icon").GetComponent<Image> ().color = new Color (0.9f, 0.7f, 0.4f);
 			PlayerUI.Instance.transform.FindChild ("Puzzle Bar").FindChild ("Value").GetComponent<Text> ().text = Player.Instance.boxes.ToString ();
 			PlayerUI.Instance.transform.FindChild ("Puzzle Bar").FindChild ("Max Value").GetComponent<Text> ().text = Player.Instance.maxBoxes.ToString ();
 		
