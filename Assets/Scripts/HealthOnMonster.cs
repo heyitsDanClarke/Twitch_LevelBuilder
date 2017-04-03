@@ -27,14 +27,7 @@ public class HealthOnMonster : MonoBehaviour {
 			value = gameObject.GetComponentInParent<LootBoxController>().health;
 			maxValue = gameObject.GetComponentInParent<LootBoxController>().maxHealth;
 		} catch (NullReferenceException) {}
-
-
-
-		// show health bar if enemy is not on full health
-		//if (value != maxValue) {
-		//	gameObject.SetActive (true);
-		//}
-
+			
 		transform.FindChild("Bar").transform.localScale = new Vector2 (Mathf.Max (value / maxValue, 0), 1);
 	}
 }
