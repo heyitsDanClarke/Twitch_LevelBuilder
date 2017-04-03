@@ -184,36 +184,26 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.gameObject.tag == "Coin") {
-			coins += 1;
-			Destroy (coll.gameObject);
-            
-		} else if (coll.gameObject.tag == "Gem") {
-            SoundController.instance.PlaySingle(treasureFoundSound);
-            firePower += coll.gameObject.GetComponent<GemController>().firePower;
-			icePower += coll.gameObject.GetComponent<GemController>().icePower;
-            Destroy(coll.gameObject);
-		} else if (coll.gameObject.tag == "Shard") {
-            charges += 1;
-            int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
-            
-			// activate next weapon panel for 3.0 seconds
-			if (charges >= maxCharges) {
-				charges = 0;
-				PlayerUI.Instance.nextWeaponPanelCountdown = 3.0f;
-			}
-
-            Destroy(coll.gameObject);
-        } else if (coll.gameObject.tag == "Loot") {
+		if (coll.gameObject.tag == "Loot") {
 			// show health bar of loot box
 			coll.transform.FindChild("Health Bar").gameObject.SetActive(true);
 
 			coll.gameObject.GetComponent<LootBoxController>().health -= 1;
 
 			if (coll.gameObject.GetComponent<LootBoxController>().health <= 0) {
-				// spawn gem
-				GameObject treasureObject = Instantiate (gem, coll.gameObject.transform.position, Quaternion.identity);
-				treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+				// spawn gems
+				Vector3 boxPosition = coll.gameObject.transform.position;
+				bool firstGemOnLeft = Random.Range (0.0f, 1.0f) > 0.5f;
+				bool firstGemIsFireGem = Dungeon.Instance.currentFireVotes >= Dungeon.Instance.currentIceVotes; // determine element of first gem
+				bool secondGemIsFireGem = Dungeon.Instance.currentFireVotes > Dungeon.Instance.currentIceVotes; // determine element of second gem
+				GameObject firstGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? -0.6f : 0.6f), boxPosition.y, 0.0f), Quaternion.identity); // spawn first gem
+				firstGem.GetComponent<GemController> ().firePower = firstGemIsFireGem? 1 : 0;
+				firstGem.GetComponent<GemController> ().icePower = firstGemIsFireGem? 0 : 1;
+				firstGem.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+				GameObject secondGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? 0.6f : -0.6f), boxPosition.y, 0.0f), Quaternion.identity); // spawn second gem
+				secondGem.GetComponent<GemController> ().firePower = secondGemIsFireGem? 1 : 0;
+				secondGem.GetComponent<GemController> ().icePower = secondGemIsFireGem? 0 : 1;
+				secondGem.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
 
 				// destroy loot box
 				Destroy (coll.gameObject);
@@ -226,7 +216,23 @@ public class Player : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-		if (coll.gameObject.tag == "Exit") {
+		if (coll.gameObject.tag == "Gem") {
+			SoundController.instance.PlaySingle(treasureFoundSound);
+			firePower += coll.gameObject.GetComponent<GemController>().firePower;
+			icePower += coll.gameObject.GetComponent<GemController>().icePower;
+			Destroy(coll.gameObject);
+		} else if (coll.gameObject.tag == "Shard") {
+			charges += 1;
+			int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
+
+			// activate next weapon panel for 3.0 seconds
+			if (charges >= maxCharges) {
+				charges = 0;
+				PlayerUI.Instance.nextWeaponPanelCountdown = 3.0f;
+			}
+
+			Destroy(coll.gameObject);
+		} else if (coll.gameObject.tag == "Exit") {
 			if (boxes == maxBoxes && levers == maxLevers) { // if all puzzles are being solved
 				DungeonUI.Instance.showNextLevelMenu ();
 				SoundController.instance.PlaySingle(exitFoundSound);
