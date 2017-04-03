@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 61909190557560488}
   m_Layer: 0
   m_Name: Block
-  m_TagString: Exit
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38,8 +38,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4015662047926660}
   m_Layer: 0
-  m_Name: Exit
-  m_TagString: Exit
+  m_Name: Entrance
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -84,7 +84,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 743337f200dd3bc4da2f1bd6db9672e1, type: 2}
+  - {fileID: 2100000, guid: 3160f599b9665114bbb093cfb4f34612, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

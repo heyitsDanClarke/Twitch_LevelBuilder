@@ -2424,12 +2424,12 @@ MonoBehaviour:
   smallMob: {fileID: 1134070046496754, guid: 583f0673aa3916d43a5ba260c0675399, type: 2}
   largeMob: {fileID: 1858064224081460, guid: 721776a4c08c3914bb7733856202d164, type: 2}
   eyeBat: {fileID: 1317841232743186, guid: f908453b441b8ae4da9100c1fe316009, type: 2}
-  lootBox: {fileID: 1858367021845136, guid: 763eedcf09fa69f44ad2dada16c9cb4b, type: 2}
   boxTiles: {fileID: 1923526048580082, guid: fd8146b9e8b02a04aa739c66bbd4930f, type: 2}
   leverTiles: {fileID: 1210243643525614, guid: 5307c42db7d43984ba235bc63d357b00, type: 2}
   pressurePlateTile: {fileID: 1654860652056372, guid: 96261d0a56310c84c9f460b81bc198b3,
     type: 2}
-  exit: {fileID: 1834166575883816, guid: 0811b3a655bef9d4cb00bd6f4eaab5d6, type: 2}
+  entrance: {fileID: 1829480008217176, guid: 96208967eecf30c438e990a067f1d7ac, type: 2}
+  exit: {fileID: 1829480008217176, guid: c79ab86aa0d64b24eac1d4e9fa755195, type: 2}
   boss: {fileID: 1588097786618862, guid: 6a362c59c947d414788a4788617cd591, type: 2}
   air: -1
   flood: 0
@@ -2487,7 +2487,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4964389186740822, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
       propertyPath: m_LocalRotation.x
-      value: -0.17364825
+      value: -0.17364752
       objectReference: {fileID: 0}
     - target: {fileID: 4964389186740822, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
       propertyPath: m_LocalRotation.y
@@ -2499,7 +2499,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4964389186740822, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
       propertyPath: m_LocalRotation.w
-      value: 0.9848078
+      value: 0.9848079
       objectReference: {fileID: 0}
     - target: {fileID: 4964389186740822, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
       propertyPath: m_RootOrder

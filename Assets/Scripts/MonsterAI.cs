@@ -160,6 +160,9 @@ public class MonsterAI : MonoBehaviour
         }*/ //for demo we are removing the line of sight mechanics, making it a distance check
         if (coll.gameObject.tag == "Sword")
         {
+			// show health bar of enemy
+			transform.FindChild("Health Bar").gameObject.SetActive(true);
+
             health -= 1;
             if (health <= 0)
 			{
