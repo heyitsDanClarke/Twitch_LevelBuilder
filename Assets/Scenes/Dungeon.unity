@@ -2425,7 +2425,7 @@ MonoBehaviour:
   largeMob: {fileID: 1858064224081460, guid: 721776a4c08c3914bb7733856202d164, type: 2}
   eyeBat: {fileID: 1317841232743186, guid: f908453b441b8ae4da9100c1fe316009, type: 2}
   boxTiles: {fileID: 1923526048580082, guid: fd8146b9e8b02a04aa739c66bbd4930f, type: 2}
-  leverTiles: {fileID: 1210243643525614, guid: 5307c42db7d43984ba235bc63d357b00, type: 2}
+  leverTiles: {fileID: 1592360533634122, guid: 22dd7bfd1bf046b4699b6ba325f5aab7, type: 2}
   pressurePlateTile: {fileID: 1654860652056372, guid: 96261d0a56310c84c9f460b81bc198b3,
     type: 2}
   entrance: {fileID: 0}
