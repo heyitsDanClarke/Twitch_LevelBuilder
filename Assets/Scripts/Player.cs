@@ -197,10 +197,7 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (coll.gameObject.tag == "Exit") {
-			DungeonUI.Instance.showNextLevelMenu ();
-            SoundController.instance.PlaySingle(exitFoundSound);
-        } else if (coll.gameObject.tag == "Coin") {
+		if (coll.gameObject.tag == "Coin") {
 			coins += 1;
 			Destroy (coll.gameObject);
             
@@ -242,7 +239,12 @@ public class Player : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-		if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
+		if (coll.gameObject.tag == "Exit") {
+			if (boxes == maxBoxes && levers == maxLevers) { // if all puzzles are being solved
+				DungeonUI.Instance.showNextLevelMenu ();
+				SoundController.instance.PlaySingle(exitFoundSound);
+			}
+		} else if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
         {
 
             if (health > 0)
