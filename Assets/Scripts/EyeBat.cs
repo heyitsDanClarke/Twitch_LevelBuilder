@@ -13,6 +13,7 @@ public class EyeBat : MonoBehaviour {
     public int health = 1;
 	public int maxHealth = 1;
     public GameObject shard;
+    public AudioClip batHit;
 
     bool swooping = false;
 
@@ -54,6 +55,7 @@ public class EyeBat : MonoBehaviour {
         }*/ //for demo we are removing the line of sight mechanics, making it a distance check
         if (coll.gameObject.tag == "Sword")
         {
+            SoundController.instance.PlaySingle(batHit);
             health -= 1;
             if (health <= 0)
             {

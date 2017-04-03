@@ -319,6 +319,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shard: {fileID: 0}
   lootBox: {fileID: 1829480008217176, guid: c2f407b20a359234984e922dbd906912, type: 2}
+  largeMonsterHitSound: {fileID: 8300000, guid: dad6b47e55605ba4f937e247c9468ae9,
+    type: 3}
   target: {fileID: 0}
   updateRate: 2
   speed: 1.5

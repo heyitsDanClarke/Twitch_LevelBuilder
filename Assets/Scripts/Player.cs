@@ -38,8 +38,10 @@ public class Player : MonoBehaviour {
 	public int maxLevers; // number of switches in the puzzle
     public GameObject coin;
 	public GameObject gem;
-    public AudioClip playerAttack;
-    public AudioClip playerHit;
+    public AudioClip playerAttackSound;
+    public AudioClip playerHitSound;
+    public AudioClip exitFoundSound;
+    public AudioClip treasureFoundSound;
 
 	/* weapon type attribute: 0 - sword ;  1-spear ; 2-polearm ; 3-dagger */
 	public int weaponType;
@@ -137,7 +139,7 @@ public class Player : MonoBehaviour {
         {
             StopAllCoroutines();
             StartCoroutine(MeleeAttack());
-            SoundController.instance.PlaySingle(playerAttack);
+            SoundController.instance.PlaySingle(playerAttackSound);
         }
 
 		if (Input.GetKey ("r")) {
@@ -197,12 +199,14 @@ public class Player : MonoBehaviour {
 	{
 		if (coll.gameObject.tag == "Exit") {
 			DungeonUI.Instance.showNextLevelMenu ();
-		} else if (coll.gameObject.tag == "Coin") {
+            SoundController.instance.PlaySingle(exitFoundSound);
+        } else if (coll.gameObject.tag == "Coin") {
 			coins += 1;
 			Destroy (coll.gameObject);
             
 		} else if (coll.gameObject.tag == "Gem") {
-			firePower += coll.gameObject.GetComponent<GemController>().firePower;
+            SoundController.instance.PlaySingle(treasureFoundSound);
+            firePower += coll.gameObject.GetComponent<GemController>().firePower;
 			icePower += coll.gameObject.GetComponent<GemController>().icePower;
             Destroy(coll.gameObject);
 		} else if (coll.gameObject.tag == "Shard") {
@@ -259,7 +263,7 @@ public class Player : MonoBehaviour {
             //Destroy(coll.gameObject);
             //Instantiate(coin, coinPosition, Quaternion.identity);
 			rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
-            SoundController.instance.PlaySingle(playerHit);
+            SoundController.instance.PlaySingle(playerHitSound);
 
         }
 

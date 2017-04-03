@@ -233,6 +233,7 @@ MonoBehaviour:
   health: 1
   maxHealth: 1
   shard: {fileID: 1991159433803578, guid: ab02381479d4b0c468ba853ffa860764, type: 2}
+  batHit: {fileID: 8300000, guid: 56e72cdf21a3ab44dbc01644b8db6bec, type: 3}
 --- !u!114 &114961604032610684
 MonoBehaviour:
   m_ObjectHideFlags: 1

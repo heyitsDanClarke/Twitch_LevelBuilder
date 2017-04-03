@@ -9,6 +9,7 @@ public class MonsterAI : MonoBehaviour
 {
     public GameObject shard;
 	public GameObject lootBox;
+    public AudioClip largeMonsterHitSound;
 
     // What to chase?
     public Transform target;
@@ -141,6 +142,7 @@ public class MonsterAI : MonoBehaviour
     {
                 if (coll.gameObject.tag == "Player")
         {
+            SoundController.instance.PlaySingle(largeMonsterHitSound);
             if (Player.Instance.health > 0)
                 Player.Instance.health -= 1;
 
