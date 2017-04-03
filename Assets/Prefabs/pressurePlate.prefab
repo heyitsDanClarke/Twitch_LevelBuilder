@@ -88,6 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d7498b0bd3747044b2c61e83e0bfc95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boxHitSound: {fileID: 8300000, guid: 00c62c360997e57449dd25ed6260c5f1, type: 3}
 --- !u!212 &212543201466039184
 SpriteRenderer:
   m_ObjectHideFlags: 1

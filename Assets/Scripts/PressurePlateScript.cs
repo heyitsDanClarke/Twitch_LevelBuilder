@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PressurePlateScript : MonoBehaviour {
+    public AudioClip boxHitSound;
 
 	void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Box"))
         {
-			Player.Instance.boxes += 1;
+            SoundController.instance.PlaySingle(boxHitSound);
+            Player.Instance.boxes += 1;
 			PlayerUI.Instance.transform.FindChild("Puzzle Bar").FindChild ("Value").GetComponent<Text>().text = Player.Instance.boxes.ToString();
         }
     }

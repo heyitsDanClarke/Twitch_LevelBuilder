@@ -2107,7 +2107,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: bd6a5d9c339a94440aeef71a5edf60a5, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 5a8a91f900ab406428f84b118d607805, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.186
   m_Pitch: 1
@@ -2428,7 +2428,7 @@ MonoBehaviour:
   leverTiles: {fileID: 1210243643525614, guid: 5307c42db7d43984ba235bc63d357b00, type: 2}
   pressurePlateTile: {fileID: 1654860652056372, guid: 96261d0a56310c84c9f460b81bc198b3,
     type: 2}
-  entrance: {fileID: 1829480008217176, guid: 96208967eecf30c438e990a067f1d7ac, type: 2}
+  entrance: {fileID: 0}
   exit: {fileID: 1829480008217176, guid: c79ab86aa0d64b24eac1d4e9fa755195, type: 2}
   boss: {fileID: 1588097786618862, guid: 6a362c59c947d414788a4788617cd591, type: 2}
   air: -1

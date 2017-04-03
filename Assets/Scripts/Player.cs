@@ -197,14 +197,10 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-<<<<<<< HEAD
 		if (coll.gameObject.tag == "Exit") {
 			DungeonUI.Instance.showNextLevelMenu ();
             SoundController.instance.PlaySingle(exitFoundSound);
         } else if (coll.gameObject.tag == "Coin") {
-=======
-		if (coll.gameObject.tag == "Coin") {
->>>>>>> dd609fc31510f7944ee9fbb7ca6ac6076f4f949a
 			coins += 1;
 			Destroy (coll.gameObject);
             
@@ -224,7 +220,18 @@ public class Player : MonoBehaviour {
 			}
 
             Destroy(coll.gameObject);
-        } else if (coll.gameObject.tag == "Loot") {
+        } else if(coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster")) {
+			// show health bar of enemy
+			coll.transform.FindChild("Health Bar").gameObject.SetActive(true);
+
+            if (health > 0)
+                health -= 1;
+            Vector3 enemyPosition = coll.transform.position;
+            //Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
+            //Destroy(coll.gameObject);
+            //Instantiate(coin, coinPosition, Quaternion.identity);
+            rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
+		} else if (coll.gameObject.tag == "Loot") {
 			// show health bar of loot box
 			coll.transform.FindChild("Health Bar").gameObject.SetActive(true);
 
@@ -246,12 +253,9 @@ public class Player : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-		if (coll.gameObject.tag == "Exit") {
-			if (boxes == maxBoxes && levers == maxLevers) { // if all puzzles are being solved
-				DungeonUI.Instance.showNextLevelMenu ();
-			}
-		} else if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
+		if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
         {
+
             if (health > 0)
                 health -= 1;
             Vector3 enemyPosition = coll.transform.position;
