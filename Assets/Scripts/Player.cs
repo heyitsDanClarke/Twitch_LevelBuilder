@@ -38,6 +38,8 @@ public class Player : MonoBehaviour {
 	public int maxLevers; // number of switches in the puzzle
     public GameObject coin;
 	public GameObject gem;
+    public AudioClip playerAttack;
+    public AudioClip playerHit;
 
 	/* weapon type attribute: 0 - sword ;  1-spear ; 2-polearm ; 3-dagger */
 	public int weaponType;
@@ -135,6 +137,7 @@ public class Player : MonoBehaviour {
         {
             StopAllCoroutines();
             StartCoroutine(MeleeAttack());
+            SoundController.instance.PlaySingle(playerAttack);
         }
 
 		if (Input.GetKey ("r")) {
@@ -256,9 +259,9 @@ public class Player : MonoBehaviour {
             //Destroy(coll.gameObject);
             //Instantiate(coin, coinPosition, Quaternion.identity);
 			rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
-        
+            SoundController.instance.PlaySingle(playerHit);
 
-		}
+        }
 
         
     }
