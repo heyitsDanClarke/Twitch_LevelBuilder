@@ -2112,7 +2112,7 @@ AudioSource:
   m_Volume: 0.186
   m_Pitch: 1
   Loop: 1
-  Mute: 0
+  Mute: 1
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -2428,7 +2428,7 @@ MonoBehaviour:
   leverTiles: {fileID: 1592360533634122, guid: 22dd7bfd1bf046b4699b6ba325f5aab7, type: 2}
   pressurePlateTile: {fileID: 1654860652056372, guid: 96261d0a56310c84c9f460b81bc198b3,
     type: 2}
-  entrance: {fileID: 0}
+  entrance: {fileID: 1829480008217176, guid: 96208967eecf30c438e990a067f1d7ac, type: 2}
   exit: {fileID: 1829480008217176, guid: c79ab86aa0d64b24eac1d4e9fa755195, type: 2}
   boss: {fileID: 1588097786618862, guid: 6a362c59c947d414788a4788617cd591, type: 2}
   air: -1
