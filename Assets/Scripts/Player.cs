@@ -170,29 +170,6 @@ public class Player : MonoBehaviour {
 		// update camera position
 		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1] + Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, Camera.main.transform.position[2]);
 
-        /*
-		float input_x = Input.GetAxisRaw("Horizontal");
-		float input_y = Input.GetAxisRaw("Vertical");
-
-		bool isWalking = (Mathf.Abs (input_x) + Mathf.Abs (input_y)) > 0;
-
-		anim.SetBool ("isWalking", isWalking);
-
-		if (isWalking) {
-			anim.SetFloat ("x", input_x);
-			anim.SetFloat ("y", input_y);
-
-			transform.position += new Vector3 (input_x, input_y, 0).normalized * Time.deltaTime;
-		}
-
-		if (Input.GetKeyDown (KeyCode.I)) {
-
-			//anim.transform.localScale += new Vector3 (6.3f, 6.3f, 6.3f);
-			anim.SetTrigger ("meleeAttack");
-
-
-		}
-        */
 	}
 
 	void OnTriggerEnter2D(Collider2D coll)
@@ -290,15 +267,13 @@ public class Player : MonoBehaviour {
 
 			//anim.transform.localScale += new Vector3 (6.3f, 6.3f, 6.3f);
 			anim.SetTrigger ("meleeAttack");
-
-
 		}
 	}
 
     IEnumerator MeleeAttack()
     {
         transform.GetChild(0).gameObject.SetActive(true);
-        anim.SetTrigger("Attack");
+        anim.SetTrigger("attack");
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(0).gameObject.SetActive(false);
         //charges -= 1;
