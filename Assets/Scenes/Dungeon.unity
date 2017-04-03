@@ -620,7 +620,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -29, y: -40}
+  m_AnchoredPosition: {x: -90, y: -40}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &214685109
@@ -3573,7 +3573,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -90, y: -40}
+  m_AnchoredPosition: {x: -170, y: -40}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1125213260
@@ -5476,7 +5476,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 3ec598fd1f22ab1478d981aab24d3d08, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cb23303292c9dca42a3cb4898dc42291, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7664,8 +7664,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3237dbd9707f1974eb38bfea349aadaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxIcon: {fileID: 21300000, guid: 3ec598fd1f22ab1478d981aab24d3d08, type: 3}
-  leverIcon: {fileID: 21300000, guid: 130fe9d99c474d948b166498c33ead70, type: 3}
+  boxIcon: {fileID: 21300000, guid: cb23303292c9dca42a3cb4898dc42291, type: 3}
+  leverIcon: {fileID: 21300000, guid: 4db2b461e66412345b924d7def4ef868, type: 3}
   nextWeaponPanelCountdown: 0
 --- !u!1 &2012717958
 GameObject:
