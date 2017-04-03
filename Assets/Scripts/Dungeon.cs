@@ -42,10 +42,10 @@ public class Dungeon : MonoBehaviour
 	public GameObject smallMob; // small monster
 	public GameObject largeMob; // large monster
     public GameObject eyeBat; // swooping monster
-	public GameObject lootBox; // loot box
 	public GameObject boxTiles; // box
 	public GameObject leverTiles; // switch
 	public GameObject pressurePlateTile; // pressure plate
+	public GameObject entrance; // entrance of room
 	public GameObject exit; // exit of room
     public GameObject boss;
 
@@ -273,7 +273,7 @@ public class Dungeon : MonoBehaviour
 
 		// restore room to scene
 		InstantiateCaveRoom(initialRoomStructure);
-		InstantiateRoomBorder (roomWidth, roomHeight);
+		//InstantiateRoomBorder (roomWidth, roomHeight);
 
 		// restore room structure variable
 		roomStructure = initialRoomStructure.Clone() as RoomTile[,]; // deep copy
@@ -323,7 +323,7 @@ public class Dungeon : MonoBehaviour
 		RoomTile[,] room = new RoomTile[width, height];
 
 		playerStartPosition = new Vector2 (0.0f, 0.0f); // player spawn location
-		exitPosition = new Vector2 (-9.0f, -9.0f); // room exit location
+		exitPosition = new Vector2 (-4.0f, -4.0f); // room exit location
 
 		// initializing room
 		for (int i = 0; i < width; i++) {
@@ -360,7 +360,7 @@ public class Dungeon : MonoBehaviour
         // create room
 		roomStructure = GenerateCaveRoomArray(roomWidth, roomHeight, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount);
 		InstantiateCaveRoom(roomStructure);
-		InstantiateRoomBorder (roomWidth, roomHeight);
+		//InstantiateRoomBorder (roomWidth, roomHeight);
 
 		// spawn and monsters
 		SpawnLargeMonster (ref roomStructure);
@@ -644,9 +644,43 @@ public class Dungeon : MonoBehaviour
 			}
 		}
 
-		// set player and exit locations
+		// set player spawn position
 		Player.Instance.transform.position = playerStartPosition;
-		GameObject tempExit = Instantiate (exit, exitPosition, transform.rotation);
+
+		// set positions for entrance and exit portals
+		Vector2 entrancePortalPosition = playerStartPosition;
+		Vector2 exitPortalPosition = exitPosition;
+		Quaternion entranceRotation = Quaternion.identity;
+		Quaternion exitRotation = Quaternion.identity;
+		if (playerStartPosition.x == 0) { // set entrance rotation
+			entranceRotation = Quaternion.Euler (0, 0, 90);
+			entrancePortalPosition.y = Mathf.Clamp (entrancePortalPosition.y, 10, height - 10 - 1);
+		} else if (playerStartPosition.x == width - 1) {
+			entranceRotation = Quaternion.Euler (0, 0, 270);
+			entrancePortalPosition.y = Mathf.Clamp (entrancePortalPosition.y, 10, height - 10 - 1);
+		} else if (playerStartPosition.y == 0) {
+			entranceRotation = Quaternion.Euler (0, 0, 180);
+			entrancePortalPosition.x = Mathf.Clamp (entrancePortalPosition.x, 10, width - 10 - 1);
+		} else if (playerStartPosition.y == height - 1) {
+			entranceRotation = Quaternion.Euler (0, 0, 0);
+			entrancePortalPosition.x = Mathf.Clamp (entrancePortalPosition.x, 10, width - 10 - 1);
+		}
+		if (exitPosition.x == 0) { // set exit rotation
+			exitRotation = Quaternion.Euler (0, 0, 90);
+			exitPortalPosition.y = Mathf.Clamp (exitPortalPosition.y, 10, height - 10 - 1);
+		} else if (exitPosition.x == width - 1) {
+			exitRotation = Quaternion.Euler (0, 0, 270);
+			exitPortalPosition.y = Mathf.Clamp (exitPortalPosition.y, 10, height - 10 - 1);
+		} else if (exitPosition.y == 0) {
+			exitRotation = Quaternion.Euler (0, 0, 180);
+			exitPortalPosition.x = Mathf.Clamp (exitPortalPosition.x, 10, width - 10 - 1);
+		} else if (exitPosition.y == height - 1) {
+			exitRotation = Quaternion.Euler (0, 0, 0);
+			exitPortalPosition.x = Mathf.Clamp (exitPortalPosition.x, 10, width - 10 - 1);
+		}
+		GameObject tempEntrance = Instantiate (entrance, entrancePortalPosition, entranceRotation);
+		GameObject tempExit = Instantiate (exit, exitPortalPosition, exitRotation);
+		tempEntrance.transform.SetParent(dungeonVisual.transform);
 		tempExit.transform.SetParent(dungeonVisual.transform);
 	}
 
@@ -727,7 +761,7 @@ public class Dungeon : MonoBehaviour
 		}
 
 		InstantiateCaveRoom (roomStructure, lowerX, lowerY, puzzleWidth, puzzleHeight);
-		InstantiateRoomBorder (roomWidth, roomHeight);
+		//InstantiateRoomBorder (roomWidth, roomHeight);
 
 		// spawn and monsters
 		SpawnLargeMonster (ref roomStructure);
