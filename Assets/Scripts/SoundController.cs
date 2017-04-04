@@ -9,6 +9,7 @@ public class SoundController : MonoBehaviour
     public float highPitchRange = 1.05f;
     public AudioSource efxSource;
     public AudioSource musicSource;
+    public AudioSource lavaSizzleSource;
     public static SoundController instance = null;
     //this far it's fine
 
