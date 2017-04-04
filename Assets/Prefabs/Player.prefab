@@ -125,7 +125,7 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: -0.1}
   serializedVersion: 2
-  m_Radius: 0.4375
+  m_Radius: 0.55
 --- !u!58 &58935974671269440
 CircleCollider2D:
   m_ObjectHideFlags: 1

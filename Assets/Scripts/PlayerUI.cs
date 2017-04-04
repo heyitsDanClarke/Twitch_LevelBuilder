@@ -61,14 +61,32 @@ public class PlayerUI : MonoBehaviour {
 
 		// show next weapon panel when the next weapon panel countdown timer is still on
 		if (nextWeaponPanelCountdown > 0.0f) {
-			// apdate weapon durability panel
+			// update weapon durability panel
 			if (!transform.FindChild ("Next Weapon Panel").gameObject.activeSelf) {
 				transform.FindChild ("Next Weapon Panel").FindChild("Text").GetComponent<Text> ().text = "You are about\nto get a\n" + Poll.Instance._weaponDisplay.text + "!";
+
+				// update next weapon on GameMaster
+				if (Poll.Instance._weaponDisplay.text == Poll.Instance.hammerText) {
+					GameMaster.Instance.nextWeapon = GameMaster.Instance.hammer;
+				} else if (Poll.Instance._weaponDisplay.text == Poll.Instance.daggerText) {
+					GameMaster.Instance.nextWeapon = GameMaster.Instance.dagger;
+				} else if (Poll.Instance._weaponDisplay.text == Poll.Instance.whipText) {
+					GameMaster.Instance.nextWeapon = GameMaster.Instance.whip;
+				} else {
+					GameMaster.Instance.nextWeapon = GameMaster.Instance.defaultSword;
+				}
+
+				Poll.Instance.ResetVoteWeapon(); // reset weapon votes
 			}
 			transform.FindChild ("Next Weapon Panel").gameObject.SetActive (true);
 		} else {
 			// show and update weapon durability timer
 			if (transform.FindChild ("Next Weapon Panel").gameObject.activeSelf) {
+
+				// update current weapon on GameMaster
+				GameMaster.Instance.currentWeapon = GameMaster.Instance.nextWeapon;
+				GameMaster.Instance.nextWeapon = GameMaster.Instance.defaultSword;
+
 				transform.FindChild ("Weapon Timer").gameObject.SetActive (true);
 				float weaponTimerValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text); // value of the pie chart
 				float weaponTimerMaxValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Max Value").GetComponent<Text> ().text); // max value of the pie chart
