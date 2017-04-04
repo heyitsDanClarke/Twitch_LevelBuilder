@@ -126,11 +126,13 @@ public class DungeonUI : MonoBehaviour {
 	public void ShowDeathMenu() {
 		deathMenuActive = true;
 		transform.FindChild("Death Menu").gameObject.SetActive(true);
+		Player.Instance.gameObject.SetActive (false); // hide player
 	}
 
 	public void HideDeathMenu() {
 		deathMenuActive = false;
 		transform.FindChild("Death Menu").gameObject.SetActive(false);
+		Player.Instance.gameObject.SetActive (true); // show player
 	}
 
 	public void SetPauseMenuActiveToFalse() {

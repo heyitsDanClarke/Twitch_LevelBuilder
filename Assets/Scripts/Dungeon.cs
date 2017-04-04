@@ -297,6 +297,7 @@ public class Dungeon : MonoBehaviour
 		Player.Instance.transform.position = playerStartPosition;
 
 		AstarPath.active.Scan();
+		Poll.Instance.ResetVoteWeapon(); // reset weapon votes
 	}
 
 	// function for creating the border of the room in the scene
