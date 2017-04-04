@@ -193,6 +193,10 @@ public class Dungeon : MonoBehaviour
 		Player.Instance.charges = 0;
 		Player.Instance.fireResistance = 1.0f;
 		Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown;
+		GameMaster.Instance.ResetWeapon ();
+		PlayerUI.Instance.transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text = 0.0f.ToString (); // reset weapon durability timer
+		PlayerUI.Instance.nextWeaponPanelCountdown = 0.0f; // reset next weapon panel cooldown timer
+		PlayerUI.Instance.transform.FindChild ("Next Weapon Panel").gameObject.SetActive(false); // hide next weapon panel
 
 		if (dungeonVisual != null)
 			Destroy(dungeonVisual);
@@ -235,7 +239,8 @@ public class Dungeon : MonoBehaviour
 		SetNumberOfBoxesorSwitchesLeft (roomStructure);
 
 		AstarPath.active.Scan();
-		Poll.Instance.ResetVote(); // reset votes
+		Poll.Instance.ResetVoteElement(); // reset element votes
+		Poll.Instance.ResetVoteWeapon(); // reset weapon votes
     }
 
 	// function for resetting the dungeon
@@ -246,6 +251,10 @@ public class Dungeon : MonoBehaviour
 		Player.Instance.charges = 0;
 		Player.Instance.fireResistance = 1.0f;
 		Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown;
+		GameMaster.Instance.ResetWeapon ();
+		PlayerUI.Instance.transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text = 0.0f.ToString (); // reset weapon durability timer
+		PlayerUI.Instance.nextWeaponPanelCountdown = 0.0f; // reset next weapon panel cooldown timer
+		PlayerUI.Instance.transform.FindChild ("Next Weapon Panel").gameObject.SetActive(false); // hide next weapon panel
 
 		// reset redraw switch puzzle countdown if there is switch puzzle
 		if (redrawSwitchPuzzleCountdown >= 0) {

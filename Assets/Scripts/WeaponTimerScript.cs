@@ -22,6 +22,10 @@ public class WeaponTimerScript : MonoBehaviour {
 		if (value > 0.0f) {
 			gameObject.SetActive(true);
 		} else {
+			if (gameObject.activeSelf) { // reset current weapon on GM
+				GameMaster.Instance.currentWeapon = GameMaster.Instance.defaultSword;
+			}
+
 			gameObject.SetActive(false);
 		}
 

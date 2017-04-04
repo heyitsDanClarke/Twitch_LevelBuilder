@@ -36,7 +36,6 @@ public class Player : MonoBehaviour {
 	public int maxBoxes; // number of boxes in the puzzle
 	public int levers; // number of switches left to switch
 	public int maxLevers; // number of switches in the puzzle
-    public GameObject coin;
 	public GameObject gem;
     public AudioClip playerAttackSound;
     public AudioClip playerHitSound;
@@ -186,11 +185,11 @@ public class Player : MonoBehaviour {
 				bool firstGemOnLeft = Random.Range (0.0f, 1.0f) > 0.5f;
 				bool firstGemIsFireGem = Dungeon.Instance.currentFireVotes >= Dungeon.Instance.currentIceVotes; // determine element of first gem
 				bool secondGemIsFireGem = Dungeon.Instance.currentFireVotes > Dungeon.Instance.currentIceVotes; // determine element of second gem
-				GameObject firstGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? -0.6f : 0.6f), boxPosition.y, 0.0f), Quaternion.identity); // spawn first gem
+				GameObject firstGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? -0.55f : 0.55f), boxPosition.y, 0.0f), Quaternion.identity); // spawn first gem
 				firstGem.GetComponent<GemController> ().firePower = firstGemIsFireGem? 1 : 0;
 				firstGem.GetComponent<GemController> ().icePower = firstGemIsFireGem? 0 : 1;
 				firstGem.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
-				GameObject secondGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? 0.6f : -0.6f), boxPosition.y, 0.0f), Quaternion.identity); // spawn second gem
+				GameObject secondGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? 0.55f : -0.55f), boxPosition.y, 0.0f), Quaternion.identity); // spawn second gem
 				secondGem.GetComponent<GemController> ().firePower = secondGemIsFireGem? 1 : 0;
 				secondGem.GetComponent<GemController> ().icePower = secondGemIsFireGem? 0 : 1;
 				secondGem.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
@@ -233,9 +232,7 @@ public class Player : MonoBehaviour {
             if (health > 0)
                 health -= 1;
             Vector3 enemyPosition = coll.transform.position;
-            //Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
-            //Destroy(coll.gameObject);
-            //Instantiate(coin, coinPosition, Quaternion.identity);
+
 			rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
             SoundController.instance.PlaySingle(playerHitSound);
 
