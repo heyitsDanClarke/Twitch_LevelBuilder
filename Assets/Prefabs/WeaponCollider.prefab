@@ -19,11 +19,11 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4669811470469632}
-  - component: {fileID: 212276880335301884}
   - component: {fileID: 60784660862910356}
+  - component: {fileID: 212010286896126428}
   m_Layer: 0
   m_Name: WeaponCollider
-  m_TagString: Untagged
+  m_TagString: WeaponCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36,7 +36,7 @@ Transform:
   m_GameObject: {fileID: 1214190892909730}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.46, y: -0.04, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -50,7 +50,7 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   m_Points:
@@ -61,7 +61,7 @@ PolygonCollider2D:
       - {x: 3.9016218, y: -1.8703139}
       - {x: 4.100238, y: -1.9911203}
       - {x: 4.100238, y: 1.9776297}
---- !u!212 &212276880335301884
+--- !u!212 &212010286896126428
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

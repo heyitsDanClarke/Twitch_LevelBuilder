@@ -45,8 +45,7 @@ public class Player : MonoBehaviour {
     public AudioClip treasureFoundSound;
 
 	//for attack speed
-	public float attackRate = 2.0F;
-	private float nextAttack = 0.0F;
+	public float attackCooldown = 0.5F;
 
 	//attack collider
 	public GameObject attackCollider;
@@ -144,12 +143,14 @@ public class Player : MonoBehaviour {
         else if (rb.velocity.x > 0)
             transform.localScale = new Vector3(1, 1, 1);
 
-		if (Input.GetKey ("j") && Time.time > nextAttack) {
+		if (Input.GetKeyDown ("j") && attackCooldown <= 0.0F ) {
 			//can add switch case for different weapons
 
 			StopAllCoroutines ();
 			StartCoroutine (MeleeAttack ());
-			nextAttack = Time.time + attackRate;
+
+			attackCooldown = 0.5F;
+
 			SoundController.instance.RandomizeSfxLarge (playerAttackSound);
             
         } 
@@ -183,6 +184,7 @@ public class Player : MonoBehaviour {
 		// update camera position
 		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1] + Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, Camera.main.transform.position[2]);
 
+		attackCooldown = Mathf.Max (attackCooldown - Time.deltaTime, 0);
 	}
 
 	// reset weapon to default
@@ -284,13 +286,16 @@ public class Player : MonoBehaviour {
 
     IEnumerator MeleeAttack()
     {
+		
+
 
 		//initiate the collider and its position is right at the player's position
 		GameObject _attackCollider = (GameObject)Instantiate (attackCollider);
 		_attackCollider.transform.position = transform.position;
 
 		//Size of the collider (can be changed base on weapon with Switch Case)
-		_attackCollider.transform.localScale = new Vector3 (_attackCollider.transform.localScale.x * 2, _attackCollider.transform.localScale.y * 2, _attackCollider.transform.localScale.z);
+		//_attackCollider.transform.localScale = new Vector3 (_attackCollider.transform.localScale.x * 2, _attackCollider.transform.localScale.y * 2, _attackCollider.transform.localScale.z);
+
 
 		//Direction of the attack base on where the character's orientation
 		float x = anim.GetFloat ("x");
@@ -305,14 +310,17 @@ public class Player : MonoBehaviour {
 		} else {
 			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, -90);
 		}
+			
 
-        transform.GetChild(0).gameObject.SetActive(true);
+        transform.GetChild(1).gameObject.SetActive(true);
         anim.SetTrigger("attack");
         yield return new WaitForSeconds(0.25f);
-        transform.GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(1).gameObject.SetActive(false);
         //charges -= 1;
+        
 
 		//destroy collider, avoid memory leaking
 		Destroy (_attackCollider);
+
     }
 }
