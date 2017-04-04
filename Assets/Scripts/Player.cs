@@ -227,12 +227,7 @@ public class Player : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D coll)
     {
-		if (coll.gameObject.tag == "Gem") {
-			//SoundController.instance.PlaySingle(treasureFoundSound);
-			firePower += coll.gameObject.GetComponent<GemController>().firePower;
-			icePower += coll.gameObject.GetComponent<GemController>().icePower;
-			Destroy(coll.gameObject);
-		} else if (coll.gameObject.tag == "Exit") {
+		if (coll.gameObject.tag == "Exit") {
 			if (boxes == maxBoxes && levers == maxLevers) { // if all puzzles are being solved
 				DungeonUI.Instance.showNextLevelMenu ();
 				SoundController.instance.PlaySingle(exitFoundSound);

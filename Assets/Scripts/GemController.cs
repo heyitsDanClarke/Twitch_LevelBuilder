@@ -24,4 +24,13 @@ public class GemController : MonoBehaviour {
 	void Update () {
         transform.position = Vector3.MoveTowards(transform.position, Player.Instance.transform.position, speed * Time.deltaTime);
     }
+
+	void OnTriggerEnter2D (Collider2D coll) {
+		if (coll.gameObject.tag == "Player") {
+
+			coll.gameObject.GetComponent<Player>().firePower += firePower;
+			coll.gameObject.GetComponent<Player>().icePower += icePower;
+			Destroy(this.gameObject);
+		}
+	}
 }
