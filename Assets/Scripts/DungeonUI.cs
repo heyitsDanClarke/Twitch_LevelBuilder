@@ -126,14 +126,22 @@ public class DungeonUI : MonoBehaviour {
 	public void ShowDeathMenu() {
 		deathMenuActive = true;
 		transform.FindChild("Death Menu").gameObject.SetActive(true);
+
         SoundController.instance.musicSource.mute = true;
         SoundController.instance.deathMusicSource.Play();
+
+		Player.Instance.gameObject.SetActive (false); // hide player
+
 	}
 
 	public void HideDeathMenu() {
 		deathMenuActive = false;
 		transform.FindChild("Death Menu").gameObject.SetActive(false);
+
         SoundController.instance.musicSource.mute = false;
+
+
+		Player.Instance.gameObject.SetActive (true); // show player
 
 	}
 

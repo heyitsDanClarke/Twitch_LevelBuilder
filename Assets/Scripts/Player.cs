@@ -207,8 +207,8 @@ public class Player : MonoBehaviour {
 				// spawn gems
 				Vector3 boxPosition = coll.gameObject.transform.position;
 				bool firstGemOnLeft = Random.Range (0.0f, 1.0f) > 0.5f;
-				bool firstGemIsFireGem = Dungeon.Instance.currentFireVotes >= Dungeon.Instance.currentIceVotes; // determine element of first gem
-				bool secondGemIsFireGem = Dungeon.Instance.currentFireVotes > Dungeon.Instance.currentIceVotes; // determine element of second gem
+				bool firstGemIsFireGem = Dungeon.Instance.currentRoomClimate > 0.2f; // determine element of first gem
+				bool secondGemIsFireGem = Dungeon.Instance.currentRoomClimate > -0.2f; // determine element of second gem
 				GameObject firstGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? -0.55f : 0.55f), boxPosition.y, 0.0f), Quaternion.identity); // spawn first gem
 				firstGem.GetComponent<GemController> ().firePower = firstGemIsFireGem? 1 : 0;
 				firstGem.GetComponent<GemController> ().icePower = firstGemIsFireGem? 0 : 1;

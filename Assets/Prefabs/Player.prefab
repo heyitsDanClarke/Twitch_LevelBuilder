@@ -83,7 +83,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1623097365396398}
-  m_LocalRotation: {x: -0.17364825, y: 0, z: 0, w: 0.9848078}
+  m_LocalRotation: {x: -0.17364752, y: 0, z: 0, w: 0.9848079}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -193,15 +193,22 @@ MonoBehaviour:
   maxBoxes: 0
   levers: 0
   maxLevers: 0
-  coin: {fileID: 1312639025012346, guid: f1ef7a530ac27cf49b1fb860e5f8c12d, type: 2}
   gem: {fileID: 1006891613377954, guid: 53c3d79e6e7267b4eb6d229a41b6c125, type: 2}
   playerAttackSound: {fileID: 8300000, guid: 7bfe97cf6a90a83459b7bf10176f962e, type: 3}
-  playerHitSound: {fileID: 8300000, guid: 9f19dbf1610d37140833bf4b73ea34bb, type: 3}
+  playerHitSound1: {fileID: 8300000, guid: 6be6d80a2caac7c4fad0ba6c1dc15b2c, type: 3}
+  playerHitSound2: {fileID: 8300000, guid: 7afa07dbbb99beb41a5130f56770707c, type: 3}
+  playerHitSound3: {fileID: 8300000, guid: d092bae3f23f5a64383137f8da2b5b93, type: 3}
   exitFoundSound: {fileID: 8300000, guid: f38cca873053f6645ac59aec2b1ac150, type: 3}
   treasureFoundSound: {fileID: 8300000, guid: c93f71b76d0deaf4d94afaf1bdf60620, type: 3}
-  attackRate: 2
-  attackCollider: {fileID: 0}
-  weaponType: 0
+  attackRate: 0.2
+  attackCollider: {fileID: 1214190892909730, guid: c1f46a74d8baa404ab76a342b284c480,
+    type: 2}
+  currentWeapon: 0
+  nextWeapon: 0
+  defaultSword: 0
+  hammer: 1
+  dagger: 2
+  whip: 3
   rb: {fileID: 0}
   anim: {fileID: 0}
   Spear_RAC: {fileID: 0}
