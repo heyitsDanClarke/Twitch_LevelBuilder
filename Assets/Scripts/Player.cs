@@ -43,6 +43,13 @@ public class Player : MonoBehaviour {
     public AudioClip exitFoundSound;
     public AudioClip treasureFoundSound;
 
+	//for attack speed
+	public float attackRate = 2.0F;
+	private float nextAttack = 0.0F;
+
+	//attack collider
+	public GameObject attackCollider;
+
 	/* weapon type attribute: 0 - sword ;  1-spear ; 2-polearm ; 3-dagger */
 	public int weaponType;
 
@@ -135,14 +142,17 @@ public class Player : MonoBehaviour {
         else if (rb.velocity.x > 0)
             transform.localScale = new Vector3(1, 1, 1);
 
-        if (Input.GetKey("j"))
-        {
-            StopAllCoroutines();
-            StartCoroutine(MeleeAttack());
-            SoundController.instance.PlaySingle(playerAttackSound);
-        }
+		if (Input.GetKey ("j") && Time.time > nextAttack) {
+			//can add switch case for different weapons
 
-		if (Input.GetKey ("r")) {
+			StopAllCoroutines ();
+			StartCoroutine (MeleeAttack ());
+			nextAttack = Time.time + attackRate;
+			SoundController.instance.PlaySingle (playerAttackSound);
+		} 
+
+
+		if (Input.GetKey ("r") ) {
 			StopAllCoroutines ();
 			switch (weaponType) {
 			case 0:
@@ -278,10 +288,35 @@ public class Player : MonoBehaviour {
 
     IEnumerator MeleeAttack()
     {
+
+		//initiate the collider and its position is right at the player's position
+		GameObject _attackCollider = (GameObject)Instantiate (attackCollider);
+		_attackCollider.transform.position = transform.position;
+
+		//Size of the collider (can be changed base on weapon with Switch Case)
+		_attackCollider.transform.localScale = new Vector3 (_attackCollider.transform.localScale.x * 2, _attackCollider.transform.localScale.y * 2, _attackCollider.transform.localScale.z);
+
+		//Direction of the attack base on where the character's orientation
+		float x = anim.GetFloat ("x");
+		float y = anim.GetFloat ("y");
+
+		if (x == 1) {
+			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, 0);
+		} else if (x == -1) {
+			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, 180);
+		} else if (y == 1) {
+			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, 90);
+		} else {
+			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, -90);
+		}
+			
         transform.GetChild(0).gameObject.SetActive(true);
         anim.SetTrigger("attack");
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(0).gameObject.SetActive(false);
         //charges -= 1;
+
+		//destroy collider, avoid memery leaking
+		Destroy (_attackCollider);
     }
 }
