@@ -49,8 +49,13 @@ public class Player : MonoBehaviour {
 	//attack collider
 	public GameObject attackCollider;
 
-	/* weapon type attribute: 0 - sword ;  1-spear ; 2-polearm ; 3-dagger */
-	public int weaponType;
+	public int currentWeapon;
+	public int nextWeapon;
+
+	[HideInInspector] public int defaultSword = 0;
+	[HideInInspector] public int hammer = 1;
+	[HideInInspector] public int dagger = 2;
+	[HideInInspector] public int whip = 3;
 
     [HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
@@ -99,7 +104,7 @@ public class Player : MonoBehaviour {
 		fireDamageCooldown = maxFireDamageCooldown;
 		onFire = false;
 
-		weaponType = 0;
+		currentWeapon = 0;
         //weaponShards[0] = 0;
         //weaponShards[1] = 1;
         //weaponShards[2] = 2;
@@ -153,7 +158,7 @@ public class Player : MonoBehaviour {
 
 		if (Input.GetKey ("r") ) {
 			StopAllCoroutines ();
-			switch (weaponType) {
+			switch (currentWeapon) {
 			case 0:
 				anim.runtimeAnimatorController = Sword_RAC; 
 				break;
@@ -179,6 +184,12 @@ public class Player : MonoBehaviour {
 		// update camera position
 		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1] + Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, Camera.main.transform.position[2]);
 
+	}
+
+	// reset weapon to default
+	public void ResetWeapon () {
+		currentWeapon = defaultSword;
+		nextWeapon = defaultSword;
 	}
 
 	void OnTriggerEnter2D(Collider2D coll)

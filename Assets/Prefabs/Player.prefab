@@ -125,7 +125,7 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: -0.1}
   serializedVersion: 2
-  m_Radius: 0.55
+  m_Radius: 0.475
 --- !u!58 &58935974671269440
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -193,12 +193,13 @@ MonoBehaviour:
   maxBoxes: 0
   levers: 0
   maxLevers: 0
-  coin: {fileID: 1312639025012346, guid: f1ef7a530ac27cf49b1fb860e5f8c12d, type: 2}
   gem: {fileID: 1006891613377954, guid: 53c3d79e6e7267b4eb6d229a41b6c125, type: 2}
   playerAttackSound: {fileID: 8300000, guid: 7bfe97cf6a90a83459b7bf10176f962e, type: 3}
   playerHitSound: {fileID: 8300000, guid: 9f19dbf1610d37140833bf4b73ea34bb, type: 3}
   exitFoundSound: {fileID: 8300000, guid: f38cca873053f6645ac59aec2b1ac150, type: 3}
   treasureFoundSound: {fileID: 8300000, guid: b8a546128e881824985fc793d64b3d7e, type: 3}
+  attackRate: 2
+  attackCollider: {fileID: 0}
   weaponType: 0
   rb: {fileID: 0}
   anim: {fileID: 0}

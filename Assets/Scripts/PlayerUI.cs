@@ -67,13 +67,13 @@ public class PlayerUI : MonoBehaviour {
 
 				// update next weapon on GameMaster
 				if (Poll.Instance._weaponDisplay.text == Poll.Instance.hammerText) {
-					GameMaster.Instance.nextWeapon = GameMaster.Instance.hammer;
+					Player.Instance.nextWeapon = Player.Instance.hammer;
 				} else if (Poll.Instance._weaponDisplay.text == Poll.Instance.daggerText) {
-					GameMaster.Instance.nextWeapon = GameMaster.Instance.dagger;
+					Player.Instance.nextWeapon = Player.Instance.dagger;
 				} else if (Poll.Instance._weaponDisplay.text == Poll.Instance.whipText) {
-					GameMaster.Instance.nextWeapon = GameMaster.Instance.whip;
+					Player.Instance.nextWeapon = Player.Instance.whip;
 				} else {
-					GameMaster.Instance.nextWeapon = GameMaster.Instance.defaultSword;
+					Player.Instance.nextWeapon = Player.Instance.defaultSword;
 				}
 
 				Poll.Instance.ResetVoteWeapon(); // reset weapon votes
@@ -84,8 +84,8 @@ public class PlayerUI : MonoBehaviour {
 			if (transform.FindChild ("Next Weapon Panel").gameObject.activeSelf) {
 
 				// update current weapon on GameMaster
-				GameMaster.Instance.currentWeapon = GameMaster.Instance.nextWeapon;
-				GameMaster.Instance.nextWeapon = GameMaster.Instance.defaultSword;
+				Player.Instance.currentWeapon = Player.Instance.nextWeapon;
+				Player.Instance.nextWeapon = Player.Instance.defaultSword;
 
 				transform.FindChild ("Weapon Timer").gameObject.SetActive (true);
 				float weaponTimerValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text); // value of the pie chart
