@@ -13,14 +13,6 @@ public class GameMaster : MonoBehaviour {
 	public int hammerCount;
 	public int daggerCount;
 	public int whipCount;
-	public int currentWeapon;
-	public int nextWeapon;
-
-	[HideInInspector] public int defaultSword = 0;
-	[HideInInspector] public int hammer = 1;
-	[HideInInspector] public int dagger = 2;
-	[HideInInspector] public int whip = 3;
-
 
 	public float music; // music volume
 	public float sfx; // sfx volume
@@ -40,9 +32,4 @@ public class GameMaster : MonoBehaviour {
 		username = "uldrendan";
     }
 
-	// reset weapon to default
-	public void ResetWeapon () {
-		currentWeapon = defaultSword;
-		nextWeapon = defaultSword;
-	}
 }
