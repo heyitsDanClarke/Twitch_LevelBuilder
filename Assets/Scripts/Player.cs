@@ -39,7 +39,9 @@ public class Player : MonoBehaviour {
     public GameObject coin;
 	public GameObject gem;
     public AudioClip playerAttackSound;
-    public AudioClip playerHitSound;
+    public AudioClip playerHitSound1;
+    public AudioClip playerHitSound2;
+    public AudioClip playerHitSound3;
     public AudioClip exitFoundSound;
     public AudioClip treasureFoundSound;
 
@@ -148,7 +150,7 @@ public class Player : MonoBehaviour {
 			StopAllCoroutines ();
 			StartCoroutine (MeleeAttack ());
 			nextAttack = Time.time + attackRate;
-			SoundController.instance.PlaySingle (playerAttackSound);
+			SoundController.instance.RandomizeSfxLarge (playerAttackSound);
 		} 
 
 
@@ -247,7 +249,7 @@ public class Player : MonoBehaviour {
             //Destroy(coll.gameObject);
             //Instantiate(coin, coinPosition, Quaternion.identity);
 			rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
-            SoundController.instance.PlaySingle(playerHitSound);
+            SoundController.instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
 
         }
 
