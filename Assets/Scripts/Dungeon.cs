@@ -14,6 +14,9 @@ public class Dungeon : MonoBehaviour
 	public int roomsLeftUntilBoss; // number of rooms left before boss room
 	public int currentFireVotes; // number of fire votes of the current room
 	public int currentIceVotes; // number of ice votes of the current room
+   
+	public float currentRoomClimate; // room temperature of current room, -1 = cold, 1 = hot
+    public AudioSource lavaSizzleSource;
 
 	public struct RoomTile // structure for every pixel of the room
 	{
@@ -141,6 +144,9 @@ public class Dungeon : MonoBehaviour
 
 			// player on lava
 			if (roomStructure[x, y].tile == lava) {
+                
+                SoundController.instance.lavaSizzleSource.mute = false;
+
 				Player.Instance.rb.drag = 5.0f; // slow down player a bit if player is in lava
 				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make lava slightly slippery
 				Player.Instance.fireResistanceCooldown = Player.Instance.maxFireResistanceCooldown; // reset cooldown;
@@ -151,7 +157,10 @@ public class Dungeon : MonoBehaviour
 					Player.Instance.onFire = true;
 				}
 			} else {
-				Player.Instance.fireResistanceCooldown = Mathf.Max(0.0f, Player.Instance.fireResistanceCooldown - (PauseMenuActive? 0.0f : Time.deltaTime));
+                
+                SoundController.instance.lavaSizzleSource.mute = true;
+
+                Player.Instance.fireResistanceCooldown = Mathf.Max(0.0f, Player.Instance.fireResistanceCooldown - (PauseMenuActive? 0.0f : Time.deltaTime));
 
 				// regenerate fire resistance meter if the cooldown is over
 				if (Player.Instance.fireResistanceCooldown <= 0.0f) {
@@ -193,6 +202,17 @@ public class Dungeon : MonoBehaviour
 		Player.Instance.charges = 0;
 		Player.Instance.fireResistance = 1.0f;
 		Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown;
+		Player.Instance.ResetWeapon ();
+		PlayerUI.Instance.transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text = 0.0f.ToString (); // reset weapon durability timer
+		PlayerUI.Instance.nextWeaponPanelCountdown = 0.0f; // reset next weapon panel cooldown timer
+		PlayerUI.Instance.transform.FindChild ("Next Weapon Panel").gameObject.SetActive(false); // hide next weapon panel
+
+		// determine room temperature
+		if (GameMaster.Instance.fireCount + GameMaster.Instance.iceCount == 0) { // single player
+			currentRoomClimate = Mathf.Clamp ((float) (random.NextDouble ()) * 3.0f - 1.5f, -1.0f, 1.0f);
+		} else {
+			currentRoomClimate = (GameMaster.Instance.fireCount - GameMaster.Instance.iceCount) / ((float)(GameMaster.Instance.fireCount + GameMaster.Instance.iceCount));
+		}
 
 		if (dungeonVisual != null)
 			Destroy(dungeonVisual);
@@ -235,7 +255,8 @@ public class Dungeon : MonoBehaviour
 		SetNumberOfBoxesorSwitchesLeft (roomStructure);
 
 		AstarPath.active.Scan();
-		Poll.Instance.ResetVote(); // reset votes
+		Poll.Instance.ResetVoteElement(); // reset element votes
+		Poll.Instance.ResetVoteWeapon(); // reset weapon votes
     }
 
 	// function for resetting the dungeon
@@ -246,6 +267,10 @@ public class Dungeon : MonoBehaviour
 		Player.Instance.charges = 0;
 		Player.Instance.fireResistance = 1.0f;
 		Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown;
+		Player.Instance.ResetWeapon ();
+		PlayerUI.Instance.transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text = 0.0f.ToString (); // reset weapon durability timer
+		PlayerUI.Instance.nextWeaponPanelCountdown = 0.0f; // reset next weapon panel cooldown timer
+		PlayerUI.Instance.transform.FindChild ("Next Weapon Panel").gameObject.SetActive(false); // hide next weapon panel
 
 		// reset redraw switch puzzle countdown if there is switch puzzle
 		if (redrawSwitchPuzzleCountdown >= 0) {
@@ -283,10 +308,9 @@ public class Dungeon : MonoBehaviour
 
 		// spawn player and exit
 		Player.Instance.transform.position = playerStartPosition;
-		GameObject tempExit = Instantiate (exit, exitPosition, transform.rotation);
-		tempExit.transform.SetParent(dungeonVisual.transform);
 
 		AstarPath.active.Scan();
+		Poll.Instance.ResetVoteWeapon(); // reset weapon votes
 	}
 
 	// function for creating the border of the room in the scene
@@ -358,7 +382,7 @@ public class Dungeon : MonoBehaviour
     void GenerateCaveRoom(int roomWidth, int roomHeight)
     {
         // create room
-		roomStructure = GenerateCaveRoomArray(roomWidth, roomHeight, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount);
+		roomStructure = GenerateCaveRoomArray (roomWidth, roomHeight);
 		InstantiateCaveRoom(roomStructure);
 		//InstantiateRoomBorder (roomWidth, roomHeight);
 
@@ -372,12 +396,8 @@ public class Dungeon : MonoBehaviour
     }
 
 	// generate an array containing the information of a cave room in the scene
-	RoomTile [,] GenerateCaveRoomArray (int width, int height, int fireVotes, int iceVotes) // height of room, width of room
+	RoomTile [,] GenerateCaveRoomArray (int width, int height) // height of room, width of room
 	{
-		//set the number of votes of the current room
-		currentFireVotes = fireVotes;
-		currentIceVotes = iceVotes;
-
 		RoomTile[,] room = new RoomTile[width, height];
 
 		playerStartPosition = new Vector2 (0.0f, 0.0f); // player spawn location
@@ -515,7 +535,7 @@ public class Dungeon : MonoBehaviour
 			// set temperature map of room;
 			xOffset = (float) (random.NextDouble ()) * 200;
 			yOffset = (float) (random.NextDouble ()) * 200;
-			float heightOffset = (fireVotes + iceVotes == 0)? 0.0f : 0.3f * (fireVotes - iceVotes) / ((float) (fireVotes + iceVotes)); // height offset of perlin noise for the temperature map
+			float heightOffset = 0.3f * currentRoomClimate; // height offset of perlin noise for the temperature map
 			for (int i = 0; i < width; i++) {
 				for (int j = 0; j < height; j++) {
 					room [i, j].temperature = (float) Mathf.Clamp01(Mathf.Clamp01(Mathf.PerlinNoise (xOffset + i * xScale, yOffset + j * xScale) * 1.5f - 0.25f) * 0.4f + 0.3f + heightOffset);
@@ -695,7 +715,7 @@ public class Dungeon : MonoBehaviour
 
 		// create room
 		while (true) {
-			roomStructure = GenerateCaveRoomArray (roomWidth, roomHeight, GameMaster.Instance.fireCount, GameMaster.Instance.iceCount);
+			roomStructure = GenerateCaveRoomArray (roomWidth, roomHeight);
 			for (int findLargeAreaAttempt = 0; findLargeAreaAttempt < 64; findLargeAreaAttempt++) {
 				int x = random.Next (puzzleRadius * 2, roomWidth - puzzleRadius * 2);
 				int y = random.Next (puzzleRadius * 2, roomHeight - puzzleRadius * 2);

@@ -36,10 +36,11 @@ public class Player : MonoBehaviour {
 	public int maxBoxes; // number of boxes in the puzzle
 	public int levers; // number of switches left to switch
 	public int maxLevers; // number of switches in the puzzle
-    public GameObject coin;
 	public GameObject gem;
     public AudioClip playerAttackSound;
-    public AudioClip playerHitSound;
+    public AudioClip playerHitSound1;
+    public AudioClip playerHitSound2;
+    public AudioClip playerHitSound3;
     public AudioClip exitFoundSound;
     public AudioClip treasureFoundSound;
 
@@ -50,8 +51,13 @@ public class Player : MonoBehaviour {
 	//attack collider
 	public GameObject attackCollider;
 
-	/* weapon type attribute: 0 - sword ;  1-spear ; 2-polearm ; 3-dagger */
-	public int weaponType;
+	public int currentWeapon;
+	public int nextWeapon;
+
+	[HideInInspector] public int defaultSword = 0;
+	[HideInInspector] public int hammer = 1;
+	[HideInInspector] public int dagger = 2;
+	[HideInInspector] public int whip = 3;
 
     [HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
@@ -100,7 +106,7 @@ public class Player : MonoBehaviour {
 		fireDamageCooldown = maxFireDamageCooldown;
 		onFire = false;
 
-		weaponType = 0;
+		currentWeapon = 0;
         //weaponShards[0] = 0;
         //weaponShards[1] = 1;
         //weaponShards[2] = 2;
@@ -148,13 +154,14 @@ public class Player : MonoBehaviour {
 			StopAllCoroutines ();
 			StartCoroutine (MeleeAttack ());
 			nextAttack = Time.time + attackRate;
-			SoundController.instance.PlaySingle (playerAttackSound);
-		} 
+			SoundController.instance.RandomizeSfxLarge (playerAttackSound);
+            
+        } 
 
 
 		if (Input.GetKey ("r") ) {
 			StopAllCoroutines ();
-			switch (weaponType) {
+			switch (currentWeapon) {
 			case 0:
 				anim.runtimeAnimatorController = Sword_RAC; 
 				break;
@@ -165,7 +172,7 @@ public class Player : MonoBehaviour {
 				anim.runtimeAnimatorController = Polearm_RAC; 
 				break;
 			case 3:
-				anim.runtimeAnimatorController = Dagger_RAC; 
+				anim.runtimeAnimatorController = Dagger_RAC;   
 				break;
 			}
 
@@ -182,6 +189,12 @@ public class Player : MonoBehaviour {
 
 	}
 
+	// reset weapon to default
+	public void ResetWeapon () {
+		currentWeapon = defaultSword;
+		nextWeapon = defaultSword;
+	}
+
 	void OnTriggerEnter2D(Collider2D coll)
 	{
 		if (coll.gameObject.tag == "Loot") {
@@ -194,13 +207,13 @@ public class Player : MonoBehaviour {
 				// spawn gems
 				Vector3 boxPosition = coll.gameObject.transform.position;
 				bool firstGemOnLeft = Random.Range (0.0f, 1.0f) > 0.5f;
-				bool firstGemIsFireGem = Dungeon.Instance.currentFireVotes >= Dungeon.Instance.currentIceVotes; // determine element of first gem
-				bool secondGemIsFireGem = Dungeon.Instance.currentFireVotes > Dungeon.Instance.currentIceVotes; // determine element of second gem
-				GameObject firstGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? -0.6f : 0.6f), boxPosition.y, 0.0f), Quaternion.identity); // spawn first gem
+				bool firstGemIsFireGem = Dungeon.Instance.currentRoomClimate > 0.2f; // determine element of first gem
+				bool secondGemIsFireGem = Dungeon.Instance.currentRoomClimate > -0.2f; // determine element of second gem
+				GameObject firstGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? -0.55f : 0.55f), boxPosition.y, 0.0f), Quaternion.identity); // spawn first gem
 				firstGem.GetComponent<GemController> ().firePower = firstGemIsFireGem? 1 : 0;
 				firstGem.GetComponent<GemController> ().icePower = firstGemIsFireGem? 0 : 1;
 				firstGem.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
-				GameObject secondGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? 0.6f : -0.6f), boxPosition.y, 0.0f), Quaternion.identity); // spawn second gem
+				GameObject secondGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? 0.55f : -0.55f), boxPosition.y, 0.0f), Quaternion.identity); // spawn second gem
 				secondGem.GetComponent<GemController> ().firePower = secondGemIsFireGem? 1 : 0;
 				secondGem.GetComponent<GemController> ().icePower = secondGemIsFireGem? 0 : 1;
 				secondGem.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
@@ -217,7 +230,7 @@ public class Player : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D coll)
     {
 		if (coll.gameObject.tag == "Gem") {
-			SoundController.instance.PlaySingle(treasureFoundSound);
+			//SoundController.instance.PlaySingle(treasureFoundSound);
 			firePower += coll.gameObject.GetComponent<GemController>().firePower;
 			icePower += coll.gameObject.GetComponent<GemController>().icePower;
 			Destroy(coll.gameObject);
@@ -243,11 +256,9 @@ public class Player : MonoBehaviour {
             if (health > 0)
                 health -= 1;
             Vector3 enemyPosition = coll.transform.position;
-            //Vector3 coinPosition = transform.position + Random.Range(1.5f, 4.0f) * (enemyPosition - transform.position);
-            //Destroy(coll.gameObject);
-            //Instantiate(coin, coinPosition, Quaternion.identity);
+
 			rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
-            SoundController.instance.PlaySingle(playerHitSound);
+            SoundController.instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
 
         }
 

@@ -83,6 +83,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isActive: 0
+  active: {fileID: 0}
+  inActive: {fileID: 0}
+  leverSound: {fileID: 8300000, guid: 354f2c8cd1510d2448e441f9f18bf6ad, type: 3}
 --- !u!212 &212952336889051098
 SpriteRenderer:
   m_ObjectHideFlags: 1

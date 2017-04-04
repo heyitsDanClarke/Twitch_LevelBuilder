@@ -6,14 +6,12 @@ public class GameMaster : MonoBehaviour {
 
     public static GameMaster Instance;
 
-    [HideInInspector]
     public int iceCount;
-    [HideInInspector]
     public int fireCount;
 
-    public int hammerCount;
-    public int daggerCount;
-    public int whipCount;
+	public int hammerCount;
+	public int daggerCount;
+	public int whipCount;
 
 	public float music; // music volume
 	public float sfx; // sfx volume
@@ -30,6 +28,13 @@ public class GameMaster : MonoBehaviour {
 
 		music = 0.4f;
 		sfx = 0.8f;
+
+        SoundController.instance.lavaSizzleSource.volume = sfx;
+        SoundController.instance.efxSource.volume = sfx;
+        SoundController.instance.deathMusicSource.volume = music;
+        SoundController.instance.musicSource.volume = music;
+
 		username = "uldrendan";
     }
+
 }

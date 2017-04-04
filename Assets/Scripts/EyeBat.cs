@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,8 +17,9 @@ public class EyeBat : MonoBehaviour {
     public AudioClip batHit;
 
     bool swooping = false;
+    private Func<Rigidbody2D> treasureObjectRB;
 
-	void Start () {
+    void Start () {
         _rb = GetComponent<Rigidbody2D>();
         target = Player.Instance.gameObject;
 	}
@@ -55,13 +57,15 @@ public class EyeBat : MonoBehaviour {
         }*/ //for demo we are removing the line of sight mechanics, making it a distance check
         if (coll.gameObject.tag == "Sword")
         {
-            SoundController.instance.PlaySingle(batHit);
+            SoundController.instance.RandomizeSfx(batHit);
             health -= 1;
             if (health <= 0)
             {
                 Vector2 shardPosition = new Vector2(transform.position.x + 1, transform.position.y);
-                GameObject treasureObject = Instantiate(shard, shardPosition, Quaternion.identity);
+                Vector3 shardVelocity = -1 *_rb.velocity;
+                GameObject treasureObject = Instantiate(shard, transform.position, Quaternion.identity);
                 treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+                treasureObject.GetComponent<Rigidbody2D>().velocity = _rb.velocity; 
                 Destroy(gameObject);
             }
             else

@@ -30,7 +30,12 @@ public class Poll : MonoBehaviour {
 	public const string daggerCommand = "#dagger";
 	public const string whipCommand = "#whip";
 
-    private List<string> _voterList;
+	public string hammerText = "Hammer";
+	public string daggerText = "Dagger";
+	public string whipText = "Whip";
+
+	private List<string> _voterListElement;
+	private List<string> _voterListWeapon;
 
     void Awake()
     {
@@ -40,7 +45,8 @@ public class Poll : MonoBehaviour {
 			Instance = this;
 		}
 
-        _voterList = new List<string>();
+        _voterListElement = new List<string>();
+		_voterListWeapon = new List<string>();
     }
 
     void Start () {
@@ -91,58 +97,72 @@ public class Poll : MonoBehaviour {
 
     private void OnChatMessage(ref TwitchChatMessage msg)
     {
-        if (!_voterList.Contains(msg.userName))
+        if (!_voterListElement.Contains(msg.userName))
         {
             bool isValidVote = false;
 
             if (msg.chatMessagePlainText.Equals(iceCommand, StringComparison.InvariantCultureIgnoreCase)) {
                 isValidVote = true;
-
-                ++GameMaster.Instance.iceCount;//++_iceCount;
-
+                ++GameMaster.Instance.iceCount;
                 _iceCountDisplay.text = "" + GameMaster.Instance.iceCount;
-
 				createShoutBubble (iceCommand);
-            }
-
-			else if (msg.chatMessagePlainText.Equals(fireCommand, StringComparison.InvariantCultureIgnoreCase)) {
+            } else if (msg.chatMessagePlainText.Equals(fireCommand, StringComparison.InvariantCultureIgnoreCase)) {
                 isValidVote = true;
-
                 ++GameMaster.Instance.fireCount;
-
                 _fireCountDisplay.text = "" + GameMaster.Instance.fireCount;
-
 				createShoutBubble (fireCommand);
             }
 
-            else if (msg.chatMessagePlainText.Equals(hammerCommand, StringComparison.InvariantCultureIgnoreCase))
-            {
-                ++GameMaster.Instance.hammerCount;
-                if (GameMaster.Instance.hammerCount > GameMaster.Instance.daggerCount &&
-                    GameMaster.Instance.hammerCount > GameMaster.Instance.whipCount)
-                    _weaponDisplay.text = "Hammer";
-            }
-            else if (msg.chatMessagePlainText.Equals(daggerCommand, StringComparison.InvariantCultureIgnoreCase))
-            {
-                ++GameMaster.Instance.daggerCount;
-                if (GameMaster.Instance.daggerCount > GameMaster.Instance.hammerCount &&
-                    GameMaster.Instance.daggerCount > GameMaster.Instance.whipCount)
-                    _weaponDisplay.text = "Dagger";
-            }
-            else if (msg.chatMessagePlainText.Equals(whipCommand, StringComparison.InvariantCultureIgnoreCase))
-            {
-                ++GameMaster.Instance.whipCount;
-                if (GameMaster.Instance.whipCount > GameMaster.Instance.hammerCount &&
-                    GameMaster.Instance.whipCount > GameMaster.Instance.daggerCount)
-                    _weaponDisplay.text = "Whip";
-            }
-
-            if (isValidVote)
-            {
-                _voterList.Add(msg.userName);
+            if (isValidVote) {
+                _voterListElement.Add(msg.userName);
             }
         }
+
+		if (!_voterListWeapon.Contains(msg.userName))
+		{
+			bool isValidVote = false;
+
+			if (msg.chatMessagePlainText.Equals(hammerCommand, StringComparison.InvariantCultureIgnoreCase)) {
+				isValidVote = true;
+				++GameMaster.Instance.hammerCount;
+			} else if (msg.chatMessagePlainText.Equals(daggerCommand, StringComparison.InvariantCultureIgnoreCase)) {
+				isValidVote = true;
+				++GameMaster.Instance.daggerCount;
+			} else if (msg.chatMessagePlainText.Equals(whipCommand, StringComparison.InvariantCultureIgnoreCase)) {
+				isValidVote = true;
+				++GameMaster.Instance.whipCount;
+			}
+
+			if (isValidVote)
+			{
+				_voterListWeapon.Add(msg.userName);
+
+				determineNextWeapon (); // determine weapon display text
+			}
+		}
     }
+
+	public void determineNextWeapon () {
+		int hammerCount = GameMaster.Instance.hammerCount;
+		int daggerCount = GameMaster.Instance.daggerCount;
+		int whipCount = GameMaster.Instance.whipCount;
+		if (hammerCount == daggerCount && hammerCount == whipCount) { // if all votes are equal
+			// select random weapon
+			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 3.0f) < 1.0f) ? hammerText : ((UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? daggerText : whipText);
+		} else if (hammerCount == daggerCount) {
+			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : daggerText;
+		} else if (hammerCount == whipCount) {
+			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : whipText;
+		} else if (daggerCount == whipCount) {
+			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? daggerText : whipText;
+		} else if (hammerCount > daggerCount && hammerCount > whipCount) {
+			_weaponDisplay.text = hammerText;
+		} else if (daggerCount > hammerCount && daggerCount > whipCount) {
+			_weaponDisplay.text = daggerText;
+		} else if (whipCount > hammerCount && whipCount > daggerCount) {
+			_weaponDisplay.text = whipText;
+		} 
+	}
 
 	private void createShoutBubble (string command) {
 
@@ -177,7 +197,19 @@ public class Poll : MonoBehaviour {
 		return newUI;
 	}
 
-	public void ResetVote()
+	public void ResetVoteWeapon()
+	{
+		_weaponDisplay.text = "Next Weapon";
+		determineNextWeapon (); // determine weapon display text
+
+		GameMaster.Instance.daggerCount = 0;
+		GameMaster.Instance.hammerCount = 0;
+		GameMaster.Instance.whipCount = 0;
+
+		_voterListWeapon.Clear();
+	}
+
+	public void ResetVoteElement()
 	{
 		_iceCountDisplay.text = "0";
 		_fireCountDisplay.text = "0";
@@ -185,7 +217,7 @@ public class Poll : MonoBehaviour {
 		GameMaster.Instance.iceCount = 0;
 		GameMaster.Instance.fireCount = 0;
 
-		_voterList.Clear();
+		_voterListElement.Clear();
 	}
 
 }

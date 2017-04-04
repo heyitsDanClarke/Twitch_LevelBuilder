@@ -142,7 +142,7 @@ public class MonsterAI : MonoBehaviour
     {
                 if (coll.gameObject.tag == "Player")
         {
-            SoundController.instance.PlaySingle(largeMonsterHitSound);
+            
             if (Player.Instance.health > 0)
                 Player.Instance.health -= 1;
 
@@ -162,8 +162,9 @@ public class MonsterAI : MonoBehaviour
         }*/ //for demo we are removing the line of sight mechanics, making it a distance check
         if (coll.gameObject.tag == "Sword")
         {
-			// show health bar of enemy
-			transform.FindChild("Health Bar").gameObject.SetActive(true);
+            SoundController.instance.RandomizeSfxLarge(largeMonsterHitSound);
+            // show health bar of enemy
+            transform.FindChild("Health Bar").gameObject.SetActive(true); 
 
             health -= 1;
             if (health <= 0)
