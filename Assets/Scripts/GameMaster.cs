@@ -8,7 +8,6 @@ public class GameMaster : MonoBehaviour {
 
     public int iceCount;
     public int fireCount;
-	public float roomTemperature;
 
 	public int hammerCount;
 	public int daggerCount;
