@@ -21,8 +21,8 @@ GameObject:
   - component: {fileID: 4064602976789982}
   - component: {fileID: 212204639931263602}
   - component: {fileID: 114770031255729016}
-  - component: {fileID: 50646524891048296}
   - component: {fileID: 60499403642788376}
+  - component: {fileID: 114730774767186332}
   m_Layer: 0
   m_Name: Shard
   m_TagString: Shard
@@ -36,33 +36,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1991159433803578}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.17364825, y: 0, z: 0, w: 0.9848078}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.12, y: 0.12, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &50646524891048296
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1991159433803578}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 0.0001
-  m_LinearDrag: 1000000
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
+  m_LocalEulerAnglesHint: {x: -20, y: 0, z: 0}
 --- !u!60 &60499403642788376
 PolygonCollider2D:
   m_ObjectHideFlags: 1
@@ -72,7 +52,7 @@ PolygonCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   m_Points:
@@ -117,6 +97,17 @@ PolygonCollider2D:
       - {x: 1.245, y: -1.9}
       - {x: 1.3249999, y: -1.63}
       - {x: 1.405, y: -1.4}
+--- !u!114 &114730774767186332
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1991159433803578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9364f9a718c5a64a8ba74d68bb1f9db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114770031255729016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -128,7 +119,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9364f9a718c5a64a8ba74d68bb1f9db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponType: 0
 --- !u!212 &212204639931263602
 SpriteRenderer:
   m_ObjectHideFlags: 1

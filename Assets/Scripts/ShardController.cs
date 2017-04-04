@@ -1,20 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class ShardController : MonoBehaviour {
-    public int weaponType; //(0, default) (1, hammer) (2, whip) (3, dagger)
-	// Use this for initialization
 	void Start () {
-        weaponType = (int)Random.Range(0, 4.0f);
         
-
-
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+	void OnTriggerEnter2D(Collider2D coll)
+	{
+		if (coll.gameObject.tag == "Player") {
+			Player.Instance.charges += 1;
+
+			// activate next weapon panel for 3.0 seconds
+			if (Player.Instance.charges >= Player.Instance.maxCharges) {
+				Player.Instance.charges = 0;
+				PlayerUI.Instance.nextWeaponPanelCountdown = 3.0f;
+			}
+
+			Destroy(this.gameObject);
+		}
+	}
+
 }

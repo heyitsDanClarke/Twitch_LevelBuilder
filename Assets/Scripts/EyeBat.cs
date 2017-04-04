@@ -65,7 +65,6 @@ public class EyeBat : MonoBehaviour {
                 Vector3 shardVelocity = -1 *_rb.velocity;
                 GameObject treasureObject = Instantiate(shard, transform.position, Quaternion.identity);
                 treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
-                treasureObject.GetComponent<Rigidbody2D>().velocity = _rb.velocity; 
                 Destroy(gameObject);
             }
             else

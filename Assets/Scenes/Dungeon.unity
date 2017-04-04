@@ -2021,6 +2021,7 @@ MonoBehaviour:
   veryHighPitchRange: 1.1
   efxSource: {fileID: 736195382}
   musicSource: {fileID: 736195383}
+  deathMusicSource: {fileID: 0}
   lavaSizzleSource: {fileID: 0}
 --- !u!82 &736195382
 AudioSource:
@@ -2494,6 +2495,8 @@ MonoBehaviour:
   roomWidth: 48
   roomHeight: 32
   roomsLeftUntilBoss: 6
+  currentFireVotes: 0
+  currentIceVotes: 0
   currentRoomClimate: 0
   lavaSizzleSource: {fileID: 836625402}
   dungeonVisual: {fileID: 0}

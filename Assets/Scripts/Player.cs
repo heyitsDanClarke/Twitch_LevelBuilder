@@ -107,10 +107,6 @@ public class Player : MonoBehaviour {
 		onFire = false;
 
 		currentWeapon = 0;
-        //weaponShards[0] = 0;
-        //weaponShards[1] = 1;
-        //weaponShards[2] = 2;
-        //weaponShards[3] = 3;
 	}
 
     void FixedUpdate ()
@@ -233,17 +229,6 @@ public class Player : MonoBehaviour {
 			//SoundController.instance.PlaySingle(treasureFoundSound);
 			firePower += coll.gameObject.GetComponent<GemController>().firePower;
 			icePower += coll.gameObject.GetComponent<GemController>().icePower;
-			Destroy(coll.gameObject);
-		} else if (coll.gameObject.tag == "Shard") {
-			charges += 1;
-			int shardType = coll.gameObject.GetComponent<ShardController>().weaponType;
-
-			// activate next weapon panel for 3.0 seconds
-			if (charges >= maxCharges) {
-				charges = 0;
-				PlayerUI.Instance.nextWeaponPanelCountdown = 3.0f;
-			}
-
 			Destroy(coll.gameObject);
 		} else if (coll.gameObject.tag == "Exit") {
 			if (boxes == maxBoxes && levers == maxLevers) { // if all puzzles are being solved
