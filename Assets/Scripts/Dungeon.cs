@@ -14,7 +14,7 @@ public class Dungeon : MonoBehaviour
 	public int roomsLeftUntilBoss; // number of rooms left before boss room
 	public int currentFireVotes; // number of fire votes of the current room
 	public int currentIceVotes; // number of ice votes of the current room
-    public AudioSource lavaSizzleSource;
+    
 
 	public struct RoomTile // structure for every pixel of the room
 	{
@@ -142,7 +142,9 @@ public class Dungeon : MonoBehaviour
 
 			// player on lava
 			if (roomStructure[x, y].tile == lava) {
-                lavaSizzleSource.mute = false;
+                
+                SoundController.instance.lavaSizzleSource.mute = false;
+
 				Player.Instance.rb.drag = 5.0f; // slow down player a bit if player is in lava
 				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make lava slightly slippery
 				Player.Instance.fireResistanceCooldown = Player.Instance.maxFireResistanceCooldown; // reset cooldown;
@@ -153,7 +155,9 @@ public class Dungeon : MonoBehaviour
 					Player.Instance.onFire = true;
 				}
 			} else {
-                lavaSizzleSource.mute = true;
+                
+                SoundController.instance.lavaSizzleSource.mute = true;
+
                 Player.Instance.fireResistanceCooldown = Mathf.Max(0.0f, Player.Instance.fireResistanceCooldown - (PauseMenuActive? 0.0f : Time.deltaTime));
 
 				// regenerate fire resistance meter if the cooldown is over

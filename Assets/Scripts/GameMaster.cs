@@ -29,6 +29,12 @@ public class GameMaster : MonoBehaviour {
 
 		music = 0.4f;
 		sfx = 0.8f;
+
+        SoundController.instance.lavaSizzleSource.volume = sfx;
+        SoundController.instance.efxSource.volume = sfx;
+        SoundController.instance.deathMusicSource.volume = music;
+        SoundController.instance.musicSource.volume = music;
+
 		username = "uldrendan";
     }
 

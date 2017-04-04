@@ -155,7 +155,8 @@ public class Player : MonoBehaviour {
 			StartCoroutine (MeleeAttack ());
 			nextAttack = Time.time + attackRate;
 			SoundController.instance.RandomizeSfxLarge (playerAttackSound);
-		} 
+            
+        } 
 
 
 		if (Input.GetKey ("r") ) {
@@ -171,7 +172,7 @@ public class Player : MonoBehaviour {
 				anim.runtimeAnimatorController = Polearm_RAC; 
 				break;
 			case 3:
-				anim.runtimeAnimatorController = Dagger_RAC; 
+				anim.runtimeAnimatorController = Dagger_RAC;   
 				break;
 			}
 
@@ -229,7 +230,7 @@ public class Player : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D coll)
     {
 		if (coll.gameObject.tag == "Gem") {
-			SoundController.instance.PlaySingle(treasureFoundSound);
+			//SoundController.instance.PlaySingle(treasureFoundSound);
 			firePower += coll.gameObject.GetComponent<GemController>().firePower;
 			icePower += coll.gameObject.GetComponent<GemController>().icePower;
 			Destroy(coll.gameObject);
