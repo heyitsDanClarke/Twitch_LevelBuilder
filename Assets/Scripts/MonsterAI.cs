@@ -160,7 +160,7 @@ public class MonsterAI : MonoBehaviour
 
             StartCoroutine(UpdatePath());
         }*/ //for demo we are removing the line of sight mechanics, making it a distance check
-        if (coll.gameObject.tag == "Sword")
+        if (coll.gameObject.tag == "WeaponCollider")
         {
             SoundController.instance.RandomizeSfxLarge(largeMonsterHitSound);
             // show health bar of enemy

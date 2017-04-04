@@ -27,6 +27,7 @@ TagManager:
   - Undefined
   - Eyebat
   - Shard
+  - WeaponCollider
   layers:
   - Default
   - TransparentFX

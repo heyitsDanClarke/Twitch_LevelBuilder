@@ -281,6 +281,52 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 18241321}
+--- !u!1001 &26702161
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1130008896}
+    m_Modifications:
+    - target: {fileID: 4669811470469632, guid: c1f46a74d8baa404ab76a342b284c480, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 4669811470469632, guid: c1f46a74d8baa404ab76a342b284c480, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -0.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 4669811470469632, guid: c1f46a74d8baa404ab76a342b284c480, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4669811470469632, guid: c1f46a74d8baa404ab76a342b284c480, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4669811470469632, guid: c1f46a74d8baa404ab76a342b284c480, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4669811470469632, guid: c1f46a74d8baa404ab76a342b284c480, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4669811470469632, guid: c1f46a74d8baa404ab76a342b284c480, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4669811470469632, guid: c1f46a74d8baa404ab76a342b284c480, type: 2}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214190892909730, guid: c1f46a74d8baa404ab76a342b284c480, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: c1f46a74d8baa404ab76a342b284c480, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &30383777
 GameObject:
   m_ObjectHideFlags: 0
@@ -2021,6 +2067,7 @@ MonoBehaviour:
   veryHighPitchRange: 1.1
   efxSource: {fileID: 736195382}
   musicSource: {fileID: 736195383}
+  deathMusicSource: {fileID: 0}
   lavaSizzleSource: {fileID: 0}
 --- !u!82 &736195382
 AudioSource:
@@ -2494,6 +2541,8 @@ MonoBehaviour:
   roomWidth: 48
   roomHeight: 32
   roomsLeftUntilBoss: 6
+  currentFireVotes: 0
+  currentIceVotes: 0
   currentRoomClimate: 0
   lavaSizzleSource: {fileID: 836625402}
   dungeonVisual: {fileID: 0}
@@ -2672,6 +2721,15 @@ Prefab:
     - target: {fileID: 4964389186740822, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
       propertyPath: m_RootOrder
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936053402085920, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224734987569566918, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_RootOrder
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
@@ -3890,6 +3948,11 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1128778850}
+--- !u!4 &1130008896 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4964389186740822, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+    type: 2}
+  m_PrefabInternal: {fileID: 864147709}
 --- !u!1 &1163846167
 GameObject:
   m_ObjectHideFlags: 0
