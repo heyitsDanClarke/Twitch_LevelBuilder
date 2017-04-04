@@ -195,8 +195,8 @@ MonoBehaviour:
   maxLevers: 0
   coin: {fileID: 1312639025012346, guid: f1ef7a530ac27cf49b1fb860e5f8c12d, type: 2}
   gem: {fileID: 1006891613377954, guid: 53c3d79e6e7267b4eb6d229a41b6c125, type: 2}
-  playerAttackSound: {fileID: 8300000, guid: 2a2e1b02af162474b9c890f02e391c52, type: 3}
-  playerHitSound: {fileID: 8300000, guid: 57c7e4f0aca99224faa88d97bdd0f5b2, type: 3}
+  playerAttackSound: {fileID: 8300000, guid: 7bfe97cf6a90a83459b7bf10176f962e, type: 3}
+  playerHitSound: {fileID: 8300000, guid: 9f19dbf1610d37140833bf4b73ea34bb, type: 3}
   exitFoundSound: {fileID: 8300000, guid: f38cca873053f6645ac59aec2b1ac150, type: 3}
   treasureFoundSound: {fileID: 8300000, guid: b8a546128e881824985fc793d64b3d7e, type: 3}
   weaponType: 0
