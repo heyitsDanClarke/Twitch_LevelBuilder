@@ -309,14 +309,14 @@ public class Player : MonoBehaviour {
 		} else {
 			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, -90);
 		}
-			
+
         transform.GetChild(0).gameObject.SetActive(true);
         anim.SetTrigger("attack");
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(0).gameObject.SetActive(false);
         //charges -= 1;
 
-		//destroy collider, avoid memery leaking
+		//destroy collider, avoid memory leaking
 		Destroy (_attackCollider);
     }
 }
