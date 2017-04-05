@@ -61,8 +61,7 @@ public class EyeBat : MonoBehaviour {
             health -= 1;
             if (health <= 0)
             {
-                Vector2 shardPosition = new Vector2(transform.position.x + 1, transform.position.y);
-                Vector3 shardVelocity = -1 *_rb.velocity;
+                Vector2 shardPosition = new Vector2(transform.position.x, transform.position.y);
                 GameObject treasureObject = Instantiate(shard, transform.position, Quaternion.identity);
                 treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
                 Destroy(gameObject);

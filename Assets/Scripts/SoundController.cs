@@ -14,6 +14,7 @@ public class SoundController : MonoBehaviour
     public AudioSource musicSource;
     public AudioSource deathMusicSource;
     public AudioSource lavaSizzleSource;
+	public AudioSource mainMenuSettingSource;
     public static SoundController instance = null;
     //this far it's fine
 

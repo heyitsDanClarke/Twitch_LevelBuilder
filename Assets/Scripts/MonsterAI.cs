@@ -170,7 +170,7 @@ public class MonsterAI : MonoBehaviour
             if (health <= 0)
 			{
 				if (CompareTag ("Small Monster")) {
-					Vector2 shardPosition = new Vector2 (transform.position.x + 1, transform.position.y + 1);
+					Vector2 shardPosition = new Vector2 (transform.position.x, transform.position.y);
 					GameObject treasureObject = Instantiate (shard, shardPosition, Quaternion.identity);
 					treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
 				} else if (CompareTag ("Large Monster")) {

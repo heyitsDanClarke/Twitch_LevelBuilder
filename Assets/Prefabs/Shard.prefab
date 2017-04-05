@@ -20,9 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4064602976789982}
   - component: {fileID: 212204639931263602}
-  - component: {fileID: 114770031255729016}
   - component: {fileID: 60499403642788376}
-  - component: {fileID: 114730774767186332}
+  - component: {fileID: 114770031255729016}
   m_Layer: 0
   m_Name: Shard
   m_TagString: Shard
@@ -97,17 +96,6 @@ PolygonCollider2D:
       - {x: 1.245, y: -1.9}
       - {x: 1.3249999, y: -1.63}
       - {x: 1.405, y: -1.4}
---- !u!114 &114730774767186332
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1991159433803578}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9364f9a718c5a64a8ba74d68bb1f9db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114770031255729016
 MonoBehaviour:
   m_ObjectHideFlags: 1
