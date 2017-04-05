@@ -27,7 +27,8 @@ public class EyeBat : MonoBehaviour {
 	void Update () {
         if (Vector2.Distance(transform.position, Player.Instance.transform.position) > swoopRange && !swooping)
             _rb.velocity = (target.transform.position - transform.position).normalized * seekSpeed;
-        else {
+        else if(!swooping){
+            Debug.Log("hey im a bat and im swooping now");
             swooping = true;
             StartCoroutine(Swoop());
         }
@@ -39,6 +40,7 @@ public class EyeBat : MonoBehaviour {
 
     IEnumerator Swoop()
     {
+        _rb.velocity = Vector3.zero;
         yield return new WaitForSeconds(2);
         _rb.velocity = (target.transform.position - transform.position).normalized * swoopSpeed;
         yield return new WaitForSeconds(1);
@@ -47,14 +49,6 @@ public class EyeBat : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        /*
-        if(coll.gameObject.tag == "Player" && target == null)
-        {
-            target = coll.transform;
-            seeker.StartPath(transform.position, target.position, OnPathComplete);
-
-            StartCoroutine(UpdatePath());
-        }*/ //for demo we are removing the line of sight mechanics, making it a distance check
         if (coll.gameObject.tag == "WeaponCollider")
         {
             SoundController.instance.RandomizeSfx(batHit);
