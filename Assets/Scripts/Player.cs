@@ -33,12 +33,13 @@ public class Player : MonoBehaviour {
 	public float maxFireResistanceCooldown; // max cooldown time
 	public float fireDamageCooldown; // fire damagee cooldown
 	public float maxFireDamageCooldown; // max fire damage cooldown time
-	public bool onFire;
+	public bool onFire; // whether the player is on fine or not
     public int[] weaponShards = new int[4]; //(0, default) (1, hammer) (2, whip) (3, dagger) 
 	public int boxes; // number of boxes pushed to correct places
 	public int maxBoxes; // number of boxes in the puzzle
 	public int levers; // number of switches left to switch
 	public int maxLevers; // number of switches in the puzzle
+
 	public GameObject gem;
     public AudioClip playerHammerAttackSound;
     public AudioClip playerDaggerAttackSound;
