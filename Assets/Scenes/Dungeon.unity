@@ -2082,6 +2082,7 @@ MonoBehaviour:
   musicSource: {fileID: 736195383}
   deathMusicSource: {fileID: 736195385}
   lavaSizzleSource: {fileID: 736195386}
+  mainMenuSettingSource: {fileID: 0}
 --- !u!82 &736195382
 AudioSource:
   m_ObjectHideFlags: 0
