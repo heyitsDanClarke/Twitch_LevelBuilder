@@ -28,6 +28,7 @@ TagManager:
   - Eyebat
   - Shard
   - WeaponCollider
+  - Boss
   layers:
   - Default
   - TransparentFX

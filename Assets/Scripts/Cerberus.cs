@@ -13,7 +13,8 @@ public class Cerberus : MonoBehaviour {
 
     public float speed;
     public float damage;
-    public int health = 5; //todo: add damage and when health = 0 make an exit
+	public int health = 8;
+	public int maxHealth = 8;
 
     public GameObject fireball;
 

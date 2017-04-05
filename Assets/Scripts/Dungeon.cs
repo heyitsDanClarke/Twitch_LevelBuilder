@@ -246,6 +246,7 @@ public class Dungeon : MonoBehaviour
 			roomWidth = 15;
 			roomHeight = 11;
 			GenerateBossRoom (roomWidth, roomHeight);
+			PlayerUI.Instance.transform.FindChild ("Boss Bar").gameObject.SetActive (true);
 		} else {
 			SceneManager.LoadScene(0);
 		}
