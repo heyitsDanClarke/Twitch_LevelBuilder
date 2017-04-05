@@ -9,7 +9,6 @@ public class PlayerUI : MonoBehaviour {
 	public static PlayerUI Instance;
 
     Text healthValue;
-	Text coinValue;
 	Text iceValue;
 	Text fireValue;
     Text chargesValue;
@@ -34,7 +33,6 @@ public class PlayerUI : MonoBehaviour {
 		healthValue = transform.FindChild("Health Bar").FindChild("Value").GetComponent<Text>();
 		chargesValue = transform.FindChild("Charges Bar").FindChild("Value").GetComponent<Text>();
 		fireResistanceValue = transform.FindChild("Fire Resistance Bar").FindChild("Value").GetComponent<Text>();
-		coinValue = transform.FindChild("Coins Panel").FindChild("Value").GetComponent<Text>();
 		iceValue = transform.FindChild("Ice Power Panel").FindChild("Value").GetComponent<Text>();
 		fireValue = transform.FindChild("Fire Power Panel").FindChild("Value").GetComponent<Text>();
     }
@@ -46,7 +44,6 @@ public class PlayerUI : MonoBehaviour {
 		healthValue.text = Player.Instance.health.ToString ();
 		chargesValue.text = Player.Instance.charges.ToString ();
 		fireResistanceValue.text = Player.Instance.fireResistance.ToString ();
-		coinValue.text = Player.Instance.coins.ToString ();
 		iceValue.text = Player.Instance.icePower.ToString ();
 		fireValue.text = Player.Instance.firePower.ToString ();
 
