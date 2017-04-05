@@ -170,16 +170,34 @@ public class MonsterAI : MonoBehaviour
             if (health <= 0)
 			{
 				if (CompareTag ("Small Monster")) {
-					Vector2 shardPosition = new Vector2 (transform.position.x, transform.position.y);
+					Vector3 shardPosition = new Vector3(transform.position.x, transform.position.y, 0.0f);
+
+					// prevent shards from spawning inside walls
+					while (true) {
+						int x = Mathf.RoundToInt (shardPosition.x);
+						int y = Mathf.RoundToInt (shardPosition.y);
+						try {
+							bool notOnWall = Dungeon.Instance.roomStructure [x, y].tile != Dungeon.Instance.wall; // shard position not on wall
+							bool notOnBox = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.box; // shard position not on boxes
+							bool notOnLever = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.lever; // shard position not on levers
+							bool onLeverButAtEdge = Dungeon.Instance.roomStructure[x, y].entity == Dungeon.Instance.lever && Mathf.Abs(shardPosition.x - x) > 0.25f && Mathf.Abs(shardPosition.y - y) > 0.25f; // shard position not inside levers
+							if (notOnWall && notOnBox && (notOnLever || onLeverButAtEdge)) {
+								shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.1f;
+								break;
+							}
+						} catch (IndexOutOfRangeException) {
+							break;
+						}
+
+						shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.05f;
+					}
+
 					GameObject treasureObject = Instantiate (shard, shardPosition, Quaternion.identity);
 					treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
 				} else if (CompareTag ("Large Monster")) {
-					// set integer positions of the loot chest
-					int x = (int) transform.position.x;
-					int y = (int) transform.position.y;
 
 					// spawn loot box
-					GameObject treasureObject = Instantiate(lootBox, new Vector3 (x, y, 0.0f), transform.rotation);
+					GameObject treasureObject = Instantiate(lootBox, new Vector3 (transform.position.x, transform.position.y, 0.0f), transform.rotation);
 					treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
 
 					AstarPath.active.Scan();

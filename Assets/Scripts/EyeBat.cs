@@ -61,8 +61,29 @@ public class EyeBat : MonoBehaviour {
             health -= 1;
             if (health <= 0)
             {
-                Vector2 shardPosition = new Vector2(transform.position.x, transform.position.y);
-                GameObject treasureObject = Instantiate(shard, transform.position, Quaternion.identity);
+                Vector3 shardPosition = new Vector3(transform.position.x, transform.position.y, 0.0f);
+
+				// prevent shards from spawning inside walls
+				while (true) {
+					int x = Mathf.RoundToInt (shardPosition.x);
+					int y = Mathf.RoundToInt (shardPosition.y);
+					try {
+						bool notOnWall = Dungeon.Instance.roomStructure [x, y].tile != Dungeon.Instance.wall; // shard position not on wall
+						bool notOnBox = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.box; // shard position not on boxes
+						bool notOnLever = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.lever; // shard position not on levers
+						bool onLeverButAtEdge = Dungeon.Instance.roomStructure[x, y].entity == Dungeon.Instance.lever && Mathf.Abs(shardPosition.x - x) > 0.25f && Mathf.Abs(shardPosition.y - y) > 0.25f; // shard position not inside levers
+						if (notOnWall && notOnBox && (notOnLever || onLeverButAtEdge)) {
+							shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.1f;
+							break;
+						}
+					} catch (IndexOutOfRangeException) {
+						break;
+					}
+
+					shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.05f;
+				}
+
+				GameObject treasureObject = Instantiate(shard, shardPosition, Quaternion.identity);
                 treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
                 Destroy(gameObject);
             }
