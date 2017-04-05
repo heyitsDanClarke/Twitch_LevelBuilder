@@ -98,7 +98,7 @@ public class Box : MonoBehaviour {
 
 		// if player touches the block and the player is holding down the space button
 		if(collider.gameObject.CompareTag("Player") && Input.GetKey(KeyCode.Space) && !nextLevelMenuActive && !pauseMenuActive && !deathMenuActive)
-		{ 
+		{
 			currPos = new Vector2((int) Mathf.Round(transform.position.x), (int) Mathf.Round(transform.position.y));
 			Vector3 contactPoint = collider.transform.position; // contact point of the player and the box, PLAYER COLLIDER MUST BE A SQUARE OR CIRCLE
 
