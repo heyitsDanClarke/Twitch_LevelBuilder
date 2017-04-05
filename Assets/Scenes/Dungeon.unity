@@ -2647,7 +2647,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomWidth: 48
   roomHeight: 32
-  roomsLeftUntilBoss: 6
+  caveRoomsLeftUntilBoss: 0
+  hybridRoomsLeftUntilBoss: 0
   currentFireVotes: 0
   currentIceVotes: 0
   currentRoomClimate: 0

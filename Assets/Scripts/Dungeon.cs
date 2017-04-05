@@ -11,7 +11,8 @@ public class Dungeon : MonoBehaviour
 
     public int roomWidth = 48; // width of room
     public int roomHeight = 32; // height of room
-	public int roomsLeftUntilBoss; // number of rooms left before boss room
+	public int caveRoomsLeftUntilBoss; // number of cave rooms left before boss room
+	public int hybridRoomsLeftUntilBoss; // number of hybrid rooms left before boss room
 	public int currentFireVotes; // number of fire votes of the current room
 	public int currentIceVotes; // number of ice votes of the current room
    
@@ -110,6 +111,9 @@ public class Dungeon : MonoBehaviour
         // initialize camera
 		Camera.main.transform.position = new Vector3(0.0f, Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, -20.0f);
 
+		caveRoomsLeftUntilBoss = 3;
+		hybridRoomsLeftUntilBoss = 3;
+
 		GenerateRandomRoom ();
 	}
 
@@ -202,7 +206,7 @@ public class Dungeon : MonoBehaviour
 
 		// determine room temperature
 		if (GameMaster.Instance.fireCount + GameMaster.Instance.iceCount == 0) { // single player
-			currentRoomClimate = Mathf.Clamp ((float) (random.NextDouble ()) * 3.0f - 1.5f, -1.0f, 1.0f);
+			currentRoomClimate = Mathf.Clamp ((float) (random.NextDouble ()) * 2.2f - 1.1f, -1.0f, 1.0f);
 		} else {
 			currentRoomClimate = (GameMaster.Instance.fireCount - GameMaster.Instance.iceCount) / ((float)(GameMaster.Instance.fireCount + GameMaster.Instance.iceCount));
 		}
@@ -226,31 +230,36 @@ public class Dungeon : MonoBehaviour
 		enemyVisual.transform.name = "Enemy Visual";
 		enemyVisual.transform.SetParent(transform);
 
-		if (roomsLeftUntilBoss > 0) {
-			if (random.NextDouble() < - 9001) {
+		if (caveRoomsLeftUntilBoss > 0 || hybridRoomsLeftUntilBoss > 0 ) {
+			if (random.Next(0, 2) == 0 && caveRoomsLeftUntilBoss > 0) {
 				roomWidth = 40;
 				roomHeight = 40;
 				GenerateCaveRoom (roomWidth, roomHeight);
+				caveRoomsLeftUntilBoss -= 1;
 			} else {
 				roomWidth = 28;
 				roomHeight = 28;
 				GenerateHybridRoom (roomWidth, roomHeight);
+				hybridRoomsLeftUntilBoss -= 1;
 			}
-		} else if (roomsLeftUntilBoss == 0) {
+		} else if (caveRoomsLeftUntilBoss == 0 && hybridRoomsLeftUntilBoss == 0) {
 			roomWidth = 15;
 			roomHeight = 11;
 			GenerateBossRoom (roomWidth, roomHeight);
 		} else {
 			SceneManager.LoadScene(0);
 		}
-		roomsLeftUntilBoss -= 1;
-
 		SetNumberOfBoxesorSwitchesLeft (roomStructure);
 
-		AstarPath.active.Scan();
+		Invoke ("ScanRoom", 0.2f);
+
 		Poll.Instance.ResetVoteElement(); // reset element votes
 		Poll.Instance.ResetVoteWeapon(); // reset weapon votes
     }
+
+	public void ScanRoom () {
+		AstarPath.active.Scan();
+	}
 
 	// function for resetting the dungeon
 	public void ResetRoom()
@@ -292,7 +301,7 @@ public class Dungeon : MonoBehaviour
 
 		SetNumberOfBoxesorSwitchesLeft (roomStructure);
 
-		// spawn player and exit
+		// spawn player
 		Player.Instance.transform.position = playerStartPosition;
 
 		AstarPath.active.Scan();

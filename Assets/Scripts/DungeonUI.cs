@@ -72,7 +72,7 @@ public class DungeonUI : MonoBehaviour {
 		transform.FindChild("Next Level Menu").gameObject.SetActive(true);
 
 		// display alternative text if player
-		if (Dungeon.Instance.roomsLeftUntilBoss < 0) {
+		if (Dungeon.Instance.caveRoomsLeftUntilBoss < 0) {
 			transform.FindChild("Next Level Menu").FindChild("Continue Button").GetChild(0).GetComponent<Text>().text = "Main Menu";
 		}
 	}
