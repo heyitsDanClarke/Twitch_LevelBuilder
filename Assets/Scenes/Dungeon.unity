@@ -2056,6 +2056,7 @@ GameObject:
   - component: {fileID: 736195385}
   - component: {fileID: 736195386}
   - component: {fileID: 736195381}
+  - component: {fileID: 736195387}
   m_Layer: 0
   m_Name: SoundManager
   m_TagString: Untagged
@@ -2082,6 +2083,7 @@ MonoBehaviour:
   musicSource: {fileID: 736195383}
   deathMusicSource: {fileID: 736195385}
   lavaSizzleSource: {fileID: 736195386}
+  mainMenuSettingSource: {fileID: 736195387}
 --- !u!82 &736195382
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2350,6 +2352,86 @@ AudioSource:
   m_Pitch: 1
   Loop: 1
   Mute: 1
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+--- !u!82 &736195387
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 736195380}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 63d07274e65f41149bca3f6645eaeb4b, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -2824,6 +2906,31 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: playerHammerAttackSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 7bfe97cf6a90a83459b7bf10176f962e, type: 3}
+    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: playerDaggerAttackSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 62fc072d11d5b064fadf01f5626e7f18, type: 3}
+    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: playerWhipAttackSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c84174a07f7042e458cf63a888f8b77c, type: 3}
+    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: playerSwordAttackSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 3b3a3eb57580d0342ae6be8e32f14a92, type: 3}
+    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: playerHitSound3
+      value: 
+      objectReference: {fileID: 8300000, guid: 64782c4d24ec1e84bbfb8a20bf584991, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
   m_IsPrefabParent: 0

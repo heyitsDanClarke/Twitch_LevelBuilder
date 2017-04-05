@@ -37,7 +37,10 @@ public class Player : MonoBehaviour {
 	public int levers; // number of switches left to switch
 	public int maxLevers; // number of switches in the puzzle
 	public GameObject gem;
-    public AudioClip playerAttackSound;
+    public AudioClip playerHammerAttackSound;
+    public AudioClip playerDaggerAttackSound;
+    public AudioClip playerWhipAttackSound;
+    public AudioClip playerSwordAttackSound;
     public AudioClip playerHitSound1;
     public AudioClip playerHitSound2;
     public AudioClip playerHitSound3;
@@ -151,8 +154,27 @@ public class Player : MonoBehaviour {
 
 			attackCooldown = 0.5F;
 
-			SoundController.instance.RandomizeSfxLarge (playerAttackSound);
-            
+			//SoundController.instance.RandomizeSfxLarge (playerHammerAttackSound);
+            switch (currentWeapon)
+            {
+                case 0:
+                    //sword
+                    SoundController.instance.RandomizeSfxLarge(playerSwordAttackSound);
+                    break;
+                case 1:
+                    //hammer
+                    SoundController.instance.RandomizeSfxLarge(playerHammerAttackSound);
+                    break;
+                case 2:
+                    //dagger
+                    SoundController.instance.RandomizeSfxLarge(playerDaggerAttackSound);
+                    break;
+                case 3:
+                    //whip
+                    SoundController.instance.RandomizeSfxLarge(playerWhipAttackSound);
+                    break;
+            }
+
         } 
 
 
