@@ -287,7 +287,7 @@ public class Player : MonoBehaviour {
     IEnumerator MeleeAttack()
     {
 		
-
+		/*
 
 		//initiate the collider and its position is right at the player's position
 		GameObject _attackCollider = (GameObject)Instantiate (attackCollider);
@@ -311,6 +311,21 @@ public class Player : MonoBehaviour {
 			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, -90);
 		}
 			
+		*/
+
+
+		float x = anim.GetFloat ("x");
+		float y = anim.GetFloat ("y");
+
+		if (x == 1) {
+			transform.GetChild(1).localEulerAngles = new Vector3 (0, 0, 0);
+		} else if (x == -1) {
+			transform.GetChild(1).localEulerAngles = new Vector3 (0, 0, 180);
+		} else if (y == 1) {
+			transform.GetChild(1).localEulerAngles = new Vector3 (0, 0, 90);
+		} else {
+			transform.GetChild(1).localEulerAngles = new Vector3 (0, 0, -90);
+		}
 
         transform.GetChild(1).gameObject.SetActive(true);
         anim.SetTrigger("attack");
