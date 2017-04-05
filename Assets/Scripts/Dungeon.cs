@@ -198,14 +198,7 @@ public class Dungeon : MonoBehaviour
 		// reset variables
 		containsBlockPuzzle = false;
 		containsSwitchPuzzle = false;
-		Player.Instance.health = Player.Instance.maxHealth;
-		Player.Instance.charges = 0;
-		Player.Instance.fireResistance = 1.0f;
-		Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown;
-		Player.Instance.ResetWeapon ();
-		PlayerUI.Instance.transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text = 0.0f.ToString (); // reset weapon durability timer
-		PlayerUI.Instance.nextWeaponPanelCountdown = 0.0f; // reset next weapon panel cooldown timer
-		PlayerUI.Instance.transform.FindChild ("Next Weapon Panel").gameObject.SetActive(false); // hide next weapon panel
+		Player.Instance.LoadState ();
 
 		// determine room temperature
 		if (GameMaster.Instance.fireCount + GameMaster.Instance.iceCount == 0) { // single player
@@ -263,14 +256,7 @@ public class Dungeon : MonoBehaviour
 	public void ResetRoom()
 	{
 		// reset variables
-		Player.Instance.health = Player.Instance.maxHealth;
-		Player.Instance.charges = 0;
-		Player.Instance.fireResistance = 1.0f;
-		Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown;
-		Player.Instance.ResetWeapon ();
-		PlayerUI.Instance.transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text = 0.0f.ToString (); // reset weapon durability timer
-		PlayerUI.Instance.nextWeaponPanelCountdown = 0.0f; // reset next weapon panel cooldown timer
-		PlayerUI.Instance.transform.FindChild ("Next Weapon Panel").gameObject.SetActive(false); // hide next weapon panel
+		Player.Instance.LoadState ();
 
 		// reset redraw switch puzzle countdown if there is switch puzzle
 		if (redrawSwitchPuzzleCountdown >= 0) {
@@ -1268,7 +1254,7 @@ public class Dungeon : MonoBehaviour
 				x = random.Next (0, width);
 				y = random.Next (0, height);
 				distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
-			} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
+			} while (room [x, y].tile != air || distanceToPlayer < 10.0f || room[x, y].entity != empty);
 			if (CountAdjacentTiles (room, x, y, wall, 3) < 6 && CountAdjacentEntities (room, x, y, large, 10) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 9x9 square area, and no boxes / large monsters nearby
 				// spawn large monster
 				GameObject tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
@@ -1287,7 +1273,7 @@ public class Dungeon : MonoBehaviour
 				x = random.Next (0, width);
 				y = random.Next (0, height);
 				distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
-			} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
+			} while (room [x, y].tile != air || distanceToPlayer < 10.0f || room[x, y].entity != empty);
 			// spawn large monster
 			GameObject tempEntity = (GameObject)Instantiate (largeMob, new Vector3 (x, y, 0.0f), transform.rotation);
 			tempEntity.transform.SetParent(enemyVisual.transform);
@@ -1307,7 +1293,7 @@ public class Dungeon : MonoBehaviour
 					x = random.Next (0, width);
 					y = random.Next (0, height);
 					distanceToPlayer = ((new Vector2(x, y)) - playerStartPosition).magnitude;
-				} while (room [x, y].tile != air || distanceToPlayer < 10.0f);
+				} while (room [x, y].tile != air || distanceToPlayer < 10.0f || room[x, y].entity != empty);
 				if (CountAdjacentTiles (room, x, y, wall, 2) < 4 && CountAdjacentEntities (room, x, y, small, 7) == 0 && CountAdjacentEntities (room, x, y, large, 7) == 0 && CountAdjacentEntities (room, x, y, box, 3) == 0) { // if there are less than 4 wall tiles in the 5x5 square area and no boxes / mobs nearby
 					// spawn small monster
 					GameObject tempEntity = Instantiate (smallMob, new Vector3 (x, y, 0.0f), transform.rotation);
@@ -1324,7 +1310,7 @@ public class Dungeon : MonoBehaviour
                             j = random.Next(y - 2, y + 2 + 1);
                             try
                             {
-                                if (room[i, j].tile != wall && room[i, j].entity != small && room[i, j].entity != large)
+                                if (room[i, j].tile != wall && room[i, j].entity == empty)
                                 {
                                     break;
                                 }
@@ -1352,8 +1338,8 @@ public class Dungeon : MonoBehaviour
 		Instantiate(eyeBat, new Vector3(width, 0, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
     }
 
-        // clear all monsters from the array
-        void RemoveMonstersFromArray (ref RoomTile[,] room) {
+	// clear all monsters from the array
+	void RemoveMonstersFromArray (ref RoomTile[,] room) {
 		int width = room.GetLength(0); // width of dungeon;
 		int height = room.GetLength(1); // height of dungeon;
 		
