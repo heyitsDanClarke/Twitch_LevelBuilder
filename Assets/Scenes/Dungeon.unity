@@ -2931,6 +2931,10 @@ Prefab:
       propertyPath: playerHitSound3
       value: 
       objectReference: {fileID: 8300000, guid: 64782c4d24ec1e84bbfb8a20bf584991, type: 3}
+    - target: {fileID: 4034261262597562, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
   m_IsPrefabParent: 0
