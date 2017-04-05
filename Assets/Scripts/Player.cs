@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
@@ -22,11 +21,6 @@ public class Player : MonoBehaviour {
 	public int healthRegeneration; // health regeneration speed
 	public int maxCharges; // max charges
 	public int charges; // current charges
-	public int icePower; // ice power
-	public int firePower; // fire power
-	public int prevCharges; // charges of saved state
-	public int prevIcePower; // ice power of saved state
-	public int prevFirePower; // fire power of saved state
 	public float fireResistance; // current fire resistance
 	public float maxFireResistance; // max fire resistance
 	public float fireResistanceCooldown; // cooldown for fire resistance meter to regenerate if the player was on lava
@@ -34,6 +28,9 @@ public class Player : MonoBehaviour {
 	public float fireDamageCooldown; // fire damagee cooldown
 	public float maxFireDamageCooldown; // max fire damage cooldown time
 	public bool onFire;
+	public int coins;
+	public int icePower;
+	public int firePower;
     public int[] weaponShards = new int[4]; //(0, default) (1, hammer) (2, whip) (3, dagger) 
 	public int boxes; // number of boxes pushed to correct places
 	public int maxBoxes; // number of boxes in the puzzle
@@ -64,8 +61,12 @@ public class Player : MonoBehaviour {
 	[HideInInspector] public int dagger = 2;
 	[HideInInspector] public int whip = 3;
 
-    [HideInInspector] public Rigidbody2D rb; // rigid body of playersprite
-    [HideInInspector] public Animator anim;
+    [HideInInspector]
+	public Rigidbody2D rb; // rigid body of playersprite
+    [HideInInspector]
+    public Animator anim;
+
+
 
 	public RuntimeAnimatorController Spear_RAC;
 	public RuntimeAnimatorController Polearm_RAC;
@@ -108,31 +109,6 @@ public class Player : MonoBehaviour {
 		onFire = false;
 
 		currentWeapon = 0;
-
-		prevIcePower = 0;
-		prevFirePower = 0;
-		prevCharges = 0;
-	}
-
-	// load the current state of the player in the beginning of the room
-	public void LoadState () {
-		icePower = prevIcePower;
-		firePower = prevFirePower;
-		charges = prevCharges;
-		health = maxHealth;
-		fireResistance = 1.0f;
-		fireDamageCooldown = maxFireDamageCooldown;
-		ResetWeapon ();
-		PlayerUI.Instance.transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text = 0.0f.ToString (); // reset weapon durability timer
-		PlayerUI.Instance.nextWeaponPanelCountdown = 0.0f; // reset next weapon panel cooldown timer
-		PlayerUI.Instance.transform.FindChild ("Next Weapon Panel").gameObject.SetActive(false); // hide next weapon panel
-	}
-
-	// save the current state of the player to the beginning of the room 
-	public void SaveState () {
-		prevIcePower = icePower;
-		prevFirePower = firePower;
-		prevCharges = charges;
 	}
 
     void FixedUpdate ()
@@ -275,7 +251,6 @@ public class Player : MonoBehaviour {
     {
 		if (coll.gameObject.tag == "Exit") {
 			if (boxes == maxBoxes && levers == maxLevers) { // if all puzzles are being solved
-				SaveState (); // save state of player
 				DungeonUI.Instance.showNextLevelMenu ();
 				SoundController.instance.PlaySingle(exitFoundSound);
 			}
@@ -328,34 +303,35 @@ public class Player : MonoBehaviour {
 
     IEnumerator MeleeAttack()
     {
-
+		//save default collider scale
 		Vector3 attackRange = transform.FindChild ("WeaponCollider").localScale;
 		transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x * 2, transform.FindChild ("WeaponCollider").localScale.y * 2, transform.FindChild ("WeaponCollider").localScale.z);
 
-		/*
+
+		//change collider scale depends on weapon range
 		switch (currentWeapon)
 		{
 		case 0:
 			//sword
-			SoundController.instance.RandomizeSfxLarge(playerSwordAttackSound);
+			transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x * 2, transform.FindChild ("WeaponCollider").localScale.y * 2, transform.FindChild ("WeaponCollider").localScale.z);
 			break;
 		case 1:
 			//hammer
-			SoundController.instance.RandomizeSfxLarge(playerHammerAttackSound);
+			transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x * 2, transform.FindChild ("WeaponCollider").localScale.y * 2, transform.FindChild ("WeaponCollider").localScale.z);
 			break;
 		case 2:
 			//dagger
-			SoundController.instance.RandomizeSfxLarge(playerDaggerAttackSound);
+			transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x * 2, transform.FindChild ("WeaponCollider").localScale.y * 2, transform.FindChild ("WeaponCollider").localScale.z);
 			break;
 		case 3:
 			//whip
-			SoundController.instance.RandomizeSfxLarge(playerWhipAttackSound);
+			transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x * 2, transform.FindChild ("WeaponCollider").localScale.y * 2, transform.FindChild ("WeaponCollider").localScale.z);
 			break;
 		}
-		*/
+
 
 		float x = anim.GetFloat ("x");
-		Debug.Log (x);
+
 		float y = anim.GetFloat ("y");
 
 		if (x == 1) {
@@ -369,11 +345,12 @@ public class Player : MonoBehaviour {
 		}
 
         transform.GetChild(1).gameObject.SetActive(true);
-        anim.SetTrigger("attack");
+        //anim.SetTrigger("meleeAttack");
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(1).gameObject.SetActive(false);
         //charges -= 1;
 
+		//restore collider scale
 		transform.FindChild ("WeaponCollider").localScale = attackRange;
 
     }
