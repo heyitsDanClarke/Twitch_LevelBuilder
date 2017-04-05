@@ -229,11 +229,11 @@ public class Player : MonoBehaviour {
 				bool firstGemOnLeft = Random.Range (0.0f, 1.0f) > 0.5f;
 				bool firstGemIsFireGem = Dungeon.Instance.currentRoomClimate > 0.2f; // determine element of first gem
 				bool secondGemIsFireGem = Dungeon.Instance.currentRoomClimate > -0.2f; // determine element of second gem
-				GameObject firstGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? -0.55f : 0.55f), boxPosition.y, 0.0f), Quaternion.identity); // spawn first gem
+				GameObject firstGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? -0.55f : 0.55f), boxPosition.y, -1.1f), Quaternion.identity); // spawn first gem
 				firstGem.GetComponent<GemController> ().firePower = firstGemIsFireGem? 1 : 0;
 				firstGem.GetComponent<GemController> ().icePower = firstGemIsFireGem? 0 : 1;
 				firstGem.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
-				GameObject secondGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? 0.55f : -0.55f), boxPosition.y, 0.0f), Quaternion.identity); // spawn second gem
+				GameObject secondGem = Instantiate (gem, new Vector3(boxPosition.x + (firstGemOnLeft? 0.55f : -0.55f), boxPosition.y, -1.1f), Quaternion.identity); // spawn second gem
 				secondGem.GetComponent<GemController> ().firePower = secondGemIsFireGem? 1 : 0;
 				secondGem.GetComponent<GemController> ().icePower = secondGemIsFireGem? 0 : 1;
 				secondGem.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
