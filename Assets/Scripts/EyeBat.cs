@@ -28,7 +28,6 @@ public class EyeBat : MonoBehaviour {
         if (Vector2.Distance(transform.position, Player.Instance.transform.position) > swoopRange && !swooping)
             _rb.velocity = (target.transform.position - transform.position).normalized * seekSpeed;
         else if(!swooping){
-            Debug.Log("hey im a bat and im swooping now");
             swooping = true;
             StartCoroutine(Swoop());
         }

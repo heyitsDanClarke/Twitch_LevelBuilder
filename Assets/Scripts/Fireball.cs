@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Fireball : MonoBehaviour {
+    public GameObject shard;
 
-	void Update () {
+    void Update () {
         if (!GetComponent<Renderer>().isVisible)
         {
             Destroy(gameObject);
@@ -15,6 +16,13 @@ public class Fireball : MonoBehaviour {
     {
         if(coll.gameObject.tag == "Wall")
         {
+            Destroy(gameObject);
+        }
+        else if(coll.gameObject.tag == "WeaponCollider")
+        {
+            Vector3 shardPosition = new Vector3(transform.position.x, transform.position.y, 0.0f);
+            GameObject treasureObject = Instantiate(shard, shardPosition, Quaternion.identity);
+            treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
             Destroy(gameObject);
         }
         else if(coll.gameObject.tag == "Player")

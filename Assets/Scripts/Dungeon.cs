@@ -246,7 +246,6 @@ public class Dungeon : MonoBehaviour
 		roomsLeftUntilBoss -= 1;
 
 		SetNumberOfBoxesorSwitchesLeft (roomStructure);
-
 		AstarPath.active.Scan();
 		Poll.Instance.ResetVoteElement(); // reset element votes
 		Poll.Instance.ResetVoteWeapon(); // reset weapon votes
