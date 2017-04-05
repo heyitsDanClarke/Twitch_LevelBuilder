@@ -12,10 +12,9 @@ public class ShardController : MonoBehaviour {
 		
 	}
 
-	void OnTriggerEnter2D(Collider2D coll)
-	{
+	void OnTriggerEnter2D (Collider2D coll) {
 		if (coll.gameObject.tag == "Player") {
-			Player.Instance.charges += 1;
+			coll.gameObject.GetComponent<Player>().charges += 1;
 
 			// activate next weapon panel for 3.0 seconds
 			if (Player.Instance.charges >= Player.Instance.maxCharges) {
