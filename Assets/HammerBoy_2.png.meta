@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 86a683fba24a6eb46be0d150976fbe81
-timeCreated: 1491375205
+timeCreated: 1491377472
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -16,6 +16,8 @@ TextureImporter:
     21300018: HammerBoy_2_9
     21300020: HammerBoy_2_10
     21300022: HammerBoy_2_11
+    21300024: HammerBoy_2_12
+    21300026: HammerBoy_2_13
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -101,12 +103,12 @@ TextureImporter:
       name: HammerBoy_2_0
       rect:
         serializedVersion: 2
-        x: 209
-        y: 1708
-        width: 295
-        height: 594
+        x: 201
+        y: 1726
+        width: 294
+        height: 591
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -114,12 +116,12 @@ TextureImporter:
       name: HammerBoy_2_1
       rect:
         serializedVersion: 2
-        x: 539
-        y: 1708
-        width: 323
-        height: 594
+        x: 529
+        y: 1726
+        width: 322
+        height: 591
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -127,12 +129,12 @@ TextureImporter:
       name: HammerBoy_2_2
       rect:
         serializedVersion: 2
-        x: 899
-        y: 1708
-        width: 296
-        height: 594
+        x: 890
+        y: 1726
+        width: 295
+        height: 591
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -140,12 +142,12 @@ TextureImporter:
       name: HammerBoy_2_3
       rect:
         serializedVersion: 2
-        x: 1265
-        y: 1708
-        width: 320
-        height: 594
+        x: 1256
+        y: 1726
+        width: 321
+        height: 591
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -153,12 +155,12 @@ TextureImporter:
       name: HammerBoy_2_4
       rect:
         serializedVersion: 2
-        x: 37
-        y: 881
-        width: 513
-        height: 784
+        x: 531
+        y: 950
+        width: 425
+        height: 659
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -166,25 +168,12 @@ TextureImporter:
       name: HammerBoy_2_5
       rect:
         serializedVersion: 2
-        x: 650
-        y: 877
-        width: 484
-        height: 755
+        x: 1045
+        y: 964
+        width: 424
+        height: 664
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: HammerBoy_2_6
-      rect:
-        serializedVersion: 2
-        x: 1246
-        y: 884
-        width: 498
-        height: 763
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -192,12 +181,12 @@ TextureImporter:
       name: HammerBoy_2_7
       rect:
         serializedVersion: 2
-        x: 1803
-        y: 883
-        width: 489
-        height: 751
+        x: 1619
+        y: 974
+        width: 394
+        height: 634
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -205,25 +194,12 @@ TextureImporter:
       name: HammerBoy_2_8
       rect:
         serializedVersion: 2
-        x: 96
-        y: 54
-        width: 490
-        height: 752
+        x: 65
+        y: 952
+        width: 390
+        height: 638
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: HammerBoy_2_9
-      rect:
-        serializedVersion: 2
-        x: 642
-        y: 55
-        width: 499
-        height: 761
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -231,12 +207,12 @@ TextureImporter:
       name: HammerBoy_2_10
       rect:
         serializedVersion: 2
-        x: 1254
-        y: 47
-        width: 483
-        height: 755
+        x: 120
+        y: 106
+        width: 448
+        height: 719
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -244,12 +220,38 @@ TextureImporter:
       name: HammerBoy_2_11
       rect:
         serializedVersion: 2
-        x: 1837
-        y: 50
-        width: 512
-        height: 785
+        x: 647
+        y: 127
+        width: 500
+        height: 731
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: HammerBoy_2_12
+      rect:
+        serializedVersion: 2
+        x: 1171
+        y: 142
+        width: 466
+        height: 730
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: HammerBoy_2_13
+      rect:
+        serializedVersion: 2
+        x: 1686
+        y: 116
+        width: 480
+        height: 725
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
