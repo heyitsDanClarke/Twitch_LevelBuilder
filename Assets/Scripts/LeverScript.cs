@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class LeverScript : MonoBehaviour {
 
 
-	public bool isActive;
+	public bool isActive; // whether the lever is active or not
+	public bool spaceDownButNotApplied; // whether the space key is down and not applied to the lever
 
     public Sprite active;
     public Sprite inActive;
@@ -16,19 +17,24 @@ public class LeverScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		isActive = false;
+		spaceDownButNotApplied = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
-
-	void OnTriggerStay2D(Collider2D other) 
-	{
-		OnTriggerEnter2D(other);
+		if (Input.GetKeyDown(KeyCode.Space)) {
+			spaceDownButNotApplied = true;
+		} else if (Input.GetKeyUp(KeyCode.Space)) {
+			spaceDownButNotApplied = false;
+		}
 	}
 
 	void OnTriggerEnter2D(Collider2D other) 
+	{
+		OnTriggerStay2D(other);
+	}
+
+	void OnTriggerStay2D(Collider2D other) 
 	{
 		bool nextLevelMenuActive = false; // is the next level menu active in the scene
 		bool pauseMenuActive = false; // is the pause menu active in the scene
@@ -44,8 +50,10 @@ public class LeverScript : MonoBehaviour {
 		} catch (NullReferenceException) {}
 
 		// if player touches the block and the player is holding down the space button
-		if (other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.Space) && !nextLevelMenuActive && !pauseMenuActive && !deathMenuActive)
-		{ 
+		if (other.gameObject.CompareTag("Player") && spaceDownButNotApplied && !nextLevelMenuActive && !pauseMenuActive && !deathMenuActive)
+		{
+			spaceDownButNotApplied = false;
+
 			// activate/deactivate the switch
 			isActive = !isActive;
 			GetComponent<SpriteRenderer> ().color = isActive? new Color (0.3f, 0.3f, 1.0f): new Color (1.0f, 1.0f, 1.0f);

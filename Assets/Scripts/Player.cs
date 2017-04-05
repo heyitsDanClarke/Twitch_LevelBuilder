@@ -98,7 +98,7 @@ public class Player : MonoBehaviour {
 		speed = defaultSpeed;
 		acceleration = defaultAcceleration;
 
-		maxHealth = 42;
+		maxHealth = 9527;
 		maxCharges = 10;
 		maxFireResistance = 1.0f;
 		maxFireResistanceCooldown = 0.5f;
