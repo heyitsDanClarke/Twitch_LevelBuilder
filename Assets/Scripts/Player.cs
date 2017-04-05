@@ -303,33 +303,31 @@ public class Player : MonoBehaviour {
 
     IEnumerator MeleeAttack()
     {
-		
+
+		Vector3 attackRange = transform.FindChild ("WeaponCollider").localScale;
+		transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x * 2, transform.FindChild ("WeaponCollider").localScale.y * 2, transform.FindChild ("WeaponCollider").localScale.z);
+
 		/*
-
-		//initiate the collider and its position is right at the player's position
-		GameObject _attackCollider = (GameObject)Instantiate (attackCollider);
-		_attackCollider.transform.position = transform.position;
-
-		//Size of the collider (can be changed base on weapon with Switch Case)
-		//_attackCollider.transform.localScale = new Vector3 (_attackCollider.transform.localScale.x * 2, _attackCollider.transform.localScale.y * 2, _attackCollider.transform.localScale.z);
-
-
-		//Direction of the attack base on where the character's orientation
-		float x = anim.GetFloat ("x");
-		float y = anim.GetFloat ("y");
-
-		if (x == 1) {
-			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, 0);
-		} else if (x == -1) {
-			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, 180);
-		} else if (y == 1) {
-			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, 90);
-		} else {
-			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, -90);
+		switch (currentWeapon)
+		{
+		case 0:
+			//sword
+			SoundController.instance.RandomizeSfxLarge(playerSwordAttackSound);
+			break;
+		case 1:
+			//hammer
+			SoundController.instance.RandomizeSfxLarge(playerHammerAttackSound);
+			break;
+		case 2:
+			//dagger
+			SoundController.instance.RandomizeSfxLarge(playerDaggerAttackSound);
+			break;
+		case 3:
+			//whip
+			SoundController.instance.RandomizeSfxLarge(playerWhipAttackSound);
+			break;
 		}
-			
 		*/
-
 
 		float x = anim.GetFloat ("x");
 		Debug.Log (x);
@@ -350,10 +348,8 @@ public class Player : MonoBehaviour {
         yield return new WaitForSeconds(0.25f);
         transform.GetChild(1).gameObject.SetActive(false);
         //charges -= 1;
-        
 
-		//destroy collider, avoid memory leaking
-		//Destroy (_attackCollider);
+		transform.FindChild ("WeaponCollider").localScale = attackRange;
 
     }
 }
