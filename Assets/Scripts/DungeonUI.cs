@@ -43,7 +43,9 @@ public class DungeonUI : MonoBehaviour {
 	void Update () {
 		// update variables of GameMaster
 		GameMaster.Instance.music = transform.FindChild ("Settings Menu").FindChild ("Music Volume Slider").GetComponent<Slider> ().value;
+		SoundController.instance.musicSource.volume = GameMaster.Instance.music;
 		GameMaster.Instance.sfx = transform.FindChild("Settings Menu").FindChild("SFX Volume Slider").GetComponent<Slider>().value;
+		SoundController.instance.efxSource.volume = GameMaster.Instance.sfx;
 
 		if (Input.GetKeyDown (KeyCode.Escape) && settingsMenuActive) { // if user presses the ESC key and the settings menu is active
 			HideSettingsMenu();
