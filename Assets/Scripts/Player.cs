@@ -31,21 +31,21 @@ public class Player : MonoBehaviour {
 	public int coins;
 	public int icePower;
 	public int firePower;
-    public int[] weaponShards = new int[4]; //(0, default) (1, hammer) (2, whip) (3, dagger) 
+	public int[] weaponShards = new int[4]; //(0, default) (1, hammer) (2, whip) (3, dagger) 
 	public int boxes; // number of boxes pushed to correct places
 	public int maxBoxes; // number of boxes in the puzzle
 	public int levers; // number of switches left to switch
 	public int maxLevers; // number of switches in the puzzle
 	public GameObject gem;
-    public AudioClip playerHammerAttackSound;
-    public AudioClip playerDaggerAttackSound;
-    public AudioClip playerWhipAttackSound;
-    public AudioClip playerSwordAttackSound;
-    public AudioClip playerHitSound1;
-    public AudioClip playerHitSound2;
-    public AudioClip playerHitSound3;
-    public AudioClip exitFoundSound;
-    public AudioClip treasureFoundSound;
+	public AudioClip playerHammerAttackSound;
+	public AudioClip playerDaggerAttackSound;
+	public AudioClip playerWhipAttackSound;
+	public AudioClip playerSwordAttackSound;
+	public AudioClip playerHitSound1;
+	public AudioClip playerHitSound2;
+	public AudioClip playerHitSound3;
+	public AudioClip exitFoundSound;
+	public AudioClip treasureFoundSound;
 
 	//for attack speed
 	public float attackCooldown = 0.5F;
@@ -61,10 +61,10 @@ public class Player : MonoBehaviour {
 	[HideInInspector] public int dagger = 2;
 	[HideInInspector] public int whip = 3;
 
-    [HideInInspector]
+	[HideInInspector]
 	public Rigidbody2D rb; // rigid body of playersprite
-    [HideInInspector]
-    public Animator anim;
+	[HideInInspector]
+	public Animator anim;
 
 
 
@@ -75,15 +75,15 @@ public class Player : MonoBehaviour {
 
 
 	void Awake()
-    {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-        }
+	{
+		if (Instance != null)
+		{
+			Destroy(gameObject);
+		}
+		else
+		{
+			Instance = this;
+		}
 
 		anim = GetComponent<Animator>();
 
@@ -111,7 +111,7 @@ public class Player : MonoBehaviour {
 		currentWeapon = 0;
 	}
 
-    void FixedUpdate ()
+	void FixedUpdate ()
 	{
 		float moveHorizontal = 0.0f;
 		float moveVertictal = 0.0f;
@@ -137,14 +137,14 @@ public class Player : MonoBehaviour {
 		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
 		rb.AddForce (velocityDifference);
 
-		
-        //HandleMovementAnimations();
+
+		//HandleMovementAnimations();
 
 		HandleMovement ();
-        if (rb.velocity.x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
-        else if (rb.velocity.x > 0)
-            transform.localScale = new Vector3(1, 1, 1);
+		if (rb.velocity.x < 0)
+			transform.localScale = new Vector3(-1, 1, 1);
+		else if (rb.velocity.x > 0)
+			transform.localScale = new Vector3(1, 1, 1);
 
 		if (Input.GetKeyDown ("j") && attackCooldown <= 0.0F ) {
 			//can add switch case for different weapons
@@ -155,27 +155,27 @@ public class Player : MonoBehaviour {
 			attackCooldown = 0.5F;
 
 			//SoundController.instance.RandomizeSfxLarge (playerHammerAttackSound);
-            switch (currentWeapon)
-            {
-                case 0:
-                    //sword
-                    SoundController.instance.RandomizeSfxLarge(playerSwordAttackSound);
-                    break;
-                case 1:
-                    //hammer
-                    SoundController.instance.RandomizeSfxLarge(playerHammerAttackSound);
-                    break;
-                case 2:
-                    //dagger
-                    SoundController.instance.RandomizeSfxLarge(playerDaggerAttackSound);
-                    break;
-                case 3:
-                    //whip
-                    SoundController.instance.RandomizeSfxLarge(playerWhipAttackSound);
-                    break;
-            }
+			switch (currentWeapon)
+			{
+			case 0:
+				//sword
+				SoundController.instance.RandomizeSfxLarge(playerSwordAttackSound);
+				break;
+			case 1:
+				//hammer
+				SoundController.instance.RandomizeSfxLarge(playerHammerAttackSound);
+				break;
+			case 2:
+				//dagger
+				SoundController.instance.RandomizeSfxLarge(playerDaggerAttackSound);
+				break;
+			case 3:
+				//whip
+				SoundController.instance.RandomizeSfxLarge(playerWhipAttackSound);
+				break;
+			}
 
-        } 
+		} 
 
 
 		if (Input.GetKey ("r") ) {
@@ -196,7 +196,7 @@ public class Player : MonoBehaviour {
 			}
 
 		}
-        
+
 
 	}
 
@@ -245,43 +245,43 @@ public class Player : MonoBehaviour {
 			}
 		}
 
-    }
+	}
 
-    void OnCollisionEnter2D(Collision2D coll)
-    {
+	void OnCollisionEnter2D(Collision2D coll)
+	{
 		if (coll.gameObject.tag == "Exit") {
 			if (boxes == maxBoxes && levers == maxLevers) { // if all puzzles are being solved
 				DungeonUI.Instance.showNextLevelMenu ();
 				SoundController.instance.PlaySingle(exitFoundSound);
 			}
 		} else if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
-        {
+		{
 
-            if (health > 0)
-                health -= 1;
-            Vector3 enemyPosition = coll.transform.position;
+			if (health > 0)
+				health -= 1;
+			Vector3 enemyPosition = coll.transform.position;
 
 			rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
-            SoundController.instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
+			SoundController.instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
 
-        }
+		}
 
-        
-    }
 
-    void HandleMovementAnimations()
-    {
-        if((rb.velocity.x > -0.1 && rb.velocity.x <0.1) && (rb.velocity.y > -0.1 && rb.velocity.y < 0.1))
-            anim.SetBool("Moving", false);
-        else
-            anim.SetBool("Moving", true);
-        anim.SetInteger("VerticalMovement", (int)Input.GetAxisRaw("Vertical"));
-        anim.SetInteger("HorizontalMovement", (int)Input.GetAxisRaw("Horizontal"));
-    }
+	}
+
+	void HandleMovementAnimations()
+	{
+		if((rb.velocity.x > -0.1 && rb.velocity.x <0.1) && (rb.velocity.y > -0.1 && rb.velocity.y < 0.1))
+			anim.SetBool("Moving", false);
+		else
+			anim.SetBool("Moving", true);
+		anim.SetInteger("VerticalMovement", (int)Input.GetAxisRaw("Vertical"));
+		anim.SetInteger("HorizontalMovement", (int)Input.GetAxisRaw("Horizontal"));
+	}
 
 	void HandleMovement()
 	{
-		
+
 		float input_x = Input.GetAxisRaw("Horizontal");
 		float input_y = Input.GetAxisRaw("Vertical");
 
@@ -301,8 +301,8 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-    IEnumerator MeleeAttack()
-    {
+	IEnumerator MeleeAttack()
+	{
 		//save default collider scale
 		Vector3 attackRange = transform.FindChild ("WeaponCollider").localScale;
 		transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x * 2, transform.FindChild ("WeaponCollider").localScale.y * 2, transform.FindChild ("WeaponCollider").localScale.z);
@@ -344,14 +344,14 @@ public class Player : MonoBehaviour {
 			transform.FindChild("WeaponCollider").localEulerAngles = new Vector3 (0, 0, -90);
 		}
 
-        transform.GetChild(1).gameObject.SetActive(true);
-        //anim.SetTrigger("meleeAttack");
-        yield return new WaitForSeconds(0.25f);
-        transform.GetChild(1).gameObject.SetActive(false);
-        //charges -= 1;
+		transform.GetChild(1).gameObject.SetActive(true);
+		//anim.SetTrigger("meleeAttack");
+		yield return new WaitForSeconds(0.25f);
+		transform.GetChild(1).gameObject.SetActive(false);
+		//charges -= 1;
 
 		//restore collider scale
 		transform.FindChild ("WeaponCollider").localScale = attackRange;
 
-    }
+	}
 }
