@@ -55,7 +55,7 @@ public class EyeBat : MonoBehaviour {
 
             StartCoroutine(UpdatePath());
         }*/ //for demo we are removing the line of sight mechanics, making it a distance check
-        if (coll.gameObject.tag == "Sword")
+        if (coll.gameObject.tag == "WeaponCollider")
         {
             SoundController.instance.RandomizeSfx(batHit);
             health -= 1;

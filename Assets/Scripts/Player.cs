@@ -332,16 +332,17 @@ public class Player : MonoBehaviour {
 
 
 		float x = anim.GetFloat ("x");
+		Debug.Log (x);
 		float y = anim.GetFloat ("y");
 
 		if (x == 1) {
-			transform.GetChild(1).localEulerAngles = new Vector3 (0, 0, 0);
+			transform.FindChild("WeaponCollider").localEulerAngles = new Vector3 (0, 0, 0);
 		} else if (x == -1) {
-			transform.GetChild(1).localEulerAngles = new Vector3 (0, 0, 180);
+			transform.FindChild("WeaponCollider").localEulerAngles = new Vector3 (0, 0, -0);
 		} else if (y == 1) {
-			transform.GetChild(1).localEulerAngles = new Vector3 (0, 0, 90);
+			transform.FindChild("WeaponCollider").localEulerAngles = new Vector3 (0, 0, 90);
 		} else {
-			transform.GetChild(1).localEulerAngles = new Vector3 (0, 0, -90);
+			transform.FindChild("WeaponCollider").localEulerAngles = new Vector3 (0, 0, -90);
 		}
 
         transform.GetChild(1).gameObject.SetActive(true);
@@ -352,7 +353,7 @@ public class Player : MonoBehaviour {
         
 
 		//destroy collider, avoid memory leaking
-		Destroy (_attackCollider);
+		//Destroy (_attackCollider);
 
     }
 }
