@@ -124,26 +124,31 @@ public class DungeonUI : MonoBehaviour {
 	}
 
 	public void ShowDeathMenu() {
+		// play sounds once
+		if (!deathMenuActive) {
+			SoundController.instance.musicSource.mute = true;
+			SoundController.instance.deathMusicSource.mute = false;
+			SoundController.instance.deathMusicSource.Play ();
+		}
+
 		deathMenuActive = true;
 		transform.FindChild("Death Menu").gameObject.SetActive(true);
-
-        SoundController.instance.musicSource.mute = true;
-        SoundController.instance.deathMusicSource.mute = false;
-        SoundController.instance.deathMusicSource.Play();
 
 		Player.Instance.gameObject.SetActive (false); // hide player
 
 	}
 
 	public void HideDeathMenu() {
+		// unmute sounds once
+		if (deathMenuActive) {
+			SoundController.instance.deathMusicSource.mute = true;
+			SoundController.instance.musicSource.mute = false;
+		}
+
 		deathMenuActive = false;
 		transform.FindChild("Death Menu").gameObject.SetActive(false);
 
-        SoundController.instance.musicSource.mute = false;
-
-
 		Player.Instance.gameObject.SetActive (true); // show player
-
 	}
 
 	public void SetPauseMenuActiveToFalse() {
