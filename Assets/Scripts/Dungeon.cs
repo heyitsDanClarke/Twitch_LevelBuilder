@@ -246,8 +246,10 @@ public class Dungeon : MonoBehaviour
 			roomWidth = 15;
 			roomHeight = 11;
 			GenerateBossRoom (roomWidth, roomHeight);
+			caveRoomsLeftUntilBoss -= 1; // force SceneManager.LoadScene(0); to be called after clearing the boss room
+			hybridRoomsLeftUntilBoss -= 1; // force SceneManager.LoadScene(0); to be called after clearing the boss room
 			PlayerUI.Instance.transform.FindChild ("Boss Bar").gameObject.SetActive (true);
-		} else {
+		} else { // game ends
 			SceneManager.LoadScene(0);
 		}
 		SetNumberOfBoxesorSwitchesLeft (roomStructure);
