@@ -275,7 +275,7 @@ public class Dungeon : MonoBehaviour
         enemyVisual.transform.name = "Enemy Visual";
         enemyVisual.transform.SetParent(transform);
 
-        if (caveRoomsLeftUntilBoss > 0 || hybridRoomsLeftUntilBoss > 0)
+        if (caveRoomsLeftUntilBoss + hybridRoomsLeftUntilBoss > 0)
         {
             if (random.Next(0, 2) == 0 && caveRoomsLeftUntilBoss > 0)
             {
@@ -292,7 +292,7 @@ public class Dungeon : MonoBehaviour
                 hybridRoomsLeftUntilBoss -= 1;
             }
         }
-        else if (caveRoomsLeftUntilBoss == 0 && hybridRoomsLeftUntilBoss == 0)
+        else if (caveRoomsLeftUntilBoss + hybridRoomsLeftUntilBoss == 0)
         {
             roomWidth = 16;
             roomHeight = 16;

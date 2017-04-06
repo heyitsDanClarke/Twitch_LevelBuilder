@@ -152,13 +152,13 @@ public class Poll : MonoBehaviour {
 			_weaponDisplay.text = knifeText;
 		} else if (spearCount > hammerCount && spearCount > daggerCount) {
 			_weaponDisplay.text = spearText;
-		}else if (hammerCount == daggerCount && hammerCount == spearCount) { // if all votes are equal
+		} else if (hammerCount == daggerCount && hammerCount == spearCount) { // if all votes are equal
 			// select random weapon
 			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 3.0f) < 1.0f) ? hammerText : ((UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? spearText : knifeText);
 		} else if (hammerCount == daggerCount) {
-			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : spearText;
-		} else if (hammerCount == spearCount) {
 			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : knifeText;
+		} else if (hammerCount == spearCount) {
+			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : spearText;
 		} else if (daggerCount == spearCount) {
 			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? spearText : knifeText;
 		} 
