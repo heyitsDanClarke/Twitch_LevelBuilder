@@ -222,8 +222,8 @@ MonoBehaviour:
   nextWeapon: 0
   defaultSword: 0
   hammer: 1
-  spear: 3
-  knife: 2
+  spear: 2
+  knife: 3
   rb: {fileID: 0}
   anim: {fileID: 0}
   Spear_RAC: {fileID: 9100000, guid: bcf593171de3f4336885f44db022eed1, type: 2}

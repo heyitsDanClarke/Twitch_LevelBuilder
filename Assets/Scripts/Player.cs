@@ -65,9 +65,7 @@ public class Player : MonoBehaviour
     public int defaultSword = 0;
     [HideInInspector]
     public int hammer = 1;
-    [HideInInspector]
     public int spear = 2;
-    [HideInInspector]
     public int knife = 3;
 
     [HideInInspector]
