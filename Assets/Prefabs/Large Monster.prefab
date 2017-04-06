@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 114016109942516696}
   - component: {fileID: 114473223036373234}
   - component: {fileID: 58882197496843636}
+  - component: {fileID: 95337043232663056}
   m_Layer: 0
   m_Name: Large Monster
   m_TagString: Large Monster
@@ -232,6 +233,23 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!95 &95337043232663056
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1858064224081460}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6bf82f773a9e8124eaca0cc8597bd76c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114003654945666434
 MonoBehaviour:
   m_ObjectHideFlags: 1
