@@ -27,7 +27,7 @@ public class EyeBat : MonoBehaviour {
 	void Update () {
         if (Vector2.Distance(transform.position, Player.Instance.transform.position) > swoopRange && !swooping)
             _rb.velocity = (target.transform.position - transform.position).normalized * seekSpeed;
-        else {
+        else if(!swooping){
             swooping = true;
             StartCoroutine(Swoop());
         }
@@ -39,6 +39,7 @@ public class EyeBat : MonoBehaviour {
 
     IEnumerator Swoop()
     {
+        _rb.velocity = Vector3.zero;
         yield return new WaitForSeconds(2);
         _rb.velocity = (target.transform.position - transform.position).normalized * swoopSpeed;
         yield return new WaitForSeconds(1);
@@ -47,46 +48,35 @@ public class EyeBat : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        /*
-        if(coll.gameObject.tag == "Player" && target == null)
-        {
-            target = coll.transform;
-            seeker.StartPath(transform.position, target.position, OnPathComplete);
-
-            StartCoroutine(UpdatePath());
-        }*/ //for demo we are removing the line of sight mechanics, making it a distance check
-
-
-		
         if (coll.gameObject.tag == "WeaponCollider")
         {
-			int currentWeapon = Player.Instance.currentWeapon;
-			SoundController.instance.RandomizeSfx(batHit);
-
-			switch (currentWeapon)
-			{
-			case 0:
-				//sword
-				health -= 1;
-				break;
-			case 1:
-				//hammer
-				health -= 1;
-				break;
-			case 2:
-				//spear
-				health -= 1;
-				break;
-			case 3:
-				//knife
-				health -= 1;
-				break;
-			}
-
+            SoundController.Instance.RandomizeSfx(batHit);
+            health -= 1;
             if (health <= 0)
             {
-                Vector2 shardPosition = new Vector2(transform.position.x, transform.position.y);
-                GameObject treasureObject = Instantiate(shard, transform.position, Quaternion.identity);
+                Vector3 shardPosition = new Vector3(transform.position.x, transform.position.y, 0.0f);
+
+				// prevent shards from spawning inside walls
+				while (true) {
+					int x = Mathf.RoundToInt (shardPosition.x);
+					int y = Mathf.RoundToInt (shardPosition.y);
+					try {
+						bool notOnWall = Dungeon.Instance.roomStructure [x, y].tile != Dungeon.Instance.wall; // shard position not on wall
+						bool notOnBox = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.box; // shard position not on boxes
+						bool notOnLever = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.lever; // shard position not on levers
+						bool onLeverButAtEdge = Dungeon.Instance.roomStructure[x, y].entity == Dungeon.Instance.lever && Mathf.Abs(shardPosition.x - x) > 0.25f && Mathf.Abs(shardPosition.y - y) > 0.25f; // shard position not inside levers
+						if (notOnWall && notOnBox && (notOnLever || onLeverButAtEdge)) {
+							shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.1f;
+							break;
+						}
+					} catch (IndexOutOfRangeException) {
+						break;
+					}
+
+					shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.05f;
+				}
+
+				GameObject treasureObject = Instantiate(shard, shardPosition, Quaternion.identity);
                 treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
                 Destroy(gameObject);
             }

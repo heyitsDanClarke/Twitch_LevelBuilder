@@ -43,7 +43,9 @@ public class DungeonUI : MonoBehaviour {
 	void Update () {
 		// update variables of GameMaster
 		GameMaster.Instance.music = transform.FindChild ("Settings Menu").FindChild ("Music Volume Slider").GetComponent<Slider> ().value;
+		SoundController.Instance.musicSource.volume = GameMaster.Instance.music;
 		GameMaster.Instance.sfx = transform.FindChild("Settings Menu").FindChild("SFX Volume Slider").GetComponent<Slider>().value;
+		SoundController.Instance.efxSource.volume = GameMaster.Instance.sfx;
 
 		if (Input.GetKeyDown (KeyCode.Escape) && settingsMenuActive) { // if user presses the ESC key and the settings menu is active
 			HideSettingsMenu();
@@ -70,7 +72,7 @@ public class DungeonUI : MonoBehaviour {
 		transform.FindChild("Next Level Menu").gameObject.SetActive(true);
 
 		// display alternative text if player
-		if (Dungeon.Instance.roomsLeftUntilBoss < 0) {
+		if (Dungeon.Instance.caveRoomsLeftUntilBoss < 0) {
 			transform.FindChild("Next Level Menu").FindChild("Continue Button").GetChild(0).GetComponent<Text>().text = "Main Menu";
 		}
 	}
@@ -126,9 +128,9 @@ public class DungeonUI : MonoBehaviour {
 	public void ShowDeathMenu() {
 		// play sounds once
 		if (!deathMenuActive) {
-			SoundController.instance.musicSource.mute = true;
-			SoundController.instance.deathMusicSource.mute = false;
-			SoundController.instance.deathMusicSource.Play ();
+			SoundController.Instance.musicSource.mute = true;
+			SoundController.Instance.deathMusicSource.mute = false;
+			SoundController.Instance.deathMusicSource.Play ();
 		}
 
 		deathMenuActive = true;
@@ -141,8 +143,8 @@ public class DungeonUI : MonoBehaviour {
 	public void HideDeathMenu() {
 		// unmute sounds once
 		if (deathMenuActive) {
-			SoundController.instance.deathMusicSource.mute = true;
-			SoundController.instance.musicSource.mute = false;
+			SoundController.Instance.deathMusicSource.mute = true;
+			SoundController.Instance.musicSource.mute = false;
 		}
 
 		deathMenuActive = false;

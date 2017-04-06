@@ -11,7 +11,8 @@ public class Dungeon : MonoBehaviour
 
     public int roomWidth = 48; // width of room
     public int roomHeight = 32; // height of room
-	public int roomsLeftUntilBoss; // number of rooms left before boss room
+	public int caveRoomsLeftUntilBoss; // number of cave rooms left before boss room
+	public int hybridRoomsLeftUntilBoss; // number of hybrid rooms left before boss room
 	public int currentFireVotes; // number of fire votes of the current room
 	public int currentIceVotes; // number of ice votes of the current room
    
@@ -110,6 +111,9 @@ public class Dungeon : MonoBehaviour
         // initialize camera
 		Camera.main.transform.position = new Vector3(0.0f, Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, -20.0f);
 
+		caveRoomsLeftUntilBoss = 3;
+		hybridRoomsLeftUntilBoss = 3;
+
 		GenerateRandomRoom ();
 	}
 
@@ -145,7 +149,7 @@ public class Dungeon : MonoBehaviour
 			// player on lava
 			if (roomStructure[x, y].tile == lava) {
                 
-                SoundController.instance.lavaSizzleSource.mute = false;
+                SoundController.Instance.lavaSizzleSource.mute = false;
 
 				Player.Instance.rb.drag = 5.0f; // slow down player a bit if player is in lava
 				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make lava slightly slippery
@@ -158,7 +162,7 @@ public class Dungeon : MonoBehaviour
 				}
 			} else {
                 
-                SoundController.instance.lavaSizzleSource.mute = true;
+                SoundController.Instance.lavaSizzleSource.mute = true;
 
                 Player.Instance.fireResistanceCooldown = Mathf.Max(0.0f, Player.Instance.fireResistanceCooldown - (PauseMenuActive? 0.0f : Time.deltaTime));
 
@@ -202,7 +206,7 @@ public class Dungeon : MonoBehaviour
 
 		// determine room temperature
 		if (GameMaster.Instance.fireCount + GameMaster.Instance.iceCount == 0) { // single player
-			currentRoomClimate = Mathf.Clamp ((float) (random.NextDouble ()) * 3.0f - 1.5f, -1.0f, 1.0f);
+			currentRoomClimate = Mathf.Clamp ((float) (random.NextDouble ()) * 2.2f - 1.1f, -1.0f, 1.0f);
 		} else {
 			currentRoomClimate = (GameMaster.Instance.fireCount - GameMaster.Instance.iceCount) / ((float)(GameMaster.Instance.fireCount + GameMaster.Instance.iceCount));
 		}
@@ -226,31 +230,38 @@ public class Dungeon : MonoBehaviour
 		enemyVisual.transform.name = "Enemy Visual";
 		enemyVisual.transform.SetParent(transform);
 
-		if (roomsLeftUntilBoss > 0) {
-			if (random.NextDouble() < - 9001) {
+		if (caveRoomsLeftUntilBoss > 0 || hybridRoomsLeftUntilBoss > 0 ) {
+			if (random.Next(0, 2) == 0 && caveRoomsLeftUntilBoss > 0) {
 				roomWidth = 40;
 				roomHeight = 40;
 				GenerateCaveRoom (roomWidth, roomHeight);
+				caveRoomsLeftUntilBoss -= 1;
 			} else {
 				roomWidth = 28;
 				roomHeight = 28;
 				GenerateHybridRoom (roomWidth, roomHeight);
+				hybridRoomsLeftUntilBoss -= 1;
 			}
-		} else if (roomsLeftUntilBoss == 0) {
-			roomWidth = 15;
-			roomHeight = 11;
+		} else if (caveRoomsLeftUntilBoss == 0 && hybridRoomsLeftUntilBoss == 0) {
+			roomWidth = 16;
+			roomHeight = 12;
 			GenerateBossRoom (roomWidth, roomHeight);
+			caveRoomsLeftUntilBoss -= 1;
+			hybridRoomsLeftUntilBoss -= 1;
 		} else {
 			SceneManager.LoadScene(0);
 		}
-		roomsLeftUntilBoss -= 1;
-
 		SetNumberOfBoxesorSwitchesLeft (roomStructure);
 
-		AstarPath.active.Scan();
+		Invoke ("ScanRoom", 0.2f);
+
 		Poll.Instance.ResetVoteElement(); // reset element votes
 		Poll.Instance.ResetVoteWeapon(); // reset weapon votes
     }
+
+	public void ScanRoom () {
+		AstarPath.active.Scan();
+	}
 
 	// function for resetting the dungeon
 	public void ResetRoom()
@@ -282,17 +293,22 @@ public class Dungeon : MonoBehaviour
 		enemyVisual.transform.name = "Enemy Visual";
 		enemyVisual.transform.SetParent(transform);
 
-		// restore room to scene
-		InstantiateCaveRoom(initialRoomStructure);
-		//InstantiateRoomBorder (roomWidth, roomHeight);
+		if (caveRoomsLeftUntilBoss >= 0 || hybridRoomsLeftUntilBoss >= 0) { // not at boss room
 
-		// restore room structure variable
-		roomStructure = initialRoomStructure.Clone() as RoomTile[,]; // deep copy
-		RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
+			// restore room to scene
+			InstantiateCaveRoom (initialRoomStructure);
+			//InstantiateRoomBorder (roomWidth, roomHeight);
+
+			// restore room structure variable
+			roomStructure = initialRoomStructure.Clone () as RoomTile[,]; // deep copy
+			RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
+		} else { // at boss room
+			GenerateBossRoom (roomStructure.GetLength(0), roomStructure.GetLength(1));
+		}
 
 		SetNumberOfBoxesorSwitchesLeft (roomStructure);
 
-		// spawn player and exit
+		// spawn player
 		Player.Instance.transform.position = playerStartPosition;
 
 		AstarPath.active.Scan();
@@ -332,13 +348,14 @@ public class Dungeon : MonoBehaviour
 	{
 		RoomTile[,] room = new RoomTile[width, height];
 
-		playerStartPosition = new Vector2 (0.0f, 0.0f); // player spawn location
-		exitPosition = new Vector2 (-4.0f, -4.0f); // room exit location
+		playerStartPosition = new Vector2 (width / 2.0f, 0.0f); // player spawn location
+		exitPosition = new Vector2 (-689.0f, -777.0f); // room exit location
 
 		// initializing room
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				room [i, j].tile = air;
+				room [i, j].temperature = (currentRoomClimate + 1.0f) / 2.0f;
 			}
 		}
 
@@ -361,7 +378,8 @@ public class Dungeon : MonoBehaviour
 				}
 			}
 		}
-        Instantiate(boss, new Vector2(width/2, height-2), transform.rotation);
+        GameObject tempBoss = Instantiate(boss, new Vector2(width / 2.0f, height - 2.0f), transform.rotation);
+		tempBoss.transform.SetParent(enemyVisual.transform);
 	}
 
     // function for generating a cave room

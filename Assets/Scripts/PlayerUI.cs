@@ -13,6 +13,7 @@ public class PlayerUI : MonoBehaviour {
 	Text fireValue;
     Text chargesValue;
 	Text fireResistanceValue;
+	Text bossHealthValue;
 
 	public Sprite boxIcon;
 	public Sprite leverIcon;
@@ -35,17 +36,30 @@ public class PlayerUI : MonoBehaviour {
 		fireResistanceValue = transform.FindChild("Fire Resistance Bar").FindChild("Value").GetComponent<Text>();
 		iceValue = transform.FindChild("Ice Power Panel").FindChild("Value").GetComponent<Text>();
 		fireValue = transform.FindChild("Fire Power Panel").FindChild("Value").GetComponent<Text>();
+		bossHealthValue = transform.FindChild("Boss Bar").FindChild("Value").GetComponent<Text>();
     }
 
 	void Update() {
-		transform.FindChild("Health Bar").FindChild("Max Value").GetComponent<Text>().text = Player.Instance.maxHealth.ToString ();
-		transform.FindChild("Charges Bar").FindChild("Max Value").GetComponent<Text>().text = Player.Instance.maxCharges.ToString ();
+		transform.FindChild ("Health Bar").FindChild("Max Value").GetComponent<Text>().text = Player.Instance.maxHealth.ToString ();
+		transform.FindChild ("Charges Bar").FindChild("Max Value").GetComponent<Text>().text = Player.Instance.maxCharges.ToString ();
 		transform.FindChild ("Fire Resistance Bar").FindChild ("Max Value").GetComponent<Text> ().text = Player.Instance.maxFireResistance.ToString ();
+		try {
+			transform.FindChild ("Boss Bar").FindChild ("Max Value").GetComponent<Text> ().text = GameObject.FindGameObjectWithTag ("Boss").GetComponent<Cerberus> ().maxHealth.ToString ();
+			PlayerUI.Instance.transform.FindChild ("Boss Bar").gameObject.SetActive (true);
+		} catch (NullReferenceException) {
+			PlayerUI.Instance.transform.FindChild ("Boss Bar").gameObject.SetActive (false);
+		}
 		healthValue.text = Player.Instance.health.ToString ();
 		chargesValue.text = Player.Instance.charges.ToString ();
 		fireResistanceValue.text = Player.Instance.fireResistance.ToString ();
 		iceValue.text = Player.Instance.icePower.ToString ();
 		fireValue.text = Player.Instance.firePower.ToString ();
+		try {
+			bossHealthValue.text = GameObject.FindGameObjectWithTag ("Boss").GetComponent<Cerberus> ().health.ToString ();
+			PlayerUI.Instance.transform.FindChild ("Boss Bar").gameObject.SetActive (true);
+		} catch (NullReferenceException) {
+			PlayerUI.Instance.transform.FindChild ("Boss Bar").gameObject.SetActive (false);
+		}
 
 		bool PauseMenuActive = false; // is there any menus active in the scene
 		try {
@@ -94,8 +108,6 @@ public class PlayerUI : MonoBehaviour {
 
 		// update displayed value on timer
 		transform.FindChild ("Weapon Timer").FindChild ("Value").GetComponent<Text> ().text = string.Format ("{0:F1}", float.Parse(transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text));
-
-
 
     }
 }
