@@ -31,8 +31,8 @@ public class Poll : MonoBehaviour {
 	public const string whipCommand = "#whip";
 
 	public string hammerText = "Hammer";
-	public string daggerText = "Dagger";
-	public string whipText = "Whip";
+	public string spearText = "Dagger";
+	public string knifeText = "Whip";
 
 	private List<string> _voterListElement;
 	private List<string> _voterListWeapon;
@@ -148,19 +148,19 @@ public class Poll : MonoBehaviour {
 		int whipCount = GameMaster.Instance.whipCount;
 		if (hammerCount == daggerCount && hammerCount == whipCount) { // if all votes are equal
 			// select random weapon
-			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 3.0f) < 1.0f) ? hammerText : ((UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? daggerText : whipText);
+			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 3.0f) < 1.0f) ? hammerText : ((UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? spearText : knifeText);
 		} else if (hammerCount == daggerCount) {
-			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : daggerText;
+			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : spearText;
 		} else if (hammerCount == whipCount) {
-			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : whipText;
+			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : knifeText;
 		} else if (daggerCount == whipCount) {
-			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? daggerText : whipText;
+			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? spearText : knifeText;
 		} else if (hammerCount > daggerCount && hammerCount > whipCount) {
 			_weaponDisplay.text = hammerText;
 		} else if (daggerCount > hammerCount && daggerCount > whipCount) {
-			_weaponDisplay.text = daggerText;
+			_weaponDisplay.text = spearText;
 		} else if (whipCount > hammerCount && whipCount > daggerCount) {
-			_weaponDisplay.text = whipText;
+			_weaponDisplay.text = knifeText;
 		} 
 	}
 

@@ -65,10 +65,10 @@ public class PlayerUI : MonoBehaviour {
 				// update next weapon on GameMaster
 				if (Poll.Instance._weaponDisplay.text == Poll.Instance.hammerText) {
 					Player.Instance.nextWeapon = Player.Instance.hammer;
-				} else if (Poll.Instance._weaponDisplay.text == Poll.Instance.daggerText) {
-					Player.Instance.nextWeapon = Player.Instance.dagger;
-				} else if (Poll.Instance._weaponDisplay.text == Poll.Instance.whipText) {
-					Player.Instance.nextWeapon = Player.Instance.whip;
+				} else if (Poll.Instance._weaponDisplay.text == Poll.Instance.spearText) {
+					Player.Instance.nextWeapon = Player.Instance.spear;
+				} else if (Poll.Instance._weaponDisplay.text == Poll.Instance.knifeText) {
+					Player.Instance.nextWeapon = Player.Instance.knife;
 				} else {
 					Player.Instance.nextWeapon = Player.Instance.defaultSword;
 				}

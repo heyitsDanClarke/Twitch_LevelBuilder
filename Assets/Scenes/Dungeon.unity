@@ -2559,8 +2559,8 @@ MonoBehaviour:
   _fireCountDisplay: {fileID: 613636415}
   _weaponDisplay: {fileID: 917687363}
   hammerText: Hammer
-  daggerText: Dagger
-  whipText: Whip
+  spearText: Dagger
+  knifeText: Whip
 --- !u!114 &822975956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2872,6 +2872,90 @@ Prefab:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: efb10f046b6bf40c193bce5f5fc318fb, type: 2}
+    - target: {fileID: 1083180465670178, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[1].x
+      value: -0.23077053
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[1].y
+      value: 0.37063068
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[2].x
+      value: -0.25187653
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[2].y
+      value: -0.39998817
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[0].x
+      value: 3.0408711
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[0].y
+      value: 1.9934027
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[3].x
+      value: 3.0408711
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[3].y
+      value: -1.9843742
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[5].x
+      value: 3.6036515
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[5].y
+      value: 1.4134485
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[4].x
+      value: 3.603651
+      objectReference: {fileID: 0}
+    - target: {fileID: 60715530623791580, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: m_Points.m_Paths.Array.data[0].Array.data[4].y
+      value: -1.1733251
+      objectReference: {fileID: 0}
+    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: Knife_RAC
+      value: 
+      objectReference: {fileID: 9100000, guid: 58d345a05e234469a806fbe889d65681, type: 2}
+    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: Hammer_RAC
+      value: 
+      objectReference: {fileID: 9100000, guid: efb10f046b6bf40c193bce5f5fc318fb, type: 2}
+    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: Spear_RAC
+      value: 
+      objectReference: {fileID: 9100000, guid: bcf593171de3f4336885f44db022eed1, type: 2}
+    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: Sword_RAC
+      value: 
+      objectReference: {fileID: 9100000, guid: 4ae0af37177818c4ea38fd19e0287c2d, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
   m_IsPrefabParent: 0

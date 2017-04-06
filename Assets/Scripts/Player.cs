@@ -62,16 +62,16 @@ public class Player : MonoBehaviour {
 
 	[HideInInspector] public int defaultSword = 0;
 	[HideInInspector] public int hammer = 1;
-	[HideInInspector] public int dagger = 2;
-	[HideInInspector] public int whip = 3;
+	[HideInInspector] public int spear = 2;
+	[HideInInspector] public int knife = 3;
 
     [HideInInspector] public Rigidbody2D rb; // rigid body of playersprite
     [HideInInspector] public Animator anim;
 
 	public RuntimeAnimatorController Spear_RAC;
-	public RuntimeAnimatorController Polearm_RAC;
+	public RuntimeAnimatorController Hammer_RAC;
 	public RuntimeAnimatorController Sword_RAC;
-	public RuntimeAnimatorController Dagger_RAC;
+	public RuntimeAnimatorController Knife_RAC;
 
 
 	void Awake()
@@ -177,26 +177,28 @@ public class Player : MonoBehaviour {
 			StopAllCoroutines ();
 			StartCoroutine (MeleeAttack ());
 
-			attackCooldown = 0.5F;
-
 			//SoundController.instance.RandomizeSfxLarge (playerHammerAttackSound);
             switch (currentWeapon)
             {
                 case 0:
                     //sword
                     SoundController.instance.RandomizeSfxLarge(playerSwordAttackSound);
+					attackCooldown = 0.6f;
                     break;
                 case 1:
                     //hammer
                     SoundController.instance.RandomizeSfxLarge(playerHammerAttackSound);
+					attackCooldown = 1.0f;
                     break;
                 case 2:
-                    //dagger
+                    //spear
                     SoundController.instance.RandomizeSfxLarge(playerDaggerAttackSound);
+					attackCooldown = 0.4f;
                     break;
                 case 3:
-                    //whip
+                    //knife
                     SoundController.instance.RandomizeSfxLarge(playerWhipAttackSound);
+					attackCooldown = 0.2f;
                     break;
             }
 
@@ -207,16 +209,20 @@ public class Player : MonoBehaviour {
 			StopAllCoroutines ();
 			switch (currentWeapon) {
 			case 0:
-				anim.runtimeAnimatorController = Sword_RAC; 
+				anim.runtimeAnimatorController = Sword_RAC;
+				attackCooldown = 0.6f;
 				break;
 			case 1:
-				anim.runtimeAnimatorController = Spear_RAC; 
+				anim.runtimeAnimatorController = Hammer_RAC;
+				attackCooldown = 1.0f;
 				break;
 			case 2:
-				anim.runtimeAnimatorController = Polearm_RAC; 
+				anim.runtimeAnimatorController = Spear_RAC; 
+				attackCooldown = 0.4f;
 				break;
 			case 3:
-				anim.runtimeAnimatorController = Dagger_RAC;   
+				anim.runtimeAnimatorController = Knife_RAC; 
+				attackCooldown = 0.2f;
 				break;
 			}
 
@@ -230,6 +236,8 @@ public class Player : MonoBehaviour {
 	{		
 		// update camera position
 		Camera.main.transform.position = new Vector3 (transform.position[0], transform.position[1] + Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, Camera.main.transform.position[2]);
+
+
 
 		attackCooldown = Mathf.Max (attackCooldown - Time.deltaTime, 0);
 	}
@@ -319,46 +327,40 @@ public class Player : MonoBehaviour {
 			anim.SetFloat ("x", input_x);
 			anim.SetFloat ("y", input_y);
 		}
-
-		if (Input.GetKeyDown (KeyCode.I)) {
-
-			//anim.transform.localScale += new Vector3 (6.3f, 6.3f, 6.3f);
-			anim.SetTrigger ("meleeAttack");
-		}
+			
 	}
 
     IEnumerator MeleeAttack()
     {
-		
-		/*
 
-		//initiate the collider and its position is right at the player's position
-		GameObject _attackCollider = (GameObject)Instantiate (attackCollider);
-		_attackCollider.transform.position = transform.position;
+		//save default collider scale
+		Vector3 attackRange = transform.FindChild ("WeaponCollider").localScale;
 
-		//Size of the collider (can be changed base on weapon with Switch Case)
-		//_attackCollider.transform.localScale = new Vector3 (_attackCollider.transform.localScale.x * 2, _attackCollider.transform.localScale.y * 2, _attackCollider.transform.localScale.z);
-
-
-		//Direction of the attack base on where the character's orientation
-		float x = anim.GetFloat ("x");
-		float y = anim.GetFloat ("y");
-
-		if (x == 1) {
-			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, 0);
-		} else if (x == -1) {
-			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, 180);
-		} else if (y == 1) {
-			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, 90);
-		} else {
-			_attackCollider.transform.localEulerAngles = new Vector3 (0, 0, -90);
+		//change collider scale depends on weapon range
+		switch (currentWeapon)
+		{
+		case 0:
+			//sword
+			transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x , transform.FindChild ("WeaponCollider").localScale.y , transform.FindChild ("WeaponCollider").localScale.z);
+			break;
+		case 1:
+			//hammer
+			transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x * 1.5f, transform.FindChild ("WeaponCollider").localScale.y * 1.5f, transform.FindChild ("WeaponCollider").localScale.z);
+			break;
+		case 2:
+			//spear
+			transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x * 2.5f , transform.FindChild ("WeaponCollider").localScale.y , transform.FindChild ("WeaponCollider").localScale.z);
+			break;
+		case 3:
+			//knife
+			transform.FindChild ("WeaponCollider").localScale = new Vector3 (transform.FindChild ("WeaponCollider").localScale.x * 0.75f, transform.FindChild ("WeaponCollider").localScale.y * 0.75f, transform.FindChild ("WeaponCollider").localScale.z);
+			break;
 		}
-			
-		*/
 
 
+		//Get player orientation
 		float x = anim.GetFloat ("x");
-		Debug.Log (x);
+
 		float y = anim.GetFloat ("y");
 
 		if (x == 1) {
@@ -371,15 +373,16 @@ public class Player : MonoBehaviour {
 			transform.FindChild("WeaponCollider").localEulerAngles = new Vector3 (0, 0, -90);
 		}
 
-        transform.GetChild(1).gameObject.SetActive(true);
-        anim.SetTrigger("attack");
+		//trigger attack anim and collider
+		anim.SetTrigger("meleeAttack");
+
+		transform.FindChild("WeaponCollider").gameObject.SetActive(true);
+       
         yield return new WaitForSeconds(0.25f);
-        transform.GetChild(1).gameObject.SetActive(false);
+		transform.FindChild("WeaponCollider").gameObject.SetActive(false);
         //charges -= 1;
         
-
-		//destroy collider, avoid memory leaking
-		//Destroy (_attackCollider);
-
+		//restore collider scale
+		transform.FindChild ("WeaponCollider").localScale = attackRange;
     }
 }

@@ -55,10 +55,34 @@ public class EyeBat : MonoBehaviour {
 
             StartCoroutine(UpdatePath());
         }*/ //for demo we are removing the line of sight mechanics, making it a distance check
+
+
+		
         if (coll.gameObject.tag == "WeaponCollider")
         {
-            SoundController.instance.RandomizeSfx(batHit);
-            health -= 1;
+			int currentWeapon = Player.Instance.currentWeapon;
+			SoundController.instance.RandomizeSfx(batHit);
+
+			switch (currentWeapon)
+			{
+			case 0:
+				//sword
+				health -= 1;
+				break;
+			case 1:
+				//hammer
+				health -= 1;
+				break;
+			case 2:
+				//spear
+				health -= 1;
+				break;
+			case 3:
+				//knife
+				health -= 1;
+				break;
+			}
+
             if (health <= 0)
             {
                 Vector2 shardPosition = new Vector2(transform.position.x, transform.position.y);
