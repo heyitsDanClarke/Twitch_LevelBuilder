@@ -2662,7 +2662,7 @@ Prefab:
         type: 2}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: efb10f046b6bf40c193bce5f5fc318fb, type: 2}
+      objectReference: {fileID: 9100000, guid: 4ae0af37177818c4ea38fd19e0287c2d, type: 2}
     - target: {fileID: 1083180465670178, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
       propertyPath: m_IsActive
       value: 0
