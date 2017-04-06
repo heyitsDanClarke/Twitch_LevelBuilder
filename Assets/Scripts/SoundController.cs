@@ -15,23 +15,17 @@ public class SoundController : MonoBehaviour
     public AudioSource deathMusicSource;
     public AudioSource lavaSizzleSource;
 	public AudioSource mainMenuSettingSource;
-    public static SoundController instance = null;
-    //this far it's fine
+    public static SoundController Instance = null;
 
     void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
+		if (Instance != null) {
+			Destroy (gameObject);
+		} else {
+			Instance = this;
+		}
 
     }
-
 
     public void PlaySingle(AudioClip clip)
     {

@@ -149,7 +149,7 @@ public class Dungeon : MonoBehaviour
 			// player on lava
 			if (roomStructure[x, y].tile == lava) {
                 
-                SoundController.instance.lavaSizzleSource.mute = false;
+                SoundController.Instance.lavaSizzleSource.mute = false;
 
 				Player.Instance.rb.drag = 5.0f; // slow down player a bit if player is in lava
 				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make lava slightly slippery
@@ -162,7 +162,7 @@ public class Dungeon : MonoBehaviour
 				}
 			} else {
                 
-                SoundController.instance.lavaSizzleSource.mute = true;
+                SoundController.Instance.lavaSizzleSource.mute = true;
 
                 Player.Instance.fireResistanceCooldown = Mathf.Max(0.0f, Player.Instance.fireResistanceCooldown - (PauseMenuActive? 0.0f : Time.deltaTime));
 
@@ -243,10 +243,11 @@ public class Dungeon : MonoBehaviour
 				hybridRoomsLeftUntilBoss -= 1;
 			}
 		} else if (caveRoomsLeftUntilBoss == 0 && hybridRoomsLeftUntilBoss == 0) {
-			roomWidth = 15;
-			roomHeight = 11;
+			roomWidth = 16;
+			roomHeight = 12;
 			GenerateBossRoom (roomWidth, roomHeight);
-			PlayerUI.Instance.transform.FindChild ("Boss Bar").gameObject.SetActive (true);
+			caveRoomsLeftUntilBoss -= 1;
+			hybridRoomsLeftUntilBoss -= 1;
 		} else {
 			SceneManager.LoadScene(0);
 		}
@@ -292,13 +293,18 @@ public class Dungeon : MonoBehaviour
 		enemyVisual.transform.name = "Enemy Visual";
 		enemyVisual.transform.SetParent(transform);
 
-		// restore room to scene
-		InstantiateCaveRoom(initialRoomStructure);
-		//InstantiateRoomBorder (roomWidth, roomHeight);
+		if (caveRoomsLeftUntilBoss >= 0 || hybridRoomsLeftUntilBoss >= 0) { // not at boss room
 
-		// restore room structure variable
-		roomStructure = initialRoomStructure.Clone() as RoomTile[,]; // deep copy
-		RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
+			// restore room to scene
+			InstantiateCaveRoom (initialRoomStructure);
+			//InstantiateRoomBorder (roomWidth, roomHeight);
+
+			// restore room structure variable
+			roomStructure = initialRoomStructure.Clone () as RoomTile[,]; // deep copy
+			RemoveMonstersFromArray (ref roomStructure); // clear mobs from room structure array
+		} else { // at boss room
+			GenerateBossRoom (roomStructure.GetLength(0), roomStructure.GetLength(1));
+		}
 
 		SetNumberOfBoxesorSwitchesLeft (roomStructure);
 
@@ -342,13 +348,14 @@ public class Dungeon : MonoBehaviour
 	{
 		RoomTile[,] room = new RoomTile[width, height];
 
-		playerStartPosition = new Vector2 (0.0f, 0.0f); // player spawn location
-		exitPosition = new Vector2 (-4.0f, -4.0f); // room exit location
+		playerStartPosition = new Vector2 (width / 2.0f, 0.0f); // player spawn location
+		exitPosition = new Vector2 (-689.0f, -777.0f); // room exit location
 
 		// initializing room
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				room [i, j].tile = air;
+				room [i, j].temperature = (currentRoomClimate + 1.0f) / 2.0f;
 			}
 		}
 
@@ -371,7 +378,8 @@ public class Dungeon : MonoBehaviour
 				}
 			}
 		}
-        Instantiate(boss, new Vector2(width/2, height-2), transform.rotation);
+        GameObject tempBoss = Instantiate(boss, new Vector2(width / 2.0f, height - 2.0f), transform.rotation);
+		tempBoss.transform.SetParent(enemyVisual.transform);
 	}
 
     // function for generating a cave room

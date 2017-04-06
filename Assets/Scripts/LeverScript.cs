@@ -61,7 +61,7 @@ public class LeverScript : MonoBehaviour {
             Player.Instance.levers += isActive? 1 : -1;
 			PlayerUI.Instance.transform.FindChild("Puzzle Bar").FindChild ("Value").GetComponent<Text>().text = Player.Instance.levers.ToString();
 
-            SoundController.instance.PlaySingle(leverSound);
+            SoundController.Instance.PlaySingle(leverSound);
         }
 	}
 

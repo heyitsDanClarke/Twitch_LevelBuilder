@@ -43,9 +43,9 @@ public class DungeonUI : MonoBehaviour {
 	void Update () {
 		// update variables of GameMaster
 		GameMaster.Instance.music = transform.FindChild ("Settings Menu").FindChild ("Music Volume Slider").GetComponent<Slider> ().value;
-		SoundController.instance.musicSource.volume = GameMaster.Instance.music;
+		SoundController.Instance.musicSource.volume = GameMaster.Instance.music;
 		GameMaster.Instance.sfx = transform.FindChild("Settings Menu").FindChild("SFX Volume Slider").GetComponent<Slider>().value;
-		SoundController.instance.efxSource.volume = GameMaster.Instance.sfx;
+		SoundController.Instance.efxSource.volume = GameMaster.Instance.sfx;
 
 		if (Input.GetKeyDown (KeyCode.Escape) && settingsMenuActive) { // if user presses the ESC key and the settings menu is active
 			HideSettingsMenu();
@@ -128,9 +128,9 @@ public class DungeonUI : MonoBehaviour {
 	public void ShowDeathMenu() {
 		// play sounds once
 		if (!deathMenuActive) {
-			SoundController.instance.musicSource.mute = true;
-			SoundController.instance.deathMusicSource.mute = false;
-			SoundController.instance.deathMusicSource.Play ();
+			SoundController.Instance.musicSource.mute = true;
+			SoundController.Instance.deathMusicSource.mute = false;
+			SoundController.Instance.deathMusicSource.Play ();
 		}
 
 		deathMenuActive = true;
@@ -143,8 +143,8 @@ public class DungeonUI : MonoBehaviour {
 	public void HideDeathMenu() {
 		// unmute sounds once
 		if (deathMenuActive) {
-			SoundController.instance.deathMusicSource.mute = true;
-			SoundController.instance.musicSource.mute = false;
+			SoundController.Instance.deathMusicSource.mute = true;
+			SoundController.Instance.musicSource.mute = false;
 		}
 
 		deathMenuActive = false;

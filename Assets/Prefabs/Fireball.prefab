@@ -157,6 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34701a1c56d05194d8a525d482c20951, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shard: {fileID: 1991159433803578, guid: ab02381479d4b0c468ba853ffa860764, type: 2}
 --- !u!212 &212055855526238240
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -67,7 +67,8 @@ public class Cerberus : MonoBehaviour {
         _rb.velocity = Vector2.zero;
         paused = true;
         yield return new WaitForSeconds(1);
-        GameObject tempFire = Instantiate(fireball, new Vector2(transform.position.x, transform.position.y-0.5f), transform.rotation);
+        GameObject tempFire = Instantiate(fireball, new Vector2(transform.position.x, transform.position.y - 0.5f), transform.rotation);
+		tempFire.transform.SetParent (Dungeon.Instance.enemyVisual.transform);
         tempFire.GetComponent<Rigidbody2D>().velocity = (Player.Instance.transform.position - transform.position).normalized * 5;
         _rb.velocity = ChooseDirection();
         paused = false;
@@ -80,7 +81,8 @@ public class Cerberus : MonoBehaviour {
             health -= 1;
             if(health <= 0)
             {
-                Instantiate(exit, transform.position, transform.rotation);
+                GameObject tempExit = Instantiate(exit, transform.position, transform.rotation);
+				tempExit.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
                 Destroy(this.gameObject);
                
             }

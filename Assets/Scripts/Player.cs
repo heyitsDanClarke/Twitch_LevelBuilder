@@ -184,19 +184,19 @@ public class Player : MonoBehaviour {
             {
                 case 0:
                     //sword
-                    SoundController.instance.RandomizeSfxLarge(playerSwordAttackSound);
+                    SoundController.Instance.RandomizeSfxLarge(playerSwordAttackSound);
                     break;
                 case 1:
                     //hammer
-                    SoundController.instance.RandomizeSfxLarge(playerHammerAttackSound);
+                    SoundController.Instance.RandomizeSfxLarge(playerHammerAttackSound);
                     break;
                 case 2:
                     //dagger
-                    SoundController.instance.RandomizeSfxLarge(playerDaggerAttackSound);
+                    SoundController.Instance.RandomizeSfxLarge(playerDaggerAttackSound);
                     break;
                 case 3:
                     //whip
-                    SoundController.instance.RandomizeSfxLarge(playerWhipAttackSound);
+                    SoundController.Instance.RandomizeSfxLarge(playerWhipAttackSound);
                     break;
             }
 
@@ -278,7 +278,7 @@ public class Player : MonoBehaviour {
 			if (boxes == maxBoxes && levers == maxLevers) { // if all puzzles are being solved
 				SaveState (); // save state of player
 				DungeonUI.Instance.showNextLevelMenu ();
-				SoundController.instance.PlaySingle(exitFoundSound);
+				SoundController.Instance.PlaySingle(exitFoundSound);
 			}
 		} else if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
         {
@@ -288,7 +288,7 @@ public class Player : MonoBehaviour {
             Vector3 enemyPosition = coll.transform.position;
 
 			rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
-            SoundController.instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
+            SoundController.Instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
 
         }
 

@@ -10,7 +10,7 @@ public class PressurePlateScript : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("Box"))
         {
-            SoundController.instance.PlaySingle(boxHitSound);
+            SoundController.Instance.PlaySingle(boxHitSound);
             Player.Instance.boxes += 1;
 			PlayerUI.Instance.transform.FindChild("Puzzle Bar").FindChild ("Value").GetComponent<Text>().text = Player.Instance.boxes.ToString();
         }

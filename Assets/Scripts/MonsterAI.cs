@@ -162,7 +162,7 @@ public class MonsterAI : MonoBehaviour
         }*/ //for demo we are removing the line of sight mechanics, making it a distance check
         if (coll.gameObject.tag == "WeaponCollider")
         {
-            SoundController.instance.RandomizeSfxLarge(largeMonsterHitSound);
+            SoundController.Instance.RandomizeSfxLarge(largeMonsterHitSound);
             // show health bar of enemy
             transform.FindChild("Health Bar").gameObject.SetActive(true); 
 

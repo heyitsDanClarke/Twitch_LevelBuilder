@@ -35,10 +35,10 @@ public class GameMaster : MonoBehaviour {
     }
 
 	void Start () {
-		SoundController.instance.lavaSizzleSource.volume = sfx;
-		SoundController.instance.efxSource.volume = sfx;
-		SoundController.instance.deathMusicSource.volume = music;
-		SoundController.instance.musicSource.volume = music;
+		SoundController.Instance.lavaSizzleSource.volume = sfx;
+		SoundController.Instance.efxSource.volume = sfx;
+		SoundController.Instance.deathMusicSource.volume = music;
+		SoundController.Instance.musicSource.volume = music;
 	}
 
 }
