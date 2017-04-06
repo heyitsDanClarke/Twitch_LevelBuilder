@@ -1645,6 +1645,11 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 434921894}
+--- !u!1 &438701156 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1083180465670178, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+    type: 2}
+  m_PrefabInternal: {fileID: 864147709}
 --- !u!1001 &474976686
 Prefab:
   m_ObjectHideFlags: 0
@@ -2742,6 +2747,11 @@ Prefab:
       propertyPath: Sword_RAC
       value: 
       objectReference: {fileID: 9100000, guid: 4ae0af37177818c4ea38fd19e0287c2d, type: 2}
+    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
+        type: 2}
+      propertyPath: attackCollider
+      value: 
+      objectReference: {fileID: 438701156}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
   m_IsPrefabParent: 0

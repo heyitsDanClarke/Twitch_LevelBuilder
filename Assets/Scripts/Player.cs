@@ -213,7 +213,7 @@ public class Player : MonoBehaviour
                 case 3:
                     //knife
                     SoundController.Instance.RandomizeSfxLarge(playerWhipAttackSound);
-                    attackCooldown = 0.2f;
+                    attackCooldown = 0.25f;
                     break;
             }
 
@@ -239,7 +239,7 @@ public class Player : MonoBehaviour
                     break;
                 case 3:
                     anim.runtimeAnimatorController = Knife_RAC;
-                    attackCooldown = 0.2f;
+                    attackCooldown = 0.25f;
                     break;
             }
 
