@@ -149,7 +149,7 @@ public class Dungeon : MonoBehaviour
 			// player on lava
 			if (roomStructure[x, y].tile == lava) {
                 
-                SoundController.instance.lavaSizzleSource.mute = false;
+                SoundController.Instance.lavaSizzleSource.mute = false;
 
 				Player.Instance.rb.drag = 5.0f; // slow down player a bit if player is in lava
 				Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make lava slightly slippery
@@ -162,7 +162,7 @@ public class Dungeon : MonoBehaviour
 				}
 			} else {
                 
-                SoundController.instance.lavaSizzleSource.mute = true;
+                SoundController.Instance.lavaSizzleSource.mute = true;
 
                 Player.Instance.fireResistanceCooldown = Mathf.Max(0.0f, Player.Instance.fireResistanceCooldown - (PauseMenuActive? 0.0f : Time.deltaTime));
 

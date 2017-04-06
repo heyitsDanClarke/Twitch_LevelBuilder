@@ -62,8 +62,8 @@ public class Player : MonoBehaviour {
 
 	[HideInInspector] public int defaultSword = 0;
 	[HideInInspector] public int hammer = 1;
-	[HideInInspector] public int dagger = 2;
-	[HideInInspector] public int whip = 3;
+	[HideInInspector] public int knife = 2;
+	[HideInInspector] public int spear = 3;
 
     [HideInInspector] public Rigidbody2D rb; // rigid body of playersprite
     [HideInInspector] public Animator anim;
