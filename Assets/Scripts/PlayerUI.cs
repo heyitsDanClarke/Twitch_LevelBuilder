@@ -96,6 +96,7 @@ public class PlayerUI : MonoBehaviour {
 
 				// update current weapon on GameMaster
 				Player.Instance.currentWeapon = Player.Instance.nextWeapon;
+                Player.Instance.UpdateAnimator();
 				Player.Instance.nextWeapon = Player.Instance.defaultSword;
 
 				transform.FindChild ("Weapon Timer").gameObject.SetActive (true);

@@ -76,7 +76,7 @@ public class Cerberus : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "Sword")
+        if(collision.gameObject.tag == "WeaponCollider")
         {
             health -= 1;
             if(health <= 0)

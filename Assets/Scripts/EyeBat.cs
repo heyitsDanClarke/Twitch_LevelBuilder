@@ -85,5 +85,9 @@ public class EyeBat : MonoBehaviour {
                 _rb.AddForce((transform.position - coll.transform.position).normalized * _rb.mass, ForceMode2D.Impulse);
             }
         }
+        else if(coll.gameObject.tag == "Player")
+        {
+            Player.Instance.health -= 1;
+        }
     }
 }

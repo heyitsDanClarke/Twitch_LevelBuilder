@@ -218,34 +218,29 @@ public class Player : MonoBehaviour
             }
 
         }
+    }
 
-
-        if (Input.GetKey("r"))
+    public void UpdateAnimator()
+    {
+        switch (currentWeapon)
         {
-            StopAllCoroutines();
-            switch (currentWeapon)
-            {
-                case 0:
-                    anim.runtimeAnimatorController = Sword_RAC;
-                    attackCooldown = 0.6f;
-                    break;
-                case 1:
-                    anim.runtimeAnimatorController = Hammer_RAC;
-                    attackCooldown = 1.0f;
-                    break;
-                case 2:
-                    anim.runtimeAnimatorController = Spear_RAC;
-                    attackCooldown = 0.4f;
-                    break;
-                case 3:
-                    anim.runtimeAnimatorController = Knife_RAC;
-                    attackCooldown = 0.25f;
-                    break;
-            }
-
+            case 0:
+                anim.runtimeAnimatorController = Sword_RAC;
+                attackCooldown = 0.6f;
+                break;
+            case 1:
+                anim.runtimeAnimatorController = Hammer_RAC;
+                attackCooldown = 1.0f;
+                break;
+            case 2:
+                anim.runtimeAnimatorController = Spear_RAC;
+                attackCooldown = 0.4f;
+                break;
+            case 3:
+                anim.runtimeAnimatorController = Knife_RAC;
+                attackCooldown = 0.25f;
+                break;
         }
-
-
     }
 
     // Update is called once per frame
