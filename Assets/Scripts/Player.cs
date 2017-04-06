@@ -207,12 +207,12 @@ public class Player : MonoBehaviour
                     break;
                 case 2:
                     //spear
-                    SoundController.Instance.RandomizeSfxLarge(playerDaggerAttackSound);
+                    SoundController.Instance.RandomizeSfxLarge(playerWhipAttackSound);
                     attackCooldown = 0.4f;
                     break;
                 case 3:
                     //knife
-                    SoundController.Instance.RandomizeSfxLarge(playerWhipAttackSound);
+                    SoundController.Instance.RandomizeSfxLarge(playerDaggerAttackSound);
                     attackCooldown = 0.25f;
                     break;
             }

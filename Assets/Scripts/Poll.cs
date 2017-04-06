@@ -139,7 +139,6 @@ public class Poll : MonoBehaviour {
 
 				determineNextWeapon (); // determine weapon display text
 			}
-            Debug.Log(GameMaster.Instance.hammerCount + " " + GameMaster.Instance.daggerCount + " " + GameMaster.Instance.spearCount);
 		}
     }
 
