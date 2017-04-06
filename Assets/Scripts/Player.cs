@@ -103,7 +103,7 @@ public class Player : MonoBehaviour
         speed = defaultSpeed;
         acceleration = defaultAcceleration;
 
-        maxHealth = 9527;
+        maxHealth = 50;
         maxCharges = 10;
         maxFireResistance = 1.0f;
         maxFireResistanceCooldown = 0.5f;
@@ -211,7 +211,7 @@ public class Player : MonoBehaviour
                 case 3:
                     //knife
                     SoundController.Instance.RandomizeSfxLarge(playerDaggerAttackSound);
-                    attackCooldown = 0.25f;
+                    attackCooldown = 0.3f;
                     break;
             }
 
