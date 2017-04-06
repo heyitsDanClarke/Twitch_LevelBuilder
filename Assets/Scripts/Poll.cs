@@ -28,11 +28,11 @@ public class Poll : MonoBehaviour {
 
 	public const string hammerCommand = "#hammer";
 	public const string daggerCommand = "#dagger";
-	public const string whipCommand = "#whip";
+	public const string spearCommand = "#spear";
 
 	public string hammerText = "Hammer";
-	public string spearText = "Dagger";
-	public string knifeText = "Whip";
+	public string spearText = "Spear";
+	public string knifeText = "Dagger";
 
 	private List<string> _voterListElement;
 	private List<string> _voterListWeapon;
@@ -128,9 +128,9 @@ public class Poll : MonoBehaviour {
 			} else if (msg.chatMessagePlainText.Equals(daggerCommand, StringComparison.InvariantCultureIgnoreCase)) {
 				isValidVote = true;
 				++GameMaster.Instance.daggerCount;
-			} else if (msg.chatMessagePlainText.Equals(whipCommand, StringComparison.InvariantCultureIgnoreCase)) {
+			} else if (msg.chatMessagePlainText.Equals(spearCommand, StringComparison.InvariantCultureIgnoreCase)) {
 				isValidVote = true;
-				++GameMaster.Instance.whipCount;
+				++GameMaster.Instance.spearCount;
 			}
 
 			if (isValidVote)
@@ -145,21 +145,21 @@ public class Poll : MonoBehaviour {
 	public void determineNextWeapon () {
 		int hammerCount = GameMaster.Instance.hammerCount;
 		int daggerCount = GameMaster.Instance.daggerCount;
-		int whipCount = GameMaster.Instance.whipCount;
-		if (hammerCount == daggerCount && hammerCount == whipCount) { // if all votes are equal
+		int spearCount = GameMaster.Instance.spearCount;
+		if (hammerCount == daggerCount && hammerCount == spearCount) { // if all votes are equal
 			// select random weapon
 			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 3.0f) < 1.0f) ? hammerText : ((UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? spearText : knifeText);
 		} else if (hammerCount == daggerCount) {
 			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : spearText;
-		} else if (hammerCount == whipCount) {
+		} else if (hammerCount == spearCount) {
 			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? hammerText : knifeText;
-		} else if (daggerCount == whipCount) {
+		} else if (daggerCount == spearCount) {
 			_weaponDisplay.text = (UnityEngine.Random.Range (0.0f, 2.0f) < 1.0f) ? spearText : knifeText;
-		} else if (hammerCount > daggerCount && hammerCount > whipCount) {
+		} else if (hammerCount > daggerCount && hammerCount > spearCount) {
 			_weaponDisplay.text = hammerText;
-		} else if (daggerCount > hammerCount && daggerCount > whipCount) {
+		} else if (daggerCount > hammerCount && daggerCount > spearCount) {
 			_weaponDisplay.text = spearText;
-		} else if (whipCount > hammerCount && whipCount > daggerCount) {
+		} else if (spearCount > hammerCount && spearCount > daggerCount) {
 			_weaponDisplay.text = knifeText;
 		} 
 	}
@@ -204,7 +204,7 @@ public class Poll : MonoBehaviour {
 
 		GameMaster.Instance.daggerCount = 0;
 		GameMaster.Instance.hammerCount = 0;
-		GameMaster.Instance.whipCount = 0;
+		GameMaster.Instance.spearCount = 0;
 
 		_voterListWeapon.Clear();
 	}

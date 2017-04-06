@@ -11,7 +11,7 @@ public class GameMaster : MonoBehaviour {
 
 	public int hammerCount;
 	public int daggerCount;
-	public int whipCount;
+	public int spearCount;
 
 	public float music; // music volume
 	public float sfx; // sfx volume
