@@ -50,7 +50,7 @@ public class EyeBat : MonoBehaviour {
     {
         if (coll.gameObject.tag == "WeaponCollider")
         {
-            SoundController.Instance.RandomizeSfx(batHit);
+            SoundController.instance.RandomizeSfx(batHit);
             health -= 1;
             if (health <= 0)
             {
