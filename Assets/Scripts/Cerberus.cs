@@ -17,6 +17,7 @@ public class Cerberus : MonoBehaviour {
 	public int maxHealth = 8;
 
     public GameObject fireball;
+    public GameObject iceball;
 
     public GameObject exit;
 
@@ -67,9 +68,12 @@ public class Cerberus : MonoBehaviour {
         _rb.velocity = Vector2.zero;
         paused = true;
         yield return new WaitForSeconds(1);
-        GameObject tempFire = Instantiate(fireball, new Vector2(transform.position.x, transform.position.y - 0.5f), transform.rotation);
-		tempFire.transform.SetParent (Dungeon.Instance.enemyVisual.transform);
+        GameObject tempFire = Instantiate(fireball, new Vector2(transform.position.x - 0.5f, transform.position.y - 0.5f), transform.rotation);
+        GameObject tempIce = Instantiate(iceball, new Vector2(transform.position.x + 0.5f, transform.position.y - 0.5f), transform.rotation);
+        tempFire.transform.SetParent (Dungeon.Instance.enemyVisual.transform);
         tempFire.GetComponent<Rigidbody2D>().velocity = (Player.Instance.transform.position - transform.position).normalized * 5;
+        tempIce.transform.SetParent(Dungeon.Instance.enemyVisual.transform);
+        tempIce.GetComponent<Rigidbody2D>().velocity = (Player.Instance.transform.position - transform.position).normalized * 5;
         _rb.velocity = ChooseDirection();
         paused = false;
     }

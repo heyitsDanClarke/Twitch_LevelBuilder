@@ -244,7 +244,7 @@ public class Dungeon : MonoBehaviour
 			}
 		} else if (caveRoomsLeftUntilBoss == 0 && hybridRoomsLeftUntilBoss == 0) {
 			roomWidth = 15;
-			roomHeight = 11;
+			roomHeight = 15;
 			GenerateBossRoom (roomWidth, roomHeight);
 			caveRoomsLeftUntilBoss -= 1; // force SceneManager.LoadScene(0); to be called after clearing the boss room
 			hybridRoomsLeftUntilBoss -= 1; // force SceneManager.LoadScene(0); to be called after clearing the boss room
