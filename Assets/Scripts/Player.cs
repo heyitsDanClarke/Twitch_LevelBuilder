@@ -192,27 +192,27 @@ public class Player : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(MeleeAttack());
 
-            //SoundController.instance.RandomizeSfxLarge (playerHammerAttackSound);
+            //SoundController.Instance.RandomizeSfxLarge (playerHammerAttackSound);
             switch (currentWeapon)
             {
                 case 0:
                     //sword
-                    SoundController.instance.RandomizeSfxLarge(playerSwordAttackSound);
+                    SoundController.Instance.RandomizeSfxLarge(playerSwordAttackSound);
                     attackCooldown = 0.6f;
                     break;
                 case 1:
                     //hammer
-                    SoundController.instance.RandomizeSfxLarge(playerHammerAttackSound);
+                    SoundController.Instance.RandomizeSfxLarge(playerHammerAttackSound);
                     attackCooldown = 1.0f;
                     break;
                 case 2:
                     //spear
-                    SoundController.instance.RandomizeSfxLarge(playerDaggerAttackSound);
+                    SoundController.Instance.RandomizeSfxLarge(playerDaggerAttackSound);
                     attackCooldown = 0.4f;
                     break;
                 case 3:
                     //knife
-                    SoundController.instance.RandomizeSfxLarge(playerWhipAttackSound);
+                    SoundController.Instance.RandomizeSfxLarge(playerWhipAttackSound);
                     attackCooldown = 0.2f;
                     break;
             }
@@ -308,7 +308,7 @@ public class Player : MonoBehaviour
             { // if all puzzles are being solved
                 SaveState(); // save state of player
                 DungeonUI.Instance.showNextLevelMenu();
-                SoundController.instance.PlaySingle(exitFoundSound);
+                SoundController.Instance.PlaySingle(exitFoundSound);
             }
         }
         else if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
@@ -319,7 +319,7 @@ public class Player : MonoBehaviour
             Vector3 enemyPosition = coll.transform.position;
 
             rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
-            SoundController.instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
+            SoundController.Instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
 
         }
 
