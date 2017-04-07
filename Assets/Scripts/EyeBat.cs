@@ -70,6 +70,7 @@ public class EyeBat : MonoBehaviour {
 							break;
 						}
 					} catch (IndexOutOfRangeException) {
+						shardPosition = Player.Instance.transform.position;
 						break;
 					}
 
