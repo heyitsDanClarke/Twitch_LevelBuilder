@@ -56,54 +56,33 @@ public class Dungeon : MonoBehaviour
     ////public Sprite[] spritePlayer = new Sprite[40];
 
     // tile IDs, IDs must be different
-    [HideInInspector]
-    public int air = -1; // DO NOT MODIFY
-    [HideInInspector]
-    public int flood = 0;
-    [HideInInspector]
-    public int wall = 1; // DO NOT MODIFY
-    [HideInInspector]
-    public int ice = 2;
-    [HideInInspector]
-    public int water = 3;
-    [HideInInspector]
-    public int lava = 4;
-    [HideInInspector]
-    public int rail = 5;
+    [HideInInspector] public int air = -1; // DO NOT MODIFY
+    [HideInInspector] public int flood = 0;
+    [HideInInspector] public int wall = 1; // DO NOT MODIFY
+    [HideInInspector] public int ice = 2;
+    [HideInInspector] public int water = 3;
+    [HideInInspector] public int lava = 4;
+    [HideInInspector] public int rail = 5;
 
     // entity IDs, IDs must be different
-    [HideInInspector]
-    public int player = -1; // the player
-    [HideInInspector]
-    public int empty = 0; // DO NOT MODIFY
-    [HideInInspector]
-    public int small = 2;
-    [HideInInspector]
-    public int large = 3;
-    [HideInInspector]
-    public int box = 4;
-    [HideInInspector]
-    public int lever = 5;
-    [HideInInspector]
-    public int eyeBatEntity = 6;
+    [HideInInspector] public int player = -1; // the player
+    [HideInInspector] public int empty = 0; // DO NOT MODIFY
+    [HideInInspector] public int small = 2;
+    [HideInInspector] public int large = 3;
+    [HideInInspector] public int box = 4;
+    [HideInInspector] public int lever = 5;
+    [HideInInspector] public int eyeBatEntity = 6;
 
     // plate IDs, IDs must be different
     //[HideInInspector]public int empty = 0; // COMMENTED OUT, BUT STILL DO NOT MODIFY
-    [HideInInspector]
-    public int plate = 1;
+    [HideInInspector] public int plate = 1;
 
-    [HideInInspector]
-    public RoomTile[,] initialRoomStructure; // initial room structure including mobs
-    [HideInInspector]
-    public RoomTile[,] roomStructure; // room structure excluding mobs
-    [HideInInspector]
-    public int lowerX = -1; // x coordinate of lowest left corner of the puzzle in hybrid rooms
-    [HideInInspector]
-    public int lowerY = -1; // y coordinate of lowest left corner of the puzzle in hybrid rooms
-    [HideInInspector]
-    public int puzzleWidth = -1; // width of puzzle in hybrid rooms
-    [HideInInspector]
-    public int puzzleHeight = -1; // height of puzzle in hybrid rooms
+    [HideInInspector] public RoomTile[,] initialRoomStructure; // initial room structure including mobs
+    [HideInInspector] public RoomTile[,] roomStructure; // room structure excluding mobs
+    [HideInInspector] public int lowerX = -1; // x coordinate of lowest left corner of the puzzle in hybrid rooms
+    [HideInInspector] public int lowerY = -1; // y coordinate of lowest left corner of the puzzle in hybrid rooms
+    [HideInInspector] public int puzzleWidth = -1; // width of puzzle in hybrid rooms
+    [HideInInspector] public int puzzleHeight = -1; // height of puzzle in hybrid rooms
 
     public bool containsBlockPuzzle; // whether the room has a block puzzle or not
     public bool containsSwitchPuzzle; // whether the room has a switch puzzle or not
@@ -795,16 +774,16 @@ public class Dungeon : MonoBehaviour
                 }
 
                 // place monsters if possible
-                if (room[i, j].entity == large)
-                {
+                if (room[i, j].entity == large) {
                     tempTile = Instantiate(largeMob, new Vector3(i, j, 0.0f), transform.rotation);
                     tempTile.transform.SetParent(enemyVisual.transform);
-                }
-                else if (room[i, j].entity == small)
-                {
+                } else if (room[i, j].entity == small) {
                     tempTile = Instantiate(smallMob, new Vector3(i, j, 0.0f), transform.rotation);
                     tempTile.transform.SetParent(enemyVisual.transform);
-                }
+				} else if (room[i, j].entity == eyeBatEntity) {
+					tempTile = Instantiate(eyeBat, new Vector3(i, j, -1.1f), transform.rotation);
+					tempTile.transform.SetParent(enemyVisual.transform);
+				}
 
             }
         }
@@ -1650,10 +1629,16 @@ public class Dungeon : MonoBehaviour
         int width = room.GetLength(0); // width of dungeon;
         int height = room.GetLength(1); // height of dungeon;
 
-        Instantiate(eyeBat, new Vector3(width, height, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
-        Instantiate(eyeBat, new Vector3(0, height, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
+		Instantiate(eyeBat, new Vector3(width - 1, height - 1, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
+		Instantiate(eyeBat, new Vector3(0, height - 1, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
         Instantiate(eyeBat, new Vector3(0, 0, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
-        Instantiate(eyeBat, new Vector3(width, 0, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
+		Instantiate(eyeBat, new Vector3(width - 1, 0, -1.1f), transform.rotation).transform.SetParent(enemyVisual.transform);
+
+		// record eyebat positions in room array
+		room [width - 1, height - 1].entity = eyeBatEntity;
+		room [0, height - 1].entity = eyeBatEntity;
+		room [0, 0].entity = eyeBatEntity;
+		room [width - 1, 0].entity = eyeBatEntity;
     }
 
     // clear all monsters from the array
