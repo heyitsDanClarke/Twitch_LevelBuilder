@@ -127,7 +127,7 @@ public class MonsterAI : MonoBehaviour
 			targetVelocity = (path.vectorPath [currentWaypoint] - transform.position).normalized * speed; // target velocity of monster
 		}
 
-		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
+		Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration * rb.mass;
 		rb.AddForce (velocityDifference);
 
         float dist = Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]);
@@ -140,14 +140,11 @@ public class MonsterAI : MonoBehaviour
 
     void CollisionEnter2D(Collision2D coll)
     {
-                if (coll.gameObject.tag == "Player")
-        {
-            
-            if (Player.Instance.health > 0)
-                Player.Instance.health -= 1;
-
-            rb.AddForce((coll.transform.position - transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
-        }
+		if (coll.gameObject.tag == "Player") {
+			if (Player.Instance.health > 0) {
+				Player.Instance.health -= 1;
+			}
+		}
     }
 
     void OnTriggerEnter2D(Collider2D coll)

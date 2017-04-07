@@ -247,7 +247,11 @@ public class Player : MonoBehaviour
         // update camera position
         Camera.main.transform.position = new Vector3(transform.position[0], transform.position[1] + Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, Camera.main.transform.position[2]);
 
-
+		if (health == 0) {
+			gameObject.SetActive (false);
+		} else {
+			gameObject.SetActive (true);
+		}
 
         attackCooldown = Mathf.Max(attackCooldown - Time.deltaTime, 0);
     }
@@ -300,18 +304,21 @@ public class Player : MonoBehaviour
             if (boxes == maxBoxes && levers == maxLevers)
             { // if all puzzles are being solved
                 SaveState(); // save state of player
+				if (DungeonUI.Instance.nextLevelMenuActive == false) {
+					SoundController.Instance.PlaySingle(exitFoundSound);
+				}
                 DungeonUI.Instance.showNextLevelMenu();
-                SoundController.Instance.PlaySingle(exitFoundSound);
             }
         }
         else if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
         {
 
-            if (health > 0)
-                health -= 1;
+			if (health > 0) {
+				health -= 1;
+			}
             Vector3 enemyPosition = coll.transform.position;
 
-            rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 2.5f, ForceMode2D.Impulse);
+            rb.AddForce((transform.position - coll.transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 1.0f, ForceMode2D.Impulse);
             SoundController.Instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
 
         }

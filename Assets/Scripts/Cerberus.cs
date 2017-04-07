@@ -83,7 +83,7 @@ public class Cerberus : MonoBehaviour {
         if(collision.gameObject.tag == "WeaponCollider")
         {
             health -= 1;
-            if(health <= 0)
+            if (health <= 0)
             {
                 GameObject tempExit = Instantiate(exit, transform.position, transform.rotation);
 				tempExit.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);

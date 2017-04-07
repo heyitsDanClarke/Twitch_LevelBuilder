@@ -14,7 +14,11 @@ public class EyeBat : MonoBehaviour {
     public int health = 1;
 	public int maxHealth = 1;
     public GameObject shard;
+
     public AudioClip batHit;
+	public AudioClip playerHitSound1;
+	public AudioClip playerHitSound2;
+	public AudioClip playerHitSound3;
 
     bool swooping = false;
     private Func<Rigidbody2D> treasureObjectRB;
@@ -88,7 +92,14 @@ public class EyeBat : MonoBehaviour {
         }
         else if(coll.gameObject.tag == "Player")
         {
-            Player.Instance.health -= 1;
-        }
+			if (coll.gameObject.tag == "Player") {
+				if (Player.Instance.health > 0) {
+					Player.Instance.health -= 1;
+				}
+			}
+
+			Player.Instance.GetComponent<Rigidbody2D>().AddForce((coll.transform.position - transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 10.0f, ForceMode2D.Impulse);
+			SoundController.Instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
+		}
     }
 }

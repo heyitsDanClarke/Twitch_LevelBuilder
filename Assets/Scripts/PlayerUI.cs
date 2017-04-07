@@ -102,7 +102,6 @@ public class PlayerUI : MonoBehaviour {
 				Player.Instance.nextWeapon = Player.Instance.defaultSword;
 
 				transform.FindChild ("Weapon Timer").gameObject.SetActive (true);
-				float weaponTimerValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text); // value of the pie chart
 				float weaponTimerMaxValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Max Value").GetComponent<Text> ().text); // max value of the pie chart
 				transform.FindChild ("Weapon Timer").FindChild ("Real Value").GetComponent<Text> ().text = string.Format ("{0:F1}", weaponTimerMaxValue);
 			}

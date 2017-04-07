@@ -161,7 +161,7 @@ public class Dungeon : MonoBehaviour
 
                 SoundController.Instance.lavaSizzleSource.mute = false;
 
-                Player.Instance.rb.drag = 5.0f; // slow down player a bit if player is in lava
+                Player.Instance.rb.drag = 2.5f; // slow down player a bit if player is in lava
                 Player.Instance.acceleration = Player.Instance.defaultAcceleration / 2.0f; // make lava slightly slippery
                 Player.Instance.fireResistanceCooldown = Player.Instance.maxFireResistanceCooldown; // reset cooldown;
 
@@ -223,6 +223,7 @@ public class Dungeon : MonoBehaviour
         // reset variables
         containsBlockPuzzle = false;
         containsSwitchPuzzle = false;
+		Player.Instance.gameObject.SetActive (true);
         Player.Instance.LoadState();
 
         // determine room temperature
@@ -300,6 +301,7 @@ public class Dungeon : MonoBehaviour
     public void ResetRoom()
     {
         // reset variables
+		Player.Instance.gameObject.SetActive (true);
         Player.Instance.LoadState();
 
         // reset redraw switch puzzle countdown if there is switch puzzle
