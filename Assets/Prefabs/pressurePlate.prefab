@@ -89,6 +89,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxHitSound: {fileID: 8300000, guid: 00c62c360997e57449dd25ed6260c5f1, type: 3}
+  inactivePlate: {fileID: 21300000, guid: 450e5cd0ad356e042891dd51f2046aca, type: 3}
+  activePlate: {fileID: 21300002, guid: 450e5cd0ad356e042891dd51f2046aca, type: 3}
 --- !u!212 &212543201466039184
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -120,7 +122,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: -4
-  m_Sprite: {fileID: 21300000, guid: aec51f1172fa2574da429b361449d5c4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 450e5cd0ad356e042891dd51f2046aca, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

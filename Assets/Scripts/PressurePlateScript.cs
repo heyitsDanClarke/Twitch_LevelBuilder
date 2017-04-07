@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class PressurePlateScript : MonoBehaviour {
     public AudioClip boxHitSound;
+	public Sprite inactivePlate;
+	public Sprite activePlate;
 
 	void OnTriggerEnter2D(Collider2D other)
     {
@@ -20,7 +22,7 @@ public class PressurePlateScript : MonoBehaviour {
 	{
 		if (other.gameObject.CompareTag("Box"))
 		{
-			//other.gameObject.GetComponentInChildren<MeshRenderer> ().material.SetFloat ("_Blend", 1.0f);
+			GetComponent<SpriteRenderer> ().sprite = activePlate;
 		}
 	}
 
@@ -28,7 +30,7 @@ public class PressurePlateScript : MonoBehaviour {
 	{
 		if (other.gameObject.CompareTag("Box"))
 		{
-			//other.gameObject.GetComponentInChildren<MeshRenderer> ().material.SetFloat ("_Blend", 0.0f);
+			GetComponent<SpriteRenderer> ().sprite = inactivePlate;
 			Player.Instance.boxes -= 1;
 			PlayerUI.Instance.transform.FindChild("Puzzle Bar").FindChild ("Value").GetComponent<Text>().text = Player.Instance.boxes.ToString();
 		}

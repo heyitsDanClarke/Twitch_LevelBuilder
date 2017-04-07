@@ -56,7 +56,7 @@ public class LeverScript : MonoBehaviour {
 
 			// activate/deactivate the switch
 			isActive = !isActive;
-			GetComponent<SpriteRenderer> ().color = isActive? new Color (0.3f, 0.3f, 1.0f): new Color (1.0f, 1.0f, 1.0f);
+			GetComponent<SpriteRenderer> ().color = isActive? new Color (0.5f, 0.5f, 1.0f): new Color (1.0f, 1.0f, 1.0f);
             GetComponent<SpriteRenderer>().sprite = isActive ? active : inActive;
             Player.Instance.levers += isActive? 1 : -1;
 			PlayerUI.Instance.transform.FindChild("Puzzle Bar").FindChild ("Value").GetComponent<Text>().text = Player.Instance.levers.ToString();

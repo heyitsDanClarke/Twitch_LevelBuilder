@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 4db2b461e66412345b924d7def4ef868
-timeCreated: 1491235595
+timeCreated: 1491584695
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -93,12 +93,12 @@ TextureImporter:
       name: LeverSheet_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 98
-        width: 33
-        height: 24
+        x: 0
+        y: 0
+        width: 35
+        height: 35
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
@@ -106,10 +106,10 @@ TextureImporter:
       name: LeverSheet_1
       rect:
         serializedVersion: 2
-        x: 1
-        y: 66
-        width: 33
-        height: 28
+        x: 35
+        y: 0
+        width: 35
+        height: 35
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -119,10 +119,10 @@ TextureImporter:
       name: LeverSheet_2
       rect:
         serializedVersion: 2
-        x: 1
-        y: 34
-        width: 33
-        height: 24
+        x: 70
+        y: 0
+        width: 35
+        height: 35
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,10 +132,10 @@ TextureImporter:
       name: LeverSheet_3
       rect:
         serializedVersion: 2
-        x: 1
-        y: 2
-        width: 33
-        height: 19
+        x: 105
+        y: 0
+        width: 35
+        height: 35
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

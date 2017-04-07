@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 4015662047926660}
   - component: {fileID: 114377953107429852}
   - component: {fileID: 61705311615282618}
+  - component: {fileID: 50618045186593150}
   m_Layer: 10
   m_Name: Loot Box Cube
   m_TagString: Loot
@@ -200,6 +201,26 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1187450481469912}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!50 &50618045186593150
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1829480008217176}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1000
+  m_LinearDrag: 100
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!61 &61705311615282618
 BoxCollider2D:
   m_ObjectHideFlags: 1
