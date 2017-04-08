@@ -87,6 +87,9 @@ public class Cerberus : MonoBehaviour {
             {
                 GameObject tempExit = Instantiate(exit, transform.position, transform.rotation);
 				tempExit.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+
+				Player.Instance.score += 1000;
+
                 Destroy(this.gameObject);
                
             }

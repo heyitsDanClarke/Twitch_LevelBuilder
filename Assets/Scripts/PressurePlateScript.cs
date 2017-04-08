@@ -15,7 +15,12 @@ public class PressurePlateScript : MonoBehaviour {
             SoundController.Instance.PlaySingle(boxHitSound);
             Player.Instance.boxes += 1;
 			PlayerUI.Instance.transform.FindChild("Puzzle Bar").FindChild ("Value").GetComponent<Text>().text = Player.Instance.boxes.ToString();
-        }
+        	
+			if (Player.Instance.boxes == Player.Instance.maxBoxes && Player.Instance.puzzleCompletedOnce == false) { // player completes the puzzle the first time
+				Player.Instance.puzzleCompletedOnce = true;
+				Player.Instance.score += 100;
+			}
+		}
     }
 
 	void OnTriggerStay2D(Collider2D other)

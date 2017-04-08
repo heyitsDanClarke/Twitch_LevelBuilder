@@ -62,6 +62,11 @@ public class LeverScript : MonoBehaviour {
 			PlayerUI.Instance.transform.FindChild("Puzzle Bar").FindChild ("Value").GetComponent<Text>().text = Player.Instance.levers.ToString();
 
             SoundController.Instance.PlaySingle(leverSound);
+
+			if (Player.Instance.levers == Player.Instance.maxLevers && Player.Instance.puzzleCompletedOnce == false) { // player completes the puzzle the first time
+				Player.Instance.puzzleCompletedOnce = true;
+				Player.Instance.score += 100;
+			}
         }
 	}
 

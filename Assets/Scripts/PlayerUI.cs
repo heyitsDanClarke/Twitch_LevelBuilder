@@ -9,6 +9,7 @@ public class PlayerUI : MonoBehaviour {
 	public static PlayerUI Instance;
 
     Text healthValue;
+	Text scoreValue;
 	Text iceValue;
 	Text fireValue;
     Text chargesValue;
@@ -34,6 +35,7 @@ public class PlayerUI : MonoBehaviour {
 		healthValue = transform.FindChild("Health Bar").FindChild("Value").GetComponent<Text>();
 		chargesValue = transform.FindChild("Charges Bar").FindChild("Value").GetComponent<Text>();
 		fireResistanceValue = transform.FindChild("Fire Resistance Bar").FindChild("Value").GetComponent<Text>();
+		scoreValue = transform.FindChild("Score Panel").FindChild("Value").GetComponent<Text>();
 		iceValue = transform.FindChild("Ice Power Panel").FindChild("Value").GetComponent<Text>();
 		fireValue = transform.FindChild("Fire Power Panel").FindChild("Value").GetComponent<Text>();
 		bossHealthValue = transform.FindChild("Boss Bar").FindChild("Value").GetComponent<Text>();
@@ -52,6 +54,7 @@ public class PlayerUI : MonoBehaviour {
 		healthValue.text = Player.Instance.health.ToString ();
 		chargesValue.text = Player.Instance.charges.ToString ();
 		fireResistanceValue.text = Player.Instance.fireResistance.ToString ();
+		scoreValue.text = Player.Instance.score.ToString ();
 		iceValue.text = Player.Instance.icePower.ToString ();
 		fireValue.text = Player.Instance.firePower.ToString ();
 		try {
@@ -100,6 +103,8 @@ public class PlayerUI : MonoBehaviour {
 				Player.Instance.currentWeapon = Player.Instance.nextWeapon;
                 Player.Instance.UpdateAnimator();
 				Player.Instance.nextWeapon = Player.Instance.defaultSword;
+
+				Player.Instance.score += 25;
 
 				transform.FindChild ("Weapon Timer").gameObject.SetActive (true);
 				float weaponTimerMaxValue = float.Parse(transform.FindChild("Weapon Timer").FindChild ("Max Value").GetComponent<Text> ().text); // max value of the pie chart

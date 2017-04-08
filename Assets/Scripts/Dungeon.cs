@@ -302,7 +302,8 @@ public class Dungeon : MonoBehaviour
     {
         // reset variables
 		Player.Instance.gameObject.SetActive (true);
-        Player.Instance.LoadState();
+        Player.Instance.LoadState ();
+		Player.Instance.RestartPenalty ();
 
         // reset redraw switch puzzle countdown if there is switch puzzle
         if (redrawSwitchPuzzleCountdown >= 0)

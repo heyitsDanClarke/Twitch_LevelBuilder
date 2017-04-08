@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     public int damage; // base damage
     public int maxHealth; // max hit points
     public int health; // current hit points
-    public int healthRegeneration; // health regeneration speed
+    public int score; // player score
     public int maxCharges; // max charges
     public int charges; // current charges
     public int icePower; // ice power
@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     public int prevCharges; // charges of saved state
     public int prevIcePower; // ice power of saved state
     public int prevFirePower; // fire power of saved state
+	public int prevScore; // score of saved state
     public float fireResistance; // current fire resistance
     public float maxFireResistance; // max fire resistance
     public float fireResistanceCooldown; // cooldown for fire resistance meter to regenerate if the player was on lava
@@ -40,6 +41,7 @@ public class Player : MonoBehaviour
     public int maxBoxes; // number of boxes in the puzzle
     public int levers; // number of switches left to switch
     public int maxLevers; // number of switches in the puzzle
+	public bool puzzleCompletedOnce;
 
     public GameObject gem;
     public AudioClip playerHammerAttackSound;
@@ -104,6 +106,7 @@ public class Player : MonoBehaviour
         acceleration = defaultAcceleration;
 
         maxHealth = 50;
+		score = 0;
         maxCharges = 10;
         maxFireResistance = 1.0f;
         maxFireResistanceCooldown = 0.5f;
@@ -112,6 +115,7 @@ public class Player : MonoBehaviour
         fireResistance = maxFireResistance;
         fireDamageCooldown = maxFireDamageCooldown;
         onFire = false;
+		puzzleCompletedOnce = false;
 
         currentWeapon = 0;
 
@@ -120,15 +124,23 @@ public class Player : MonoBehaviour
         prevCharges = 0;
     }
 
+	public void RestartPenalty()
+	{
+		score = Mathf.FloorToInt (score * 0.8f); // 20% reduction to score;
+		prevScore = score;
+	}
+
     // load the current state of the player in the beginning of the room
     public void LoadState()
     {
+		score = prevScore;
         icePower = prevIcePower;
         firePower = prevFirePower;
         charges = prevCharges;
         health = maxHealth;
         fireResistance = 1.0f;
         fireDamageCooldown = maxFireDamageCooldown;
+		puzzleCompletedOnce = false;
         ResetWeapon();
         PlayerUI.Instance.transform.FindChild("Weapon Timer").FindChild("Real Value").GetComponent<Text>().text = 0.0f.ToString(); // reset weapon durability timer
         PlayerUI.Instance.nextWeaponPanelCountdown = 0.0f; // reset next weapon panel cooldown timer
@@ -138,6 +150,7 @@ public class Player : MonoBehaviour
     // save the current state of the player to the beginning of the room 
     public void SaveState()
     {
+		prevScore = score;
         prevIcePower = icePower;
         prevFirePower = firePower;
         prevCharges = charges;
@@ -301,11 +314,14 @@ public class Player : MonoBehaviour
     {
         if (coll.gameObject.tag == "Exit")
         {
-            if (boxes == maxBoxes && levers == maxLevers)
-            { // if all puzzles are being solved
-                SaveState(); // save state of player
+            if (boxes == maxBoxes && levers == maxLevers) { // if all puzzles are being solved
+				// show next level menu if the player touches the exit for the first time
 				if (DungeonUI.Instance.nextLevelMenuActive == false) {
+					
 					SoundController.Instance.PlaySingle(exitFoundSound);
+
+					Player.Instance.score += 5 * Player.Instance.health;
+					SaveState(); // save state of player
 				}
                 DungeonUI.Instance.showNextLevelMenu();
             }

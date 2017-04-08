@@ -16,6 +16,8 @@ public class ShardController : MonoBehaviour {
 		if (coll.gameObject.tag == "Player") {
 			coll.gameObject.GetComponent<Player>().charges += 1;
 
+			Player.Instance.score += 2;
+
 			// activate next weapon panel for 3.0 seconds
 			if (Player.Instance.charges >= Player.Instance.maxCharges) {
 				Player.Instance.charges = 0;

@@ -50,6 +50,9 @@ public class GemController : MonoBehaviour {
 
 			coll.gameObject.GetComponent<Player>().firePower += firePower;
 			coll.gameObject.GetComponent<Player>().icePower += icePower;
+
+			Player.Instance.score += 25;
+
 			Destroy(this.gameObject);
 		}
 	}

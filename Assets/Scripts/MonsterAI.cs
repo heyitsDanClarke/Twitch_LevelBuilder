@@ -192,6 +192,8 @@ public class MonsterAI : MonoBehaviour
 
 					GameObject treasureObject = Instantiate (shard, shardPosition, Quaternion.identity);
 					treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+
+					Player.Instance.score += 10;
 				} else if (CompareTag ("Large Monster")) {
 
 					// spawn loot box
@@ -199,6 +201,8 @@ public class MonsterAI : MonoBehaviour
 					treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
 
 					AstarPath.active.Scan();
+
+					Player.Instance.score += 50;
 				}
 
                 Destroy(gameObject);

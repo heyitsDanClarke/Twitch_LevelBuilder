@@ -83,6 +83,9 @@ public class EyeBat : MonoBehaviour {
 
 				GameObject treasureObject = Instantiate(shard, shardPosition, Quaternion.identity);
                 treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+
+				Player.Instance.score += 20;
+
                 Destroy(gameObject);
             }
             else
