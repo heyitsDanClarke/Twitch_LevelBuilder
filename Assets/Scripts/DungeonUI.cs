@@ -13,6 +13,8 @@ public class DungeonUI : MonoBehaviour {
 	[HideInInspector] public bool pauseMenuActive; // boolean value stating whether the pause menu is active or not
 	[HideInInspector] public bool settingsMenuActive; // boolean value stating whether the settings menu is active or not
 	[HideInInspector] public bool deathMenuActive; // boolean value stating whether the death menu is active or not
+	[HideInInspector] public bool helpMenuActive; // boolean value stating whether the help menu is active or not
+	[HideInInspector] public bool quitMenuActive; // boolean value stating whether the quit menu is active or not
 
 	private GameObject nextLevelMenu;
 
@@ -31,13 +33,14 @@ public class DungeonUI : MonoBehaviour {
 		pauseMenuActive = false;
 		settingsMenuActive = false;
 		deathMenuActive = false;
+		helpMenuActive = false;
+		quitMenuActive = false;
 	}
 
 	void Start() {
 		// import variables from GameMaster
 		transform.FindChild ("Settings Menu").FindChild ("Music Volume Slider").GetComponent<Slider> ().value = GameMaster.Instance.music;
-		transform.FindChild("Settings Menu").FindChild("SFX Volume Slider").GetComponent<Slider>().value = GameMaster.Instance.sfx;
-
+		transform.FindChild ("Settings Menu").FindChild ("SFX Volume Slider").GetComponent<Slider> ().value = GameMaster.Instance.sfx;
 	}
 
 	void Update () {
@@ -51,7 +54,11 @@ public class DungeonUI : MonoBehaviour {
 		SoundController.Instance.efxSource.volume = GameMaster.Instance.sfx;
 
 		if (Input.GetKeyDown (KeyCode.Escape) && settingsMenuActive) { // if user presses the ESC key and the settings menu is active
-			HideSettingsMenu();
+			HideSettingsMenu ();
+		} else if (Input.GetKeyDown (KeyCode.Escape) && helpMenuActive) { // if user presses the ESC key and the help menu is active
+			HideHelpMenu ();
+		} else if (Input.GetKeyDown (KeyCode.Escape) && quitMenuActive) { // if user presses the ESC key and the quit menu is active
+			HideQuitMenu ();
 		} else if (Input.GetKeyDown (KeyCode.Escape) && !nextLevelMenuActive && !deathMenuActive) { // if user presses the ESC key and the next level menu is not active
 			pauseMenuActive = !pauseMenuActive;
 			if (pauseMenuActive) {
@@ -76,7 +83,7 @@ public class DungeonUI : MonoBehaviour {
 
 		// display alternative text if player
 		if (Dungeon.Instance.caveRoomsLeftUntilBoss < 0) {
-			transform.FindChild("Next Level Menu").FindChild("Continue Button").GetChild(0).GetComponent<Text>().text = "Main Menu";
+			transform.FindChild("Next Level Menu").FindChild("Resume Button").GetChild(0).GetComponent<Text>().text = "Main Menu";
 		}
 	}
 
@@ -127,6 +134,27 @@ public class DungeonUI : MonoBehaviour {
 		settingsMenuActive = false;
 		transform.FindChild("Settings Menu").gameObject.SetActive(false);
 	}
+
+	public void ShowHelpMenu() {
+		helpMenuActive = true;
+		transform.FindChild("Help Menu").gameObject.SetActive(true);
+	}
+
+	public void HideHelpMenu() {
+		helpMenuActive = false;
+		transform.FindChild("Help Menu").gameObject.SetActive(false);
+	}
+
+	public void ShowQuitMenu() {
+		quitMenuActive = true;
+		transform.FindChild("Quit Menu").gameObject.SetActive(true);
+	}
+
+	public void HideQuitMenu() {
+		quitMenuActive = false;
+		transform.FindChild("Quit Menu").gameObject.SetActive(false);
+	}
+
 
 	public void ShowDeathMenu() {
 		// play sounds once
