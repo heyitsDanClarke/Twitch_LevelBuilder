@@ -29,19 +29,33 @@ public class EyeBat : MonoBehaviour {
 	}
 	
 	void Update () {
-        if (Vector2.Distance(transform.position, Player.Instance.transform.position) > swoopRange && !swooping)
-            _rb.velocity = (target.transform.position - transform.position).normalized * seekSpeed;
-        else if(!swooping){
-            swooping = true;
-            StartCoroutine(Swoop());
+        bool PauseMenuActive = false; // is the pause menus active in the scene
+
+        try
+        {
+            PauseMenuActive = DungeonUI.Instance.transform.Find("Pause Menu").gameObject.activeSelf;
         }
-		if (_rb.velocity.x > 0) {
-			transform.localScale = new Vector3 (-1, 1, 1);
-			transform.FindChild ("Health Bar").localScale = new Vector3 (-0.3f, 0.3f, 1);
-		} else {
-			transform.localScale = new Vector3 (1, 1, 1);
-			transform.FindChild ("Health Bar").localScale = new Vector3 (0.3f, 0.3f, 1);
-		}
+        catch (NullReferenceException) { }
+        if (!PauseMenuActive)
+        {
+            if (Vector2.Distance(transform.position, Player.Instance.transform.position) > swoopRange && !swooping)
+                _rb.velocity = (target.transform.position - transform.position).normalized * seekSpeed;
+            else if (!swooping)
+            {
+                swooping = true;
+                StartCoroutine(Swoop());
+            }
+        }
+        else
+        {
+            swooping = false;
+            StopAllCoroutines();
+        }
+
+        if (_rb.velocity.x > 0)
+            transform.localScale = new Vector3(-1, 1, 1);
+        else
+            transform.localScale = new Vector3(1, 1, 1);
 	}
 
     IEnumerator Swoop()
@@ -59,14 +73,28 @@ public class EyeBat : MonoBehaviour {
         if (coll.gameObject.tag == "WeaponCollider")
         {
             SoundController.Instance.RandomizeSfx(batHit);
+			int initialDamage = Player.Instance.damage;
+            
+			switch (Player.Instance.currentWeapon) {
+			case 0:
+				health -= (int) (initialDamage * 0.6f);
+				//attackCooldown = 0.6f;
+				break;
+			case 1:
+				health -= (int) (initialDamage * 1.0f);
+				//attackCooldown = 1.0f;
+				break;
+			case 2:
+				health -= (int) (initialDamage * 0.4f);
+				//attackCooldown = 0.4f;
+				break;
+			case 3:
+				health -= (int) (initialDamage * 0.25f);
+				//attackCooldown = 0.25f;
+				break;
+			}
 
-			// show health bar of enemy
-			transform.FindChild("Health Bar").gameObject.SetActive(true);
-
-			// damage enemy
-			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage * (1.0f + (Player.Instance.firePower + Player.Instance.icePower) / 10.0f));
-			health -= totalDamage;
-
+			//health -= 1;
             if (health <= 0)
             {
                 Vector3 shardPosition = new Vector3(transform.position.x, transform.position.y, 0.0f);

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,20 +32,32 @@ public class Cerberus : MonoBehaviour {
 
     void Update()
     {
-        if (!paused)
+        bool PauseMenuActive = false; // is the pause menus active in the scene
+
+        try
         {
-            counter += Time.deltaTime;
-            if (counter >= moveReset)
+            PauseMenuActive = DungeonUI.Instance.transform.Find("Pause Menu").gameObject.activeSelf;
+        }
+        catch (NullReferenceException) { }
+
+        if (!PauseMenuActive)
+        {
+            if (!paused)
             {
-                StartCoroutine(PauseFire());
-                moveLeft = !moveLeft;
-                moveReset = Random.Range(1, 3);
-                counter = 0;
+                counter += Time.deltaTime;
+                if (counter >= moveReset)
+                {
+                    StartCoroutine(PauseFire());
+                    moveLeft = !moveLeft;
+                    moveReset = UnityEngine.Random.Range(1, 3);
+                    counter = 0;
+                }
             }
         }
         else
         {
-
+            paused = false;
+            StopAllCoroutines();
         }
         if (_rb.velocity.x != 0 || _rb.velocity.y != 0)
             _anim.SetBool("Moving", true);
