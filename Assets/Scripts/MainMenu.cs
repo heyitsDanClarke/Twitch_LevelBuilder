@@ -35,6 +35,11 @@ public class MainMenu : MonoBehaviour {
 		transform.FindChild("Settings Panel").gameObject.SetActive(true);
     }
 
+
+	public void OpenAboutPanel() {
+		transform.FindChild("About Panel").gameObject.SetActive(true);
+	}
+
 	public void OpenCreditsPanel() {
 		transform.FindChild("Credits Panel").gameObject.SetActive(true);
     }
@@ -45,6 +50,7 @@ public class MainMenu : MonoBehaviour {
 
 	public void CloseAllPanels() {
 		transform.FindChild("Settings Panel").gameObject.SetActive(false);
+		transform.FindChild("About Panel").gameObject.SetActive(false);
 		transform.FindChild("Credits Panel").gameObject.SetActive(false);
 		transform.FindChild("Quit Panel").gameObject.SetActive(false);
 	}
