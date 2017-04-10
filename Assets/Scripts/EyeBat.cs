@@ -60,19 +60,19 @@ public class EyeBat : MonoBehaviour {
             
 			switch (Player.Instance.currentWeapon) {
 			case 0:
-				health -= (int) initialDamage * 0.6f;
+				health -= (int) (initialDamage * 0.6f);
 				//attackCooldown = 0.6f;
 				break;
 			case 1:
-				health -= (int) initialDamage * 1.0f;
+				health -= (int) (initialDamage * 1.0f);
 				//attackCooldown = 1.0f;
 				break;
 			case 2:
-				health -= (int) initialDamage * 0.4f;
+				health -= (int) (initialDamage * 0.4f);
 				//attackCooldown = 0.4f;
 				break;
 			case 3:
-				health -= (int) initialDamage * 0.25f;
+				health -= (int) (initialDamage * 0.25f);
 				//attackCooldown = 0.25f;
 				break;
 			}

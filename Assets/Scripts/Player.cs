@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     public float defaultSpeed = 6.0f; // default speed of player
     [HideInInspector]
     public float defaultAcceleration = 10.0f; // default acceleration of player
-    public int damage; // base damage
+    public int damage = 5; // base damage
     public int maxHealth; // max hit points
     public int health; // current hit points
     public int score; // player score
@@ -60,7 +60,7 @@ public class Player : MonoBehaviour
     //attack collider
     public GameObject attackCollider;
 
-    public int currentWeapon;
+    public int currentWeapon = 3;
     public int nextWeapon;
 
     [HideInInspector]
