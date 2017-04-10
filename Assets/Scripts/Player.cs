@@ -88,6 +88,7 @@ public class Player : MonoBehaviour
     public RuntimeAnimatorController Sword_RAC;
     public RuntimeAnimatorController Dagger_RAC;
 
+    public GameObject shard;
 
     void Awake()
     {
@@ -130,6 +131,8 @@ public class Player : MonoBehaviour
         prevIcePower = 0;
         prevFirePower = 0;
         prevCharges = 0;
+
+        transform.FindChild("WeaponCollider").gameObject.SetActive(false);
     }
 
 	public void RestartPenalty()
@@ -187,6 +190,10 @@ public class Player : MonoBehaviour
         if (!menusActive)
         { // if no menus are active
             moveHorizontal = Input.GetAxisRaw("Horizontal");
+            if(moveHorizontal < 0)
+                transform.localScale = new Vector3(-1, 1, 1);
+            else if(moveHorizontal > 0)
+                transform.localScale = new Vector3(1, 1, 1);
             moveVertictal = Input.GetAxisRaw("Vertical");
         }
 
@@ -195,16 +202,17 @@ public class Player : MonoBehaviour
         Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
         rb.AddForce(velocityDifference);
 
-
-        //HandleMovementAnimations();
-
         HandleMovement();
-        if (rb.velocity.x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
-        else if (rb.velocity.x > 0)
-            transform.localScale = new Vector3(1, 1, 1);
 
-        if (Input.GetKey("j") && attackCooldown <= 0.0F)
+		bool PauseMenuActive = false; // is the pause menus active in the scene
+
+		try
+		{
+			PauseMenuActive = DungeonUI.Instance.transform.Find("Pause Menu").gameObject.activeSelf;
+		}
+		catch (NullReferenceException) { }
+
+		if (Input.GetKey(KeyCode.Space) && attackCooldown <= 0.0F && !PauseMenuActive)
         {
             //can add switch case for different weapons
 
@@ -240,35 +248,11 @@ public class Player : MonoBehaviour
                     break;
             }
         }
-		//For testing
-        
-		if (Input.GetKeyDown ("1")) { //DEBUG OPTION, NEEDS TO BE REMOVED
-			anim.runtimeAnimatorController = Sword_RAC;
-			attackCooldown = swordCooldown;
-			currentWeapon = 0;
-			baseDamage = Mathf.FloorToInt(swordDamageMultiplier * attackCooldown);
-		}
-
-		if (Input.GetKeyDown ("2")) { //DEBUG OPTION, NEEDS TO BE REMOVED
-			anim.runtimeAnimatorController = Hammer_RAC;
-			attackCooldown = hammerCooldown;
-			currentWeapon = 1;
-			baseDamage = Mathf.FloorToInt(hammerDamageMultiplier * attackCooldown);
-		}
-
-		if (Input.GetKeyDown ("3")) { //DEBUG OPTION, NEEDS TO BE REMOVED
-			anim.runtimeAnimatorController = Spear_RAC;
-			attackCooldown = spearCooldown;
-			currentWeapon = 2;
-			baseDamage = Mathf.FloorToInt(spearDamageMultiplier * attackCooldown);
-		}
-
-		if (Input.GetKeyDown ("4")) { //DEBUG OPTION, NEEDS TO BE REMOVED
-			anim.runtimeAnimatorController = Dagger_RAC;
-			attackCooldown = daggerCooldown;
-			currentWeapon = 3;
-			baseDamage = Mathf.FloorToInt(daggerDamageMultiplier * attackCooldown);
-		}
+        if (Input.GetKeyDown("p"))
+        { //DEBUG OPTION, NEEDS TO BE REMOVED
+            charges += 10;
+            Instantiate(shard, transform.position, transform.rotation);
+        }
     }
 
     public void UpdateAnimator()
@@ -467,7 +451,6 @@ public class Player : MonoBehaviour
         anim.SetTrigger("meleeAttack");
 
         transform.FindChild("WeaponCollider").gameObject.SetActive(true);
-
 
         yield return new WaitForSeconds(0.1f);
         transform.FindChild("WeaponCollider").gameObject.SetActive(false);

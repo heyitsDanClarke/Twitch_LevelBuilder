@@ -8,7 +8,7 @@ public class LeverScript : MonoBehaviour {
 
 
 	public bool isActive; // whether the lever is active or not
-	public bool spaceDownButNotApplied; // whether the space key is down and not applied to the lever
+	public bool fDownButNotApplied; // whether the space key is down and not applied to the lever
 
     public Sprite active;
     public Sprite inActive;
@@ -17,15 +17,15 @@ public class LeverScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		isActive = false;
-		spaceDownButNotApplied = false;
+		fDownButNotApplied = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.Space)) {
-			spaceDownButNotApplied = true;
-		} else if (Input.GetKeyUp(KeyCode.Space)) {
-			spaceDownButNotApplied = false;
+		if (Input.GetKeyDown(KeyCode.F)) {
+			fDownButNotApplied = true;
+		} else if (Input.GetKeyUp(KeyCode.F)) {
+			fDownButNotApplied = false;
 		}
 	}
 
@@ -50,9 +50,9 @@ public class LeverScript : MonoBehaviour {
 		} catch (NullReferenceException) {}
 
 		// if player touches the block and the player is holding down the space button
-		if (other.gameObject.CompareTag("Player") && spaceDownButNotApplied && !nextLevelMenuActive && !pauseMenuActive && !deathMenuActive)
+		if (other.gameObject.CompareTag("Player") && fDownButNotApplied && !nextLevelMenuActive && !pauseMenuActive && !deathMenuActive)
 		{
-			spaceDownButNotApplied = false;
+			fDownButNotApplied = false;
 
 			// activate/deactivate the switch
 			isActive = !isActive;
