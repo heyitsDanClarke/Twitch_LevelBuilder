@@ -131,6 +131,8 @@ public class Player : MonoBehaviour
         prevIcePower = 0;
         prevFirePower = 0;
         prevCharges = 0;
+
+        transform.FindChild("WeaponCollider").gameObject.SetActive(false);
     }
 
 	public void RestartPenalty()
