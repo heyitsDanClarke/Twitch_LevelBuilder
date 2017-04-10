@@ -52,10 +52,32 @@ public class EyeBat : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D coll)
     {
+		
         if (coll.gameObject.tag == "WeaponCollider")
         {
             SoundController.Instance.RandomizeSfx(batHit);
-            health -= 1;
+			int initialDamage = Player.Instance.damage;
+            
+			switch (Player.Instance.currentWeapon) {
+			case 0:
+				health -= (int) initialDamage * 0.6f;
+				//attackCooldown = 0.6f;
+				break;
+			case 1:
+				health -= (int) initialDamage * 1.0f;
+				//attackCooldown = 1.0f;
+				break;
+			case 2:
+				health -= (int) initialDamage * 0.4f;
+				//attackCooldown = 0.4f;
+				break;
+			case 3:
+				health -= (int) initialDamage * 0.25f;
+				//attackCooldown = 0.25f;
+				break;
+			}
+
+			//health -= 1;
             if (health <= 0)
             {
                 Vector3 shardPosition = new Vector3(transform.position.x, transform.position.y, 0.0f);
