@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 58801519509861754}
   - component: {fileID: 50668883166039506}
   - component: {fileID: 114989634075299946}
-  - component: {fileID: 95430792033521130}
+  - component: {fileID: 95117545385183096}
   m_Layer: 0
   m_Name: IceBall
   m_TagString: Untagged
@@ -78,7 +78,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.32}
   serializedVersion: 2
   m_Radius: 0.45
---- !u!95 &95430792033521130
+--- !u!95 &95117545385183096
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
@@ -87,7 +87,7 @@ Animator:
   m_GameObject: {fileID: 1089753349531158}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 90ec7b8ddd3e79f409895b762a89e199, type: 2}
+  m_Controller: {fileID: 9100000, guid: 06f6d6f6c0688e64387e1a5210d7c5fe, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
