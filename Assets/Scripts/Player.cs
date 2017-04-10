@@ -210,7 +210,7 @@ public class Player : MonoBehaviour
 		}
 		catch (NullReferenceException) { }
 
-		if (Input.GetKey("j") && attackCooldown <= 0.0F && !PauseMenuActive)
+		if (Input.GetKey(KeyCode.Space) && attackCooldown <= 0.0F && !PauseMenuActive)
         {
             //can add switch case for different weapons
 
