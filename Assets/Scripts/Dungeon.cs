@@ -158,7 +158,7 @@ public class Dungeon : MonoBehaviour
             // player on lava
             if (roomStructure[x, y].tile == lava)
             {
-
+                Player.Instance.GetComponent<SpriteRenderer>().color = Color.red;
                 SoundController.Instance.lavaSizzleSource.mute = false;
 
                 Player.Instance.rb.drag = 2.5f; // slow down player a bit if player is in lava
@@ -174,7 +174,7 @@ public class Dungeon : MonoBehaviour
             }
             else
             {
-
+                Player.Instance.GetComponent<SpriteRenderer>().color = Color.white;
                 SoundController.Instance.lavaSizzleSource.mute = true;
 
                 Player.Instance.fireResistanceCooldown = Mathf.Max(0.0f, Player.Instance.fireResistanceCooldown - (PauseMenuActive ? 0.0f : Time.deltaTime));
