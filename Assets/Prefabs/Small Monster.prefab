@@ -364,8 +364,8 @@ MonoBehaviour:
   acceleration: 10
   pathIsEnded: 0
   nextWaypointDistance: 2
-  health: 2
-  maxHealth: 2
+  health: 200
+  maxHealth: 200
 --- !u!114 &114953503922908050
 MonoBehaviour:
   m_ObjectHideFlags: 1

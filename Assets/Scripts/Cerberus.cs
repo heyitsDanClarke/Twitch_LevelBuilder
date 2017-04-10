@@ -82,7 +82,10 @@ public class Cerberus : MonoBehaviour {
     {
         if(collision.gameObject.tag == "WeaponCollider")
         {
-            health -= 1;
+			// damage enemy
+			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage * (1.0f + (Player.Instance.firePower + Player.Instance.icePower) / 10.0f));
+			health -= totalDamage;
+
             if (health <= 0)
             {
                 GameObject tempExit = Instantiate(exit, transform.position, transform.rotation);

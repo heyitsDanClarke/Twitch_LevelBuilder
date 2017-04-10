@@ -230,8 +230,8 @@ MonoBehaviour:
   seekSpeed: 2
   swoopSpeed: 5
   swoopRange: 4
-  health: 1
-  maxHealth: 1
+  health: 125
+  maxHealth: 125
   shard: {fileID: 1991159433803578, guid: ab02381479d4b0c468ba853ffa860764, type: 2}
   batHit: {fileID: 8300000, guid: 609e6e2d5ad978540adeb23186716a6d, type: 3}
   playerHitSound1: {fileID: 8300000, guid: 6be6d80a2caac7c4fad0ba6c1dc15b2c, type: 3}

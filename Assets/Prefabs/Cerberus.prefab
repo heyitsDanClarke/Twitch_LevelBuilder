@@ -126,8 +126,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   damage: 0
-  health: 30
-  maxHealth: 30
+  health: 4000
+  maxHealth: 4000
   fireball: {fileID: 1115980629203998, guid: c7802ed4863bc414e8b012356bfd14b4, type: 2}
   iceball: {fileID: 1089753349531158, guid: 96b2c4e4dde74584da414a93fb609e3f, type: 2}
   exit: {fileID: 1834166575883816, guid: 0811b3a655bef9d4cb00bd6f4eaab5d6, type: 2}

@@ -86,10 +86,10 @@ public class PlayerUI : MonoBehaviour {
                     Debug.Log(Player.Instance.spear + " " + Player.Instance.nextWeapon);
                     Player.Instance.nextWeapon = Player.Instance.spear;
                     Debug.Log(Player.Instance.spear + " " + Player.Instance.nextWeapon);
-                } else if (Poll.Instance._weaponDisplay.text == Poll.Instance.knifeText) {
-					Player.Instance.nextWeapon = Player.Instance.knife;
+                } else if (Poll.Instance._weaponDisplay.text == Poll.Instance.daggerText) {
+					Player.Instance.nextWeapon = Player.Instance.dagger;
                 } else {
-					Player.Instance.nextWeapon = Player.Instance.defaultSword;
+					Player.Instance.nextWeapon = Player.Instance.sword;
 				}
 
 				Poll.Instance.ResetVoteWeapon(); // reset weapon votes
@@ -102,7 +102,7 @@ public class PlayerUI : MonoBehaviour {
 				// update current weapon on GameMaster
 				Player.Instance.currentWeapon = Player.Instance.nextWeapon;
                 Player.Instance.UpdateAnimator();
-				Player.Instance.nextWeapon = Player.Instance.defaultSword;
+				Player.Instance.nextWeapon = Player.Instance.sword;
 
 				Player.Instance.score += 25;
 

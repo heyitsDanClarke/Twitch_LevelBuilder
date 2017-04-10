@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     public float defaultSpeed = 6.0f; // default speed of player
     [HideInInspector]
     public float defaultAcceleration = 10.0f; // default acceleration of player
-    public int damage = 5; // base damage
+    public int baseDamage; // base damage
     public int maxHealth; // max hit points
     public int health; // current hit points
     public int score; // player score
@@ -57,18 +57,26 @@ public class Player : MonoBehaviour
     //for attack speed
     public float attackCooldown = 0.5F;
 
-    //attack collider
+    // attack collider
     public GameObject attackCollider;
 
-    public int currentWeapon = 3;
+    public int currentWeapon = 0;
     public int nextWeapon;
 
-    [HideInInspector]
-    public int defaultSword = 0;
-    [HideInInspector]
-    public int hammer = 1;
-    public int spear = 2;
-    public int knife = 3;
+    [HideInInspector] public int sword = 0;
+    [HideInInspector] public int hammer = 1;
+	[HideInInspector] public int spear = 2;
+	[HideInInspector] public int dagger = 3;
+
+	public float swordCooldown = 0.6f;
+	public float hammerCooldown = 1.0f;
+	public float spearCooldown = 0.4f;
+	public float daggerCooldown = 0.2f;
+
+	public int swordDamageMultiplier = 70;
+	public int hammerDamageMultiplier = 100;
+	public int spearDamageMultiplier = 100;
+	public int daggerDamageMultiplier = 100;
 
     [HideInInspector]
     public Rigidbody2D rb; // rigid body of playersprite
@@ -78,7 +86,7 @@ public class Player : MonoBehaviour
     public RuntimeAnimatorController Spear_RAC;
     public RuntimeAnimatorController Hammer_RAC;
     public RuntimeAnimatorController Sword_RAC;
-    public RuntimeAnimatorController Knife_RAC;
+    public RuntimeAnimatorController Dagger_RAC;
 
 
     void Awake()
@@ -209,25 +217,28 @@ public class Player : MonoBehaviour
                 case 0:
                     //sword
                     SoundController.Instance.RandomizeSfxLarge(playerSwordAttackSound);
-                    attackCooldown = 0.6f;
+                    attackCooldown = swordCooldown;
+					baseDamage = Mathf.FloorToInt(swordDamageMultiplier * attackCooldown);
                     break;
                 case 1:
                     //hammer
                     SoundController.Instance.RandomizeSfxLarge(playerHammerAttackSound);
-                    attackCooldown = 1.0f;
+                    attackCooldown = hammerCooldown;
+					baseDamage = Mathf.FloorToInt(hammerDamageMultiplier * attackCooldown);
                     break;
                 case 2:
                     //spear
                     SoundController.Instance.RandomizeSfxLarge(playerWhipAttackSound);
-                    attackCooldown = 0.4f;
+                    attackCooldown = spearCooldown;
+					baseDamage = Mathf.FloorToInt(spearDamageMultiplier * attackCooldown);
                     break;
                 case 3:
-                    //knife
+                    //dagger
                     SoundController.Instance.RandomizeSfxLarge(playerDaggerAttackSound);
-                    attackCooldown = 0.3f;
+                    attackCooldown = daggerCooldown;
+					baseDamage = Mathf.FloorToInt(daggerDamageMultiplier * attackCooldown);
                     break;
             }
-
         }
     }
 
@@ -237,19 +248,23 @@ public class Player : MonoBehaviour
         {
             case 0:
                 anim.runtimeAnimatorController = Sword_RAC;
-                attackCooldown = 0.6f;
+                attackCooldown = swordCooldown;
+				baseDamage = Mathf.FloorToInt(swordDamageMultiplier * attackCooldown);
                 break;
             case 1:
                 anim.runtimeAnimatorController = Hammer_RAC;
-                attackCooldown = 1.0f;
+                attackCooldown = hammerCooldown;
+				baseDamage = Mathf.FloorToInt(hammerDamageMultiplier * attackCooldown);
                 break;
             case 2:
                 anim.runtimeAnimatorController = Spear_RAC;
-                attackCooldown = 0.4f;
+                attackCooldown = spearCooldown;
+				baseDamage = Mathf.FloorToInt(spearDamageMultiplier * attackCooldown);
                 break;
             case 3:
-                anim.runtimeAnimatorController = Knife_RAC;
-                attackCooldown = 0.25f;
+                anim.runtimeAnimatorController = Dagger_RAC;
+                attackCooldown = daggerCooldown;
+				baseDamage = Mathf.FloorToInt(daggerDamageMultiplier * attackCooldown);
                 break;
         }
     }
@@ -272,8 +287,8 @@ public class Player : MonoBehaviour
     // reset weapon to default
     public void ResetWeapon()
     {
-        currentWeapon = defaultSword;
-        nextWeapon = defaultSword;
+        currentWeapon = sword;
+        nextWeapon = sword;
     }
 
     void OnTriggerEnter2D(Collider2D coll)
@@ -392,8 +407,8 @@ public class Player : MonoBehaviour
                 transform.FindChild("WeaponCollider").localScale = new Vector3(transform.FindChild("WeaponCollider").localScale.x * 2.5f, transform.FindChild("WeaponCollider").localScale.y, transform.FindChild("WeaponCollider").localScale.z);
                 break;
             case 3:
-                //knife
-                transform.FindChild("WeaponCollider").localScale = new Vector3(transform.FindChild("WeaponCollider").localScale.x * 0.75f, transform.FindChild("WeaponCollider").localScale.y * 0.75f, transform.FindChild("WeaponCollider").localScale.z);
+                //dagger
+                transform.FindChild("WeaponCollider").localScale = new Vector3(transform.FindChild("WeaponCollider").localScale.x, transform.FindChild("WeaponCollider").localScale.y * 2.0f, transform.FindChild("WeaponCollider").localScale.z);
                 break;
         }
 
@@ -424,7 +439,7 @@ public class Player : MonoBehaviour
 
         transform.FindChild("WeaponCollider").gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.1f);
         transform.FindChild("WeaponCollider").gameObject.SetActive(false);
         //charges -= 1;
 
