@@ -5273,15 +5273,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 1083180465670178, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114248047307726024, guid: a979508dc40e62742b5d7d6d91e7b5ee,
-        type: 2}
-      propertyPath: Dagger_RAC
-      value: 
-      objectReference: {fileID: 9100000, guid: 58d345a05e234469a806fbe889d65681, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a979508dc40e62742b5d7d6d91e7b5ee, type: 2}
   m_IsPrefabParent: 0

@@ -179,10 +179,10 @@ MonoBehaviour:
   acceleration: 0
   defaultSpeed: 6
   defaultAcceleration: 20
-  damage: 0
+  baseDamage: 0
   maxHealth: 0
   health: 8
-  healthRegeneration: 0
+  score: 0
   maxCharges: 0
   charges: 0
   icePower: 0
@@ -190,6 +190,7 @@ MonoBehaviour:
   prevCharges: 0
   prevIcePower: 0
   prevFirePower: 0
+  prevScore: 0
   fireResistance: 0
   maxFireResistance: 0
   fireResistanceCooldown: 0
@@ -202,6 +203,7 @@ MonoBehaviour:
   maxBoxes: 0
   levers: 0
   maxLevers: 0
+  puzzleCompletedOnce: 0
   gem: {fileID: 1006891613377954, guid: 53c3d79e6e7267b4eb6d229a41b6c125, type: 2}
   playerHammerAttackSound: {fileID: 8300000, guid: 7bfe97cf6a90a83459b7bf10176f962e,
     type: 3}
@@ -220,16 +222,25 @@ MonoBehaviour:
   attackCollider: {fileID: 1083180465670178}
   currentWeapon: 0
   nextWeapon: 0
-  defaultSword: 0
+  sword: 0
   hammer: 1
   spear: 2
-  knife: 3
+  dagger: 3
+  swordCooldown: 0.6
+  hammerCooldown: 1
+  spearCooldown: 0.4
+  daggerCooldown: 0.2
+  swordDamageMultiplier: 70
+  hammerDamageMultiplier: 100
+  spearDamageMultiplier: 100
+  daggerDamageMultiplier: 100
   rb: {fileID: 0}
   anim: {fileID: 0}
   Spear_RAC: {fileID: 9100000, guid: bcf593171de3f4336885f44db022eed1, type: 2}
   Hammer_RAC: {fileID: 9100000, guid: efb10f046b6bf40c193bce5f5fc318fb, type: 2}
   Sword_RAC: {fileID: 9100000, guid: 4ae0af37177818c4ea38fd19e0287c2d, type: 2}
-  Knife_RAC: {fileID: 9100000, guid: 58d345a05e234469a806fbe889d65681, type: 2}
+  Dagger_RAC: {fileID: 9100000, guid: 58d345a05e234469a806fbe889d65681, type: 2}
+  shard: {fileID: 1991159433803578, guid: ab02381479d4b0c468ba853ffa860764, type: 2}
 --- !u!114 &114920145250783530
 MonoBehaviour:
   m_ObjectHideFlags: 1

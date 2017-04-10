@@ -88,6 +88,7 @@ public class Player : MonoBehaviour
     public RuntimeAnimatorController Sword_RAC;
     public RuntimeAnimatorController Dagger_RAC;
 
+    public GameObject shard;
 
     void Awake()
     {
@@ -240,8 +241,11 @@ public class Player : MonoBehaviour
                     break;
             }
         }
-        if (Input.GetKeyDown("p")) //DEBUG OPTION, NEEDS TO BE REMOVED
+        if (Input.GetKeyDown("p"))
+        { //DEBUG OPTION, NEEDS TO BE REMOVED
             charges += 10;
+            Instantiate(shard, transform.position, transform.rotation);
+        }
     }
 
     public void UpdateAnimator()
