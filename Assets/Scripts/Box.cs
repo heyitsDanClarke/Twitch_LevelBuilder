@@ -29,7 +29,7 @@ public class Box : MonoBehaviour {
 		scanPos = currPos;
 		direction = new Vector2 (0, 0);
 
-		rb = GetComponent<Rigidbody2D>();
+		rb = GetComponentInParent<Rigidbody2D>();
 		rb.mass = 1000000.0f; // mass of box
 		rb.drag = 0.0f; // drag of boxs
 	}
