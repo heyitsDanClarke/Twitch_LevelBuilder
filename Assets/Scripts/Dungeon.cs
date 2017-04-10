@@ -727,14 +727,14 @@ public class Dungeon : MonoBehaviour
                 }
                 else if (room[i, j].tile == air)
                 {
-                    float hotTileTransparency = Mathf.Clamp01(room[i, j].temperature * 10 - 5);
+                    float hotTileTransparency = Mathf.Clamp01(room[i, j].temperature * 8 - 4);
                     if (hotTileTransparency < 1.0f)
                     {
                         tempTile = Instantiate(floorTiles, new Vector3(i, j, 0.0f), transform.rotation);
                         tempTile.transform.SetParent(inPuzzleArea ? puzzleVisual.transform : dungeonVisual.transform);
                     }
                     tempTile = Instantiate(hotFloorTiles, new Vector3(i, j, 0.0f), transform.rotation);
-                    tempTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, Mathf.Clamp01(room[i, j].temperature * 10 - 5));
+                    tempTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, Mathf.Clamp01(room[i, j].temperature * 8 - 4));
                     tempTile.transform.SetParent(inPuzzleArea ? puzzleVisual.transform : dungeonVisual.transform);
                 }
 
@@ -745,7 +745,7 @@ public class Dungeon : MonoBehaviour
                       // set border tiles
                         GameObject tempBorderTile = Instantiate(borderTiles, new Vector3(i, j, 0.0f), transform.rotation); // borders
                         tempBorderTile.transform.SetParent(inPuzzleArea ? puzzleVisual.transform : dungeonVisual.transform);
-                        tempBorderTile.GetComponentInChildren<MeshRenderer>().material.SetFloat("_Blend", Mathf.Clamp01(room[i, j].temperature * 10 - 5));
+                        tempBorderTile.GetComponentInChildren<MeshRenderer>().material.SetFloat("_Blend", Mathf.Clamp01(room[i, j].temperature * 8 - 4));
                     }
                     else
                     {
@@ -1021,14 +1021,14 @@ public class Dungeon : MonoBehaviour
                 }
                 else if (room[i, j].tile == air)
                 {
-                    float hotTileTransparency = Mathf.Clamp01(room[i, j].temperature * 10 - 5);
+                    float hotTileTransparency = Mathf.Clamp01(room[i, j].temperature * 8 - 4);
                     if (hotTileTransparency < 1.0f)
                     {
                         tempTile = Instantiate(floorTiles, new Vector3(i, j, 0.0f), transform.rotation);
                         tempTile.transform.SetParent(puzzleVisual.transform);
                     }
                     tempTile = Instantiate(hotFloorTiles, new Vector3(i, j, 0.0f), transform.rotation);
-                    tempTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, Mathf.Clamp01(room[i, j].temperature * 10 - 5));
+                    tempTile.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, Mathf.Clamp01(room[i, j].temperature * 8 - 4));
                     tempTile.transform.SetParent(puzzleVisual.transform);
                 }
                 else if (room[i, j].tile == wall)
@@ -1038,7 +1038,7 @@ public class Dungeon : MonoBehaviour
                       // set border tiles
                         GameObject tempBorderTile = Instantiate(borderTiles, new Vector3(i, j, 0.0f), transform.rotation); // borders
                         tempBorderTile.transform.SetParent(puzzleVisual.transform);
-                        tempBorderTile.GetComponentInChildren<MeshRenderer>().material.SetFloat("_Blend", Mathf.Clamp01(room[i, j].temperature * 10 - 5));
+                        tempBorderTile.GetComponentInChildren<MeshRenderer>().material.SetFloat("_Blend", Mathf.Clamp01(room[i, j].temperature * 8 - 4));
                     }
                     else
                     {
