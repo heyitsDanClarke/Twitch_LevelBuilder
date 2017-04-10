@@ -188,6 +188,10 @@ public class Player : MonoBehaviour
         if (!menusActive)
         { // if no menus are active
             moveHorizontal = Input.GetAxisRaw("Horizontal");
+            if(moveHorizontal < 0)
+                transform.localScale = new Vector3(-1, 1, 1);
+            else if(moveHorizontal > 0)
+                transform.localScale = new Vector3(1, 1, 1);
             moveVertictal = Input.GetAxisRaw("Vertical");
         }
 
@@ -196,14 +200,7 @@ public class Player : MonoBehaviour
         Vector2 velocityDifference = (targetVelocity - rb.velocity) * acceleration;
         rb.AddForce(velocityDifference);
 
-
-        //HandleMovementAnimations();
-
         HandleMovement();
-        if (rb.velocity.x < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
-        else if (rb.velocity.x > 0)
-            transform.localScale = new Vector3(1, 1, 1);
 
         if (Input.GetKey("j") && attackCooldown <= 0.0F)
         {
