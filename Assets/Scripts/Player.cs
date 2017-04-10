@@ -202,7 +202,15 @@ public class Player : MonoBehaviour
 
         HandleMovement();
 
-        if (Input.GetKey("j") && attackCooldown <= 0.0F)
+		bool PauseMenuActive = false; // is the pause menus active in the scene
+
+		try
+		{
+			PauseMenuActive = DungeonUI.Instance.transform.Find("Pause Menu").gameObject.activeSelf;
+		}
+		catch (NullReferenceException) { }
+
+		if (Input.GetKey("j") && attackCooldown <= 0.0F && !PauseMenuActive)
         {
             //can add switch case for different weapons
 
