@@ -204,7 +204,7 @@ public class Player : MonoBehaviour
         else if (rb.velocity.x > 0)
             transform.localScale = new Vector3(1, 1, 1);
 
-        if (Input.GetKeyDown("j") && attackCooldown <= 0.0F)
+        if (Input.GetKey("j") && attackCooldown <= 0.0F)
         {
             //can add switch case for different weapons
 
