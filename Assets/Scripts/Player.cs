@@ -240,8 +240,35 @@ public class Player : MonoBehaviour
                     break;
             }
         }
-        if (Input.GetKeyDown("p")) //DEBUG OPTION, NEEDS TO BE REMOVED
-            charges += 10;
+		//For testing
+        
+		if (Input.GetKeyDown ("1")) { //DEBUG OPTION, NEEDS TO BE REMOVED
+			anim.runtimeAnimatorController = Sword_RAC;
+			attackCooldown = swordCooldown;
+			currentWeapon = 0;
+			baseDamage = Mathf.FloorToInt(swordDamageMultiplier * attackCooldown);
+		}
+
+		if (Input.GetKeyDown ("2")) { //DEBUG OPTION, NEEDS TO BE REMOVED
+			anim.runtimeAnimatorController = Hammer_RAC;
+			attackCooldown = hammerCooldown;
+			currentWeapon = 1;
+			baseDamage = Mathf.FloorToInt(hammerDamageMultiplier * attackCooldown);
+		}
+
+		if (Input.GetKeyDown ("3")) { //DEBUG OPTION, NEEDS TO BE REMOVED
+			anim.runtimeAnimatorController = Spear_RAC;
+			attackCooldown = spearCooldown;
+			currentWeapon = 2;
+			baseDamage = Mathf.FloorToInt(spearDamageMultiplier * attackCooldown);
+		}
+
+		if (Input.GetKeyDown ("4")) { //DEBUG OPTION, NEEDS TO BE REMOVED
+			anim.runtimeAnimatorController = Dagger_RAC;
+			attackCooldown = daggerCooldown;
+			currentWeapon = 3;
+			baseDamage = Mathf.FloorToInt(daggerDamageMultiplier * attackCooldown);
+		}
     }
 
     public void UpdateAnimator()
@@ -440,6 +467,7 @@ public class Player : MonoBehaviour
         anim.SetTrigger("meleeAttack");
 
         transform.FindChild("WeaponCollider").gameObject.SetActive(true);
+
 
         yield return new WaitForSeconds(0.1f);
         transform.FindChild("WeaponCollider").gameObject.SetActive(false);
