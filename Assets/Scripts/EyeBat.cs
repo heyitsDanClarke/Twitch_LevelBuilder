@@ -29,12 +29,29 @@ public class EyeBat : MonoBehaviour {
 	}
 	
 	void Update () {
-        if (Vector2.Distance(transform.position, Player.Instance.transform.position) > swoopRange && !swooping)
-            _rb.velocity = (target.transform.position - transform.position).normalized * seekSpeed;
-        else if(!swooping){
-            swooping = true;
-            StartCoroutine(Swoop());
+        bool PauseMenuActive = false; // is the pause menus active in the scene
+
+        try
+        {
+            PauseMenuActive = DungeonUI.Instance.transform.Find("Pause Menu").gameObject.activeSelf;
         }
+        catch (NullReferenceException) { }
+        if (!PauseMenuActive)
+        {
+            if (Vector2.Distance(transform.position, Player.Instance.transform.position) > swoopRange && !swooping)
+                _rb.velocity = (target.transform.position - transform.position).normalized * seekSpeed;
+            else if (!swooping)
+            {
+                swooping = true;
+                StartCoroutine(Swoop());
+            }
+        }
+        else
+        {
+            swooping = false;
+            StopAllCoroutines();
+        }
+
         if (_rb.velocity.x > 0)
             transform.localScale = new Vector3(-1, 1, 1);
         else
