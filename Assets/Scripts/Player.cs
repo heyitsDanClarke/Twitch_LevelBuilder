@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     [HideInInspector]
     public float defaultAcceleration = 10.0f; // default acceleration of player
     public int baseDamage; // base damage
+	public float knockbackMultiplier; // knockback multiplier
     public int maxHealth; // max hit points
     public int health; // current hit points
     public int score; // player score
@@ -77,6 +78,11 @@ public class Player : MonoBehaviour
 	public int hammerDamageMultiplier = 100;
 	public int spearDamageMultiplier = 100;
 	public int daggerDamageMultiplier = 100;
+
+	public float swordKnockbackMultiplier = 1.0f;
+	public float hammerKnockbackMultiplier = 8.0f;
+	public float spearKnockbackMultiplier = 0.8f;
+	public float daggerKnockbackMultiplier = 0.2f;
 
     [HideInInspector]
     public Rigidbody2D rb; // rigid body of playersprite
@@ -222,29 +228,33 @@ public class Player : MonoBehaviour
             //SoundController.Instance.RandomizeSfxLarge (playerHammerAttackSound);
             switch (currentWeapon)
             {
-                case 0:
-                    //sword
-                    SoundController.Instance.RandomizeSfxLarge(playerSwordAttackSound);
-                    attackCooldown = swordCooldown;
-					baseDamage = Mathf.FloorToInt(swordDamageMultiplier * attackCooldown);
-                    break;
+				case 0:
+	                    //sword
+					SoundController.Instance.RandomizeSfxLarge (playerSwordAttackSound);
+					attackCooldown = swordCooldown;
+					baseDamage = Mathf.FloorToInt (swordDamageMultiplier * attackCooldown);
+					knockbackMultiplier = swordKnockbackMultiplier;
+	                break;
                 case 1:
                     //hammer
                     SoundController.Instance.RandomizeSfxLarge(playerHammerAttackSound);
                     attackCooldown = hammerCooldown;
 					baseDamage = Mathf.FloorToInt(hammerDamageMultiplier * attackCooldown);
+					knockbackMultiplier = hammerKnockbackMultiplier;
                     break;
                 case 2:
                     //spear
                     SoundController.Instance.RandomizeSfxLarge(playerWhipAttackSound);
                     attackCooldown = spearCooldown;
 					baseDamage = Mathf.FloorToInt(spearDamageMultiplier * attackCooldown);
+					knockbackMultiplier = spearKnockbackMultiplier;
                     break;
                 case 3:
                     //dagger
                     SoundController.Instance.RandomizeSfxLarge(playerDaggerAttackSound);
                     attackCooldown = daggerCooldown;
 					baseDamage = Mathf.FloorToInt(daggerDamageMultiplier * attackCooldown);
+					knockbackMultiplier = daggerKnockbackMultiplier;
                     break;
             }
         }
@@ -255,24 +265,28 @@ public class Player : MonoBehaviour
 			anim.runtimeAnimatorController = Sword_RAC;
 			attackCooldown = swordCooldown;
 			baseDamage = Mathf.FloorToInt(swordDamageMultiplier * attackCooldown);
+			knockbackMultiplier = swordKnockbackMultiplier;
 		}
 		if (Input.GetKeyDown ("2")) {
 			currentWeapon = 1;
 			anim.runtimeAnimatorController = Hammer_RAC;
 			attackCooldown = hammerCooldown;
 			baseDamage = Mathf.FloorToInt(hammerDamageMultiplier * attackCooldown);
+			knockbackMultiplier = hammerKnockbackMultiplier;
 		}
 		if (Input.GetKeyDown ("3")) {
 			currentWeapon = 2;
 			anim.runtimeAnimatorController = Spear_RAC;
 			attackCooldown = spearCooldown;
 			baseDamage = Mathf.FloorToInt(spearDamageMultiplier * attackCooldown);
+			knockbackMultiplier = spearKnockbackMultiplier;
 		}
 		if (Input.GetKeyDown ("4")) {
 			currentWeapon = 3;
 			anim.runtimeAnimatorController = Dagger_RAC;
 			attackCooldown = daggerCooldown;
 			baseDamage = Mathf.FloorToInt(daggerDamageMultiplier * attackCooldown);
+			knockbackMultiplier = daggerKnockbackMultiplier;
 		}
 
 
@@ -286,21 +300,25 @@ public class Player : MonoBehaviour
                 anim.runtimeAnimatorController = Sword_RAC;
                 attackCooldown = swordCooldown;
 				baseDamage = Mathf.FloorToInt(swordDamageMultiplier * attackCooldown);
+				knockbackMultiplier = swordKnockbackMultiplier;
                 break;
             case 1:
                 anim.runtimeAnimatorController = Hammer_RAC;
                 attackCooldown = hammerCooldown;
 				baseDamage = Mathf.FloorToInt(hammerDamageMultiplier * attackCooldown);
+				knockbackMultiplier = hammerKnockbackMultiplier;
                 break;
             case 2:
                 anim.runtimeAnimatorController = Spear_RAC;
                 attackCooldown = spearCooldown;
 				baseDamage = Mathf.FloorToInt(spearDamageMultiplier * attackCooldown);
+				knockbackMultiplier = spearKnockbackMultiplier;
                 break;
             case 3:
                 anim.runtimeAnimatorController = Dagger_RAC;
                 attackCooldown = daggerCooldown;
 				baseDamage = Mathf.FloorToInt(daggerDamageMultiplier * attackCooldown);
+				knockbackMultiplier = daggerKnockbackMultiplier;
                 break;
         }
     }

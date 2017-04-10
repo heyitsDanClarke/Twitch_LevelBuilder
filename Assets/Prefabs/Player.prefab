@@ -180,6 +180,7 @@ MonoBehaviour:
   defaultSpeed: 6
   defaultAcceleration: 20
   baseDamage: 0
+  knockbackMultiplier: 0
   maxHealth: 0
   health: 8
   score: 0
@@ -234,6 +235,10 @@ MonoBehaviour:
   hammerDamageMultiplier: 100
   spearDamageMultiplier: 100
   daggerDamageMultiplier: 100
+  swordKnockbackMultiplier: 1
+  hammerKnockbackMultiplier: 8
+  spearKnockbackMultiplier: 0.8
+  daggerKnockbackMultiplier: 0.2
   rb: {fileID: 0}
   anim: {fileID: 0}
   Spear_RAC: {fileID: 9100000, guid: bcf593171de3f4336885f44db022eed1, type: 2}
