@@ -24,7 +24,7 @@ public class Cerberus : MonoBehaviour {
 
     void Start()
     {
-        moveReset = Random.Range(1, 3);
+		moveReset = UnityEngine.Random.Range(1, 3);
         _rb = GetComponent<Rigidbody2D>();
         _anim = GetComponent<Animator>();
         _rb.velocity = ChooseDirection();
