@@ -23,7 +23,8 @@ public class SoundController : MonoBehaviour
 			Destroy (gameObject);
 		} else {
 			Instance = this;
-		}
+            DontDestroyOnLoad(gameObject);
+        }
 
     }
 
