@@ -240,6 +240,8 @@ public class Player : MonoBehaviour
                     break;
             }
         }
+        if (Input.GetKeyDown("p")) //DEBUG OPTION, NEEDS TO BE REMOVED
+            charges += 10;
     }
 
     public void UpdateAnimator()
