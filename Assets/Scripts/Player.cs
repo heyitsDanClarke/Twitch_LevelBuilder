@@ -248,11 +248,34 @@ public class Player : MonoBehaviour
                     break;
             }
         }
-        if (Input.GetKeyDown("p"))
-        { //DEBUG OPTION, NEEDS TO BE REMOVED
-            charges += 10;
-            Instantiate(shard, transform.position, transform.rotation);
-        }
+        
+		//for testing only
+		if (Input.GetKeyDown ("1")) {
+			currentWeapon = 0;
+			anim.runtimeAnimatorController = Sword_RAC;
+			attackCooldown = swordCooldown;
+			baseDamage = Mathf.FloorToInt(swordDamageMultiplier * attackCooldown);
+		}
+		if (Input.GetKeyDown ("2")) {
+			currentWeapon = 1;
+			anim.runtimeAnimatorController = Hammer_RAC;
+			attackCooldown = hammerCooldown;
+			baseDamage = Mathf.FloorToInt(hammerDamageMultiplier * attackCooldown);
+		}
+		if (Input.GetKeyDown ("3")) {
+			currentWeapon = 2;
+			anim.runtimeAnimatorController = Spear_RAC;
+			attackCooldown = spearCooldown;
+			baseDamage = Mathf.FloorToInt(spearDamageMultiplier * attackCooldown);
+		}
+		if (Input.GetKeyDown ("4")) {
+			currentWeapon = 3;
+			anim.runtimeAnimatorController = Dagger_RAC;
+			attackCooldown = daggerCooldown;
+			baseDamage = Mathf.FloorToInt(daggerDamageMultiplier * attackCooldown);
+		}
+
+
     }
 
     public void UpdateAnimator()
