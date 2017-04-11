@@ -231,7 +231,7 @@ public class MonsterAI : MonoBehaviour
             }
             else
             {
-				rb.AddForce((transform.position - coll.transform.position).normalized * rb.mass * Player.Instance.knockbackMultiplier * 10, ForceMode2D.Impulse);
+				rb.AddForce((transform.position - coll.transform.position).normalized * rb.mass * Player.Instance.knockbackMultiplier * 5, ForceMode2D.Impulse);
             }
         }
     }

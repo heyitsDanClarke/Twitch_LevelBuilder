@@ -110,7 +110,7 @@ public class EyeBat : MonoBehaviour {
             }
             else
             {
-				_rb.AddForce((transform.position - coll.transform.position).normalized * _rb.mass * Player.Instance.knockbackMultiplier * 10, ForceMode2D.Impulse);
+				_rb.AddForce((transform.position - coll.transform.position).normalized * _rb.mass * Player.Instance.knockbackMultiplier * 5, ForceMode2D.Impulse);
             }
         }
         else if(coll.gameObject.tag == "Player")

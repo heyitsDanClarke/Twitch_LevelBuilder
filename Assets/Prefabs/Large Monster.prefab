@@ -258,7 +258,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 15
+  m_Mass: 10
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -407,8 +407,8 @@ MonoBehaviour:
   acceleration: 10
   pathIsEnded: 0
   nextWaypointDistance: 2
-  health: 800
-  maxHealth: 800
+  health: 600
+  maxHealth: 600
 --- !u!114 &114567163509559858
 MonoBehaviour:
   m_ObjectHideFlags: 1
