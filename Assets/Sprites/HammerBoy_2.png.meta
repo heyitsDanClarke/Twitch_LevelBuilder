@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 86a683fba24a6eb46be0d150976fbe81
-timeCreated: 1491377472
+timeCreated: 1491888697
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -169,8 +169,8 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1045
-        y: 964
-        width: 424
+        y: 961
+        width: 425
         height: 664
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -183,8 +183,8 @@ TextureImporter:
         serializedVersion: 2
         x: 1619
         y: 974
-        width: 394
-        height: 634
+        width: 424
+        height: 664
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,9 +195,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 65
-        y: 952
-        width: 390
-        height: 638
+        y: 949
+        width: 425
+        height: 664
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,8 +209,8 @@ TextureImporter:
         serializedVersion: 2
         x: 120
         y: 106
-        width: 448
-        height: 719
+        width: 500
+        height: 731
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -233,10 +233,10 @@ TextureImporter:
       name: HammerBoy_2_12
       rect:
         serializedVersion: 2
-        x: 1171
-        y: 142
-        width: 466
-        height: 730
+        x: 1174
+        y: 139
+        width: 500
+        height: 731
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -248,8 +248,8 @@ TextureImporter:
         serializedVersion: 2
         x: 1686
         y: 116
-        width: 480
-        height: 725
+        width: 500
+        height: 731
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

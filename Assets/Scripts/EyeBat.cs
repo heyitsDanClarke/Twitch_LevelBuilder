@@ -76,7 +76,7 @@ public class EyeBat : MonoBehaviour {
         if (coll.gameObject.tag == "WeaponCollider")
         {
             gameObject.GetComponent<SpriteRenderer>().color = Color.white;
-            StopAllCoroutines();
+            //StopAllCoroutines();
             if(Player.Instance.firePower > 0)
             {
                 StartCoroutine(Burn());
@@ -91,7 +91,7 @@ public class EyeBat : MonoBehaviour {
 			transform.FindChild("Health Bar").gameObject.SetActive(true); 
 
 			// damage enemy
-			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage / 10.0f);
+			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage);
 			health -= totalDamage;
 
             if (health <= 0)
