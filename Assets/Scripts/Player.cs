@@ -79,10 +79,10 @@ public class Player : MonoBehaviour
 	public int spearDamageMultiplier = 100;
 	public int daggerDamageMultiplier = 100;
 
-	public float swordKnockbackMultiplier = 1.0f;
-	public float hammerKnockbackMultiplier = 8.0f;
-	public float spearKnockbackMultiplier = 0.8f;
-	public float daggerKnockbackMultiplier = 0.2f;
+	public float swordKnockbackMultiplier = 2.0f;
+	public float hammerKnockbackMultiplier = 5.0f;
+	public float spearKnockbackMultiplier = 2.0f;
+	public float daggerKnockbackMultiplier = 1.0f;
 
     [HideInInspector]
     public Rigidbody2D rb; // rigid body of playersprite
