@@ -3168,10 +3168,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: db19152ef001a0944aa200ef22693ad2, type: 3}
-    m_FontSize: 24
+    m_FontSize: 18
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 2
+    m_MinSize: 1
     m_MaxSize: 30
     m_Alignment: 0
     m_AlignByGeometry: 0
@@ -3179,7 +3179,21 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ABOUT GAME TEXT
+  m_Text: 'Fight through the coliseum, you mighty warrior,
+
+    Collect shards and make your weapon better.
+
+    Solve puzzles to continue your journey,
+
+    There''s plenty of time, so don''t hurry.
+
+    Let the audience determine your fate with
+
+    #fire. #ice. #hammer, #spear, and #dagger,
+
+    Don''t disappoint your audience,
+
+    Do your best and you will be stronger'
 --- !u!222 &1671370506
 CanvasRenderer:
   m_ObjectHideFlags: 0
