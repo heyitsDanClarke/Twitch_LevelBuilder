@@ -190,6 +190,7 @@ public class Dungeon : MonoBehaviour
             // apply lava damage over time
             if (Player.Instance.onFire)
             {
+                Player.Instance.transform.FindChild("FlamesParticleEffect").gameObject.SetActive(true);
                 Player.Instance.fireDamageCooldown = Mathf.Max(0.0f, Player.Instance.fireDamageCooldown - (PauseMenuActive ? 0.0f : Time.deltaTime));
                 if (Player.Instance.fireDamageCooldown <= 0.0f)
                 { // player is being damaged after the damage cooldown
@@ -199,6 +200,7 @@ public class Dungeon : MonoBehaviour
             }
             else
             {
+                Player.Instance.transform.FindChild("FlamesParticleEffect").gameObject.SetActive(false);
                 Player.Instance.fireDamageCooldown = Player.Instance.maxFireDamageCooldown;
             }
 
