@@ -76,7 +76,7 @@ public class EyeBat : MonoBehaviour {
         if (coll.gameObject.tag == "WeaponCollider")
         {
             gameObject.GetComponent<SpriteRenderer>().color = Color.white;
-            //StopAllCoroutines();
+            StopCoroutine(Burn());
             if(Player.Instance.firePower > 0)
             {
                 StartCoroutine(Burn());
