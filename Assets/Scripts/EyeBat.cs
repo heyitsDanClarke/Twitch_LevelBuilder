@@ -79,7 +79,7 @@ public class EyeBat : MonoBehaviour {
             StopAllCoroutines();
             if(Player.Instance.firePower > 0)
             {
-
+                StartCoroutine(Burn());
             }
             if(Player.Instance.icePower > 0)
             {

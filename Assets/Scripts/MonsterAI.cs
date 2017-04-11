@@ -162,6 +162,16 @@ public class MonsterAI : MonoBehaviour
 
         if (coll.gameObject.tag == "WeaponCollider")
         {
+            gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+            StopAllCoroutines();
+            if (Player.Instance.firePower > 0)
+            {
+                StartCoroutine(Burn());
+            }
+            if (Player.Instance.icePower > 0)
+            {
+
+            }
             SoundController.Instance.RandomizeSfxLarge(largeMonsterHitSound);
 
             // show health bar of enemy
@@ -219,6 +229,26 @@ public class MonsterAI : MonoBehaviour
 				rb.AddForce((transform.position - coll.transform.position).normalized * rb.mass * Player.Instance.knockbackMultiplier, ForceMode2D.Impulse);
             }
         }
+    }
+
+    IEnumerator Burn()
+    {
+        transform.FindChild("FlamesParticleEffect").gameObject.SetActive(true);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+        yield return new WaitForSeconds(0.5f);
+        health -= Player.Instance.firePower; //TODO: rebalance for different damage values
+        if (health <= 0)
+        {
+            //DestroyEnemy();
+        }
+        yield return new WaitForSeconds(0.5f);
+        health -= Player.Instance.firePower;
+        if (health <= 0)
+        {
+            //DestroyEnemy();
+        }
+        transform.FindChild("FlamesParticleEffect").gameObject.SetActive(false);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.white;
     }
 
 }
