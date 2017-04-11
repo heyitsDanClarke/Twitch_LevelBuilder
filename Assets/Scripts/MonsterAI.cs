@@ -41,6 +41,8 @@ public class MonsterAI : MonoBehaviour
     public int health;
 	public int maxHealth;
 
+    float originalSpeed;
+
     void Awake()
     {
         seeker = GetComponent<Seeker>();
@@ -59,6 +61,7 @@ public class MonsterAI : MonoBehaviour
 		{
 			return;
 		}
+        originalSpeed = speed;
 	}
 
     IEnumerator UpdatePath()
@@ -164,13 +167,15 @@ public class MonsterAI : MonoBehaviour
         {
             gameObject.GetComponent<SpriteRenderer>().color = Color.white;
             StopCoroutine(Burn());
+            StopCoroutine(Freeze());
             if (Player.Instance.firePower > 0)
             {
                 StartCoroutine(Burn());
             }
             if (Player.Instance.icePower > 0)
             {
-
+                originalSpeed = speed;
+                StartCoroutine(Freeze());
             }
             SoundController.Instance.RandomizeSfxLarge(largeMonsterHitSound);
 
@@ -248,6 +253,18 @@ public class MonsterAI : MonoBehaviour
             //DestroyEnemy();
         }
         transform.FindChild("FlamesParticleEffect").gameObject.SetActive(false);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+    }
+
+    IEnumerator Freeze()
+    {
+        transform.FindChild("IceParticleEffect").gameObject.SetActive(true);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
+        originalSpeed = speed;
+        speed -= Player.Instance.icePower;
+        yield return new WaitForSeconds(1);
+        speed = originalSpeed;
+        transform.FindChild("IceParticleEffect").gameObject.SetActive(false);
         gameObject.GetComponent<SpriteRenderer>().color = Color.white;
     }
 

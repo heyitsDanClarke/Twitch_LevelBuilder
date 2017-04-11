@@ -23,9 +23,14 @@ public class EyeBat : MonoBehaviour {
     bool swooping = false;
     private Func<Rigidbody2D> treasureObjectRB;
 
+    float originalSeekSpeed;
+    float originalSwoopSpeed;
+
     void Start () {
         _rb = GetComponent<Rigidbody2D>();
         target = Player.Instance.gameObject;
+        originalSeekSpeed = seekSpeed;
+        originalSwoopSpeed = swoopSpeed;
 	}
 	
 	void Update () {
@@ -77,13 +82,18 @@ public class EyeBat : MonoBehaviour {
         {
             gameObject.GetComponent<SpriteRenderer>().color = Color.white;
             StopCoroutine(Burn());
+            StopCoroutine(Freeze());
+            seekSpeed = originalSeekSpeed;
+            swoopSpeed = originalSwoopSpeed;
             if(Player.Instance.firePower > 0)
             {
                 StartCoroutine(Burn());
             }
             if(Player.Instance.icePower > 0)
             {
-
+                originalSeekSpeed = seekSpeed;
+                originalSwoopSpeed = swoopSpeed;
+                StartCoroutine(Freeze());
             }
 
             SoundController.Instance.RandomizeSfx(batHit);
@@ -171,6 +181,20 @@ public class EyeBat : MonoBehaviour {
             DestroyEnemy();
         }
         transform.FindChild("FlamesParticleEffect").gameObject.SetActive(false);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+    }
+    IEnumerator Freeze()
+    {
+        transform.FindChild("IceParticleEffect").gameObject.SetActive(true);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
+        originalSeekSpeed = seekSpeed;
+        seekSpeed -= Player.Instance.icePower;
+        originalSwoopSpeed = swoopSpeed;
+        seekSpeed -= Player.Instance.icePower;
+        yield return new WaitForSeconds(1);
+        seekSpeed = originalSeekSpeed;
+        seekSpeed = originalSwoopSpeed;
+        transform.FindChild("IceParticleEffect").gameObject.SetActive(false);
         gameObject.GetComponent<SpriteRenderer>().color = Color.white;
     }
 }
