@@ -115,7 +115,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1623097365396398}
   m_LocalRotation: {x: -0.17364752, y: 0, z: 0, w: 0.9848079}
-  m_LocalPosition: {x: 31.880442, y: 24.213093, z: 0}
+  m_LocalPosition: {x: 0, y: -0.88603055, z: 0}
   m_LocalScale: {x: -1, y: 1, z: 1}
   m_Children:
   - {fileID: 224734987569566918}
@@ -187,7 +187,7 @@ Animator:
   m_GameObject: {fileID: 1623097365396398}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 58d345a05e234469a806fbe889d65681, type: 2}
+  m_Controller: {fileID: 9100000, guid: 4ae0af37177818c4ea38fd19e0287c2d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -210,11 +210,11 @@ MonoBehaviour:
   acceleration: 20
   defaultSpeed: 6
   defaultAcceleration: 20
-  baseDamage: 20
-  knockbackMultiplier: 0.2
+  baseDamage: 42
+  knockbackMultiplier: 1
   maxHealth: 50
-  health: 5
-  score: 340
+  health: 50
+  score: 0
   maxCharges: 10
   charges: 0
   icePower: 0
@@ -252,7 +252,7 @@ MonoBehaviour:
   treasureFoundSound: {fileID: 8300000, guid: c93f71b76d0deaf4d94afaf1bdf60620, type: 3}
   attackCooldown: 0
   attackCollider: {fileID: 1083180465670178}
-  currentWeapon: 3
+  currentWeapon: 0
   nextWeapon: 0
   sword: 0
   hammer: 1
@@ -2896,7 +2896,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300008, guid: 9ca725cde80f10646a72baad25dabfb3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 72edbcbf88f302f43ae41b3497e1a62b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
