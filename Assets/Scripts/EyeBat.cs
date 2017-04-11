@@ -11,7 +11,7 @@ public class EyeBat : MonoBehaviour {
     public float seekSpeed = 2;
     public float swoopSpeed = 5;
     public float swoopRange = 4;
-    public int health = 1;
+    public float health = 1;
 	public int maxHealth = 1;
     public GameObject shard;
 
@@ -75,45 +75,28 @@ public class EyeBat : MonoBehaviour {
 		
         if (coll.gameObject.tag == "WeaponCollider")
         {
+            gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+            StopAllCoroutines();
+            if(Player.Instance.firePower > 0)
+            {
+
+            }
+            if(Player.Instance.icePower > 0)
+            {
+
+            }
+
             SoundController.Instance.RandomizeSfx(batHit);
 			// show health bar of enemy
 			transform.FindChild("Health Bar").gameObject.SetActive(true); 
 
 			// damage enemy
-			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage * (1.0f + (Player.Instance.firePower + Player.Instance.icePower) / 10.0f));
+			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage / 10.0f);
 			health -= totalDamage;
 
             if (health <= 0)
             {
-                Vector3 shardPosition = new Vector3(transform.position.x, transform.position.y, 0.0f);
-
-				// prevent shards from spawning inside walls
-				while (true) {
-					int x = Mathf.RoundToInt (shardPosition.x);
-					int y = Mathf.RoundToInt (shardPosition.y);
-					try {
-						bool notOnWall = Dungeon.Instance.roomStructure [x, y].tile != Dungeon.Instance.wall; // shard position not on wall
-						bool notOnBox = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.box; // shard position not on boxes
-						bool notOnLever = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.lever; // shard position not on levers
-						bool onLeverButAtEdge = Dungeon.Instance.roomStructure[x, y].entity == Dungeon.Instance.lever && Mathf.Abs(shardPosition.x - x) > 0.25f && Mathf.Abs(shardPosition.y - y) > 0.25f; // shard position not inside levers
-						if (notOnWall && notOnBox && (notOnLever || onLeverButAtEdge)) {
-							shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.1f;
-							break;
-						}
-					} catch (IndexOutOfRangeException) {
-						shardPosition = Player.Instance.transform.position;
-						break;
-					}
-
-					shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.05f;
-				}
-
-				GameObject treasureObject = Instantiate(shard, shardPosition, Quaternion.identity);
-                treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
-
-				Player.Instance.score += 20;
-
-                Destroy(gameObject);
+                DestroyEnemy();
             }
             else
             {
@@ -131,5 +114,63 @@ public class EyeBat : MonoBehaviour {
 			Player.Instance.GetComponent<Rigidbody2D>().AddForce((coll.transform.position - transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 10.0f, ForceMode2D.Impulse);
 			SoundController.Instance.RandomizeSfxLarge(playerHitSound1, playerHitSound2, playerHitSound3);
 		}
+    }
+
+    void DestroyEnemy()
+    {
+        Vector3 shardPosition = new Vector3(transform.position.x, transform.position.y, 0.0f);
+
+        // prevent shards from spawning inside walls
+        while (true)
+        {
+            int x = Mathf.RoundToInt(shardPosition.x);
+            int y = Mathf.RoundToInt(shardPosition.y);
+            try
+            {
+                bool notOnWall = Dungeon.Instance.roomStructure[x, y].tile != Dungeon.Instance.wall; // shard position not on wall
+                bool notOnBox = Dungeon.Instance.roomStructure[x, y].entity != Dungeon.Instance.box; // shard position not on boxes
+                bool notOnLever = Dungeon.Instance.roomStructure[x, y].entity != Dungeon.Instance.lever; // shard position not on levers
+                bool onLeverButAtEdge = Dungeon.Instance.roomStructure[x, y].entity == Dungeon.Instance.lever && Mathf.Abs(shardPosition.x - x) > 0.25f && Mathf.Abs(shardPosition.y - y) > 0.25f; // shard position not inside levers
+                if (notOnWall && notOnBox && (notOnLever || onLeverButAtEdge))
+                {
+                    shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.1f;
+                    break;
+                }
+            }
+            catch (IndexOutOfRangeException)
+            {
+                shardPosition = Player.Instance.transform.position;
+                break;
+            }
+
+            shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.05f;
+        }
+
+        GameObject treasureObject = Instantiate(shard, shardPosition, Quaternion.identity);
+        treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+
+        Player.Instance.score += 20;
+
+        Destroy(gameObject);
+    }
+
+    IEnumerator Burn()
+    {
+        transform.FindChild("FlamesParticleEffect").gameObject.SetActive(true);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+        yield return new WaitForSeconds(0.5f);
+        health -= Player.Instance.firePower; //TODO: rebalance for different damage values
+        if(health <= 0)
+        {
+            DestroyEnemy();
+        }
+        yield return new WaitForSeconds(0.5f);
+        health -= Player.Instance.firePower;
+        if (health <= 0)
+        {
+            DestroyEnemy();
+        }
+        transform.FindChild("FlamesParticleEffect").gameObject.SetActive(false);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.white;
     }
 }
