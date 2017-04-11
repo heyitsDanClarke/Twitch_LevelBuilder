@@ -88,8 +88,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1083180465670178}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.46, y: -0.04, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 4964389186740822}
@@ -115,8 +115,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1623097365396398}
   m_LocalRotation: {x: -0.17364752, y: 0, z: 0, w: 0.9848079}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 31.880442, y: 24.213093, z: 0}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_Children:
   - {fileID: 224734987569566918}
   - {fileID: 4034261262597562}
@@ -187,7 +187,7 @@ Animator:
   m_GameObject: {fileID: 1623097365396398}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4ae0af37177818c4ea38fd19e0287c2d, type: 2}
+  m_Controller: {fileID: 9100000, guid: 58d345a05e234469a806fbe889d65681, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -206,16 +206,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f0de3d861062104d9e948ce1df38293, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
-  acceleration: 0
+  speed: 6
+  acceleration: 20
   defaultSpeed: 6
   defaultAcceleration: 20
-  baseDamage: 0
-  knockbackMultiplier: 0
-  maxHealth: 0
-  health: 8
-  score: 0
-  maxCharges: 0
+  baseDamage: 20
+  knockbackMultiplier: 0.2
+  maxHealth: 50
+  health: 5
+  score: 340
+  maxCharges: 10
   charges: 0
   icePower: 0
   firePower: 0
@@ -223,12 +223,12 @@ MonoBehaviour:
   prevIcePower: 0
   prevFirePower: 0
   prevScore: 0
-  fireResistance: 0
-  maxFireResistance: 0
+  fireResistance: 1
+  maxFireResistance: 1
   fireResistanceCooldown: 0
-  maxFireResistanceCooldown: 0
-  fireDamageCooldown: 0
-  maxFireDamageCooldown: 0
+  maxFireResistanceCooldown: 0.5
+  fireDamageCooldown: 0.5
+  maxFireDamageCooldown: 0.5
   onFire: 0
   weaponShards: 
   boxes: 0
@@ -250,9 +250,9 @@ MonoBehaviour:
   playerHitSound3: {fileID: 8300000, guid: 64782c4d24ec1e84bbfb8a20bf584991, type: 3}
   exitFoundSound: {fileID: 8300000, guid: f38cca873053f6645ac59aec2b1ac150, type: 3}
   treasureFoundSound: {fileID: 8300000, guid: c93f71b76d0deaf4d94afaf1bdf60620, type: 3}
-  attackCooldown: 0.5
+  attackCooldown: 0
   attackCollider: {fileID: 1083180465670178}
-  currentWeapon: 0
+  currentWeapon: 3
   nextWeapon: 0
   sword: 0
   hammer: 1
@@ -270,8 +270,8 @@ MonoBehaviour:
   hammerKnockbackMultiplier: 8
   spearKnockbackMultiplier: 0.8
   daggerKnockbackMultiplier: 0.2
-  rb: {fileID: 0}
-  anim: {fileID: 0}
+  rb: {fileID: 50218394670393478}
+  anim: {fileID: 95195843981994314}
   Spear_RAC: {fileID: 9100000, guid: bcf593171de3f4336885f44db022eed1, type: 2}
   Hammer_RAC: {fileID: 9100000, guid: efb10f046b6bf40c193bce5f5fc318fb, type: 2}
   Sword_RAC: {fileID: 9100000, guid: 4ae0af37177818c4ea38fd19e0287c2d, type: 2}
@@ -365,7 +365,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1006497211
+  randomSeed: -273518489
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -2896,7 +2896,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 72edbcbf88f302f43ae41b3497e1a62b, type: 3}
+  m_Sprite: {fileID: 21300008, guid: 9ca725cde80f10646a72baad25dabfb3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
