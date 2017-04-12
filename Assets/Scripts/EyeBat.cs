@@ -167,7 +167,6 @@ public class EyeBat : MonoBehaviour {
     IEnumerator Burn()
     {
         transform.FindChild("FlamesParticleEffect").gameObject.SetActive(true);
-		gameObject.GetComponent<SpriteRenderer>().color = Color.Lerp (Color.red, Color.white, Mathf.Max(1 - Player.Instance.firePower / 10.0f, 0));
         yield return new WaitForSeconds(0.5f);
         health -= Player.Instance.firePower * 5;
         if(health <= 0)

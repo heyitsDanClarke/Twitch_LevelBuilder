@@ -12,6 +12,7 @@ public class Cerberus : MonoBehaviour {
     bool paused;
     bool moveLeft;
 
+	float originalSpeed;
     public float speed;
     public float damage;
 	public int health = 8;
@@ -70,9 +71,9 @@ public class Cerberus : MonoBehaviour {
     {
         float x;
         if (moveLeft)
-            x = -1;
+			x = -speed;
         else
-            x = 1;
+			x = speed;
         return new Vector2(x, 0);
     }
 
@@ -91,24 +92,72 @@ public class Cerberus : MonoBehaviour {
         paused = false;
     }
 
+	void DestroyEnemy () {
+		GameObject tempExit = Instantiate(exit, transform.position, transform.rotation);
+		tempExit.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+
+		Player.Instance.score += 1000;
+
+		Destroy(this.gameObject);
+	}
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.tag == "WeaponCollider")
         {
+			gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+			StopCoroutine(Burn());
+			StopCoroutine(Freeze());
+			if (Player.Instance.firePower > 0)
+			{
+				StartCoroutine(Burn());
+			}
+			if (Player.Instance.icePower > 0)
+			{
+				originalSpeed = speed;
+				StartCoroutine(Freeze());
+			}
+
 			// damage enemy
 			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage * (1.0f + (Player.Instance.firePower + Player.Instance.icePower) / 20.0f));
 			health -= totalDamage;
 
             if (health <= 0)
             {
-                GameObject tempExit = Instantiate(exit, transform.position, transform.rotation);
-				tempExit.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
-
-				Player.Instance.score += 1000;
-
-                Destroy(this.gameObject);
-               
+				DestroyEnemy ();               
             }
         }
     }
+
+	IEnumerator Burn()
+	{
+		transform.FindChild("FlamesParticleEffect").gameObject.SetActive(true);
+		yield return new WaitForSeconds(0.5f);
+		health -= Player.Instance.firePower * 5;
+		if (health <= 0)
+		{
+			DestroyEnemy ();
+		}
+		yield return new WaitForSeconds(0.5f);
+		health -= Player.Instance.firePower * 5;
+		if (health <= 0)
+		{
+			DestroyEnemy ();
+		}
+		transform.FindChild("FlamesParticleEffect").gameObject.SetActive(false);
+		gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+	}
+
+	IEnumerator Freeze()
+	{
+		transform.FindChild("IceParticleEffect").gameObject.SetActive(true);
+		float slowFactor = Mathf.Max(1 - Player.Instance.icePower / 10.0f, 0);
+		gameObject.GetComponent<SpriteRenderer>().color = Color.Lerp (Color.blue, Color.white, slowFactor);
+		originalSpeed = speed;
+		speed *= slowFactor;
+		yield return new WaitForSeconds(1);
+		speed = originalSpeed;
+		transform.FindChild("IceParticleEffect").gameObject.SetActive(false);
+		gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+	}
 }
