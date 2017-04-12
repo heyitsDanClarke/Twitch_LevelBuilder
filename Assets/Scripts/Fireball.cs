@@ -30,7 +30,7 @@ public class Fireball : MonoBehaviour {
             if (Player.Instance.health > 0)
                 Player.Instance.health -= 1;
             Player.Instance.GetComponent<Rigidbody2D>().AddForce(
-                (Player.Instance.transform.position - transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 1.0f, 
+                (Player.Instance.transform.position - transform.position).normalized * coll.gameObject.GetComponent<Rigidbody2D>().mass * 20.0f, 
                 ForceMode2D.Impulse);
             Destroy(gameObject);
         }

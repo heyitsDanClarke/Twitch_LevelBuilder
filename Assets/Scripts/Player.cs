@@ -167,6 +167,8 @@ public class Player : MonoBehaviour
         PlayerUI.Instance.transform.FindChild("Weapon Timer").FindChild("Real Value").GetComponent<Text>().text = 0.0f.ToString(); // reset weapon durability timer
         PlayerUI.Instance.nextWeaponPanelCountdown = 0.0f; // reset next weapon panel cooldown timer
         PlayerUI.Instance.transform.FindChild("Next Weapon Panel").gameObject.SetActive(false); // hide next weapon panel
+		transform.Find ("Saved Velocity").gameObject.GetComponent<Text> ().text = "0,0"; // reset player velocity
+		rb.velocity = new Vector2 (0, 0); // reset player velocity
     }
 
     // save the current state of the player to the beginning of the room 
@@ -400,7 +402,7 @@ public class Player : MonoBehaviour
                 DungeonUI.Instance.showNextLevelMenu();
             }
         }
-        else if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster"))
+		else if (coll.gameObject.CompareTag("Small Monster") || coll.gameObject.CompareTag("Large Monster")|| coll.gameObject.CompareTag("Boss"))
         {
 
 			if (health > 0) {

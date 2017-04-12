@@ -141,15 +141,6 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
-    void CollisionEnter2D(Collision2D coll)
-    {
-		if (coll.gameObject.tag == "Player") {
-			if (Player.Instance.health > 0) {
-				Player.Instance.health -= 1;
-			}
-		}
-    }
-
     void OnTriggerEnter2D(Collider2D coll)
     { 
         /*

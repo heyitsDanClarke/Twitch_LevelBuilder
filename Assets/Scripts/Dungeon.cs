@@ -34,6 +34,8 @@ public class Dungeon : MonoBehaviour
     public GameObject enemyVisual; //enemy visual
     [HideInInspector]
     public GameObject puzzleVisual; //puzzle visual
+	[HideInInspector]
+	public GameObject arrowVisual; //arrow visual
 
     public GameObject iceTiles; // ice tiles
     public GameObject waterTiles; // water tiles
@@ -51,6 +53,7 @@ public class Dungeon : MonoBehaviour
     public GameObject pressurePlateTile; // pressure plate
     public GameObject entrance; // entrance of room
     public GameObject exit; // exit of room
+	public GameObject exitArrow; // arrow pointing out the exit
     public GameObject boss;
 
     ////public Sprite[] spritePlayer = new Sprite[40];
@@ -90,8 +93,8 @@ public class Dungeon : MonoBehaviour
     private const float switchPuzzleRefreshPeriod = 2.0f; // refresh period of switch puzzle
     public float redrawSwitchPuzzleCountdown; // countdown for redrawing switch puzzle
 
-    private Vector2 playerStartPosition; // starting position of player
-    private Vector2 exitPosition; // position of exit
+	public Vector2 playerStartPosition; // starting position of player
+	public Vector2 exitPosition; // position of exit
     private System.Random random; // random numnber generator
 
     // Use this for initialization
@@ -226,7 +229,7 @@ public class Dungeon : MonoBehaviour
         containsBlockPuzzle = false;
         containsSwitchPuzzle = false;
 		Player.Instance.gameObject.SetActive (true);
-        Player.Instance.LoadState();
+        Player.Instance.LoadState ();
 
         // determine room temperature
         if (GameMaster.Instance.fireCount + GameMaster.Instance.iceCount == 0)
@@ -244,6 +247,8 @@ public class Dungeon : MonoBehaviour
             Destroy(enemyVisual);
         if (puzzleVisual != null)
             Destroy(puzzleVisual);
+		if (arrowVisual != null)
+			Destroy(arrowVisual);
 
         dungeonVisual = new GameObject();
         dungeonVisual.transform.name = "Dungeon Visual";
@@ -256,6 +261,10 @@ public class Dungeon : MonoBehaviour
         enemyVisual = new GameObject();
         enemyVisual.transform.name = "Enemy Visual";
         enemyVisual.transform.SetParent(transform);
+
+		arrowVisual = new GameObject();
+		arrowVisual.transform.name = "Arrow Visual";
+		arrowVisual.transform.SetParent(transform);
 
         if (caveRoomsLeftUntilBoss + hybridRoomsLeftUntilBoss > 0)
         {
@@ -319,6 +328,8 @@ public class Dungeon : MonoBehaviour
             Destroy(enemyVisual);
         if (puzzleVisual != null)
             Destroy(puzzleVisual);
+		if (arrowVisual != null)
+			Destroy(arrowVisual);
 
         dungeonVisual = new GameObject();
         dungeonVisual.transform.name = "Dungeon Visual";
@@ -331,6 +342,10 @@ public class Dungeon : MonoBehaviour
         enemyVisual = new GameObject();
         enemyVisual.transform.name = "Enemy Visual";
         enemyVisual.transform.SetParent(transform);
+
+		arrowVisual = new GameObject();
+		arrowVisual.transform.name = "Arrow Visual";
+		arrowVisual.transform.SetParent(transform);
 
         if (caveRoomsLeftUntilBoss >= 0 || hybridRoomsLeftUntilBoss >= 0)
         { // not at boss room
@@ -793,8 +808,10 @@ public class Dungeon : MonoBehaviour
             }
         }
 
-        // set player spawn position
+        // set player spawn position and spawn exit arrow
         Player.Instance.transform.position = playerStartPosition;
+		GameObject tempExitArrow = Instantiate (exitArrow, new Vector3 (-689.0f, -777.0f, -1.1f), Quaternion.identity);
+		tempExitArrow.transform.SetParent (arrowVisual.transform);
 
         // set positions for entrance and exit portals
         Vector2 entrancePortalPosition = playerStartPosition;
