@@ -259,9 +259,10 @@ public class MonsterAI : MonoBehaviour
     IEnumerator Freeze()
     {
         transform.FindChild("IceParticleEffect").gameObject.SetActive(true);
-        gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
+		float slowFactor = Mathf.Max(1 - Player.Instance.icePower / 10.0f, 0);
+		gameObject.GetComponent<SpriteRenderer>().color = Color.Lerp (Color.blue, Color.white, slowFactor);
         originalSpeed = speed;
-        speed -= Player.Instance.icePower;
+		speed *= slowFactor;
         yield return new WaitForSeconds(1);
         speed = originalSpeed;
         transform.FindChild("IceParticleEffect").gameObject.SetActive(false);

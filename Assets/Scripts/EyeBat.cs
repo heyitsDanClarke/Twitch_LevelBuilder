@@ -186,11 +186,12 @@ public class EyeBat : MonoBehaviour {
     IEnumerator Freeze()
     {
         transform.FindChild("IceParticleEffect").gameObject.SetActive(true);
-        gameObject.GetComponent<SpriteRenderer>().color = Color.blue;
+		float slowFactor = Mathf.Max(1 - Player.Instance.icePower / 10.0f, 0);
+		gameObject.GetComponent<SpriteRenderer> ().color = Color.Lerp (Color.blue, Color.white, slowFactor);
         originalSeekSpeed = seekSpeed;
-        seekSpeed -= Player.Instance.icePower;
+		seekSpeed *= slowFactor;
         originalSwoopSpeed = swoopSpeed;
-        seekSpeed -= Player.Instance.icePower;
+		seekSpeed *= slowFactor;
         yield return new WaitForSeconds(1);
         seekSpeed = originalSeekSpeed;
         seekSpeed = originalSwoopSpeed;
