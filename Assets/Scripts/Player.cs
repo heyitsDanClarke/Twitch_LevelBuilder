@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
 
     public static Player Instance;
 
+	public Vector3 positionOffset = new Vector3 (0.0f, 0.4f, 0.0f); // position offset while calculating the biome effect to the player
     public float speed; // speed of player
     public float acceleration; // acceleration of player;
     [HideInInspector]
