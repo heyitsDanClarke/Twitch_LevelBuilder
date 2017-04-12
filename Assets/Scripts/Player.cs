@@ -61,6 +61,8 @@ public class Player : MonoBehaviour
     // attack collider
     public GameObject attackCollider;
 
+	Vector3 defaultWeaponColliderLocalScale;
+
     public int currentWeapon = 0;
     public int nextWeapon;
 
@@ -79,10 +81,10 @@ public class Player : MonoBehaviour
 	public int spearDamageMultiplier = 100;
 	public int daggerDamageMultiplier = 100;
 
-	public float swordKnockbackMultiplier = 2.0f;
-	public float hammerKnockbackMultiplier = 5.0f;
+	public float swordKnockbackMultiplier = 3.0f;
+	public float hammerKnockbackMultiplier = 10.0f;
 	public float spearKnockbackMultiplier = 2.0f;
-	public float daggerKnockbackMultiplier = 1.0f;
+	public float daggerKnockbackMultiplier = 0.2f;
 
     [HideInInspector]
     public Rigidbody2D rb; // rigid body of playersprite
@@ -131,6 +133,8 @@ public class Player : MonoBehaviour
         fireDamageCooldown = maxFireDamageCooldown;
         onFire = false;
 		puzzleCompletedOnce = false;
+
+		defaultWeaponColliderLocalScale = transform.FindChild("WeaponCollider").localScale;
 
         currentWeapon = 0;
 
@@ -441,28 +445,24 @@ public class Player : MonoBehaviour
 
     IEnumerator MeleeAttack()
     {
-
-        //save default collider scale
-        Vector3 attackRange = transform.FindChild("WeaponCollider").localScale;
-
         //change collider scale depends on weapon range
         switch (currentWeapon)
         {
             case 0:
                 //sword
-                transform.FindChild("WeaponCollider").localScale = new Vector3(transform.FindChild("WeaponCollider").localScale.x, transform.FindChild("WeaponCollider").localScale.y, transform.FindChild("WeaponCollider").localScale.z);
+				transform.FindChild("WeaponCollider").localScale = new Vector3 (defaultWeaponColliderLocalScale.x, defaultWeaponColliderLocalScale.y, defaultWeaponColliderLocalScale.z);
                 break;
             case 1:
                 //hammer
-                transform.FindChild("WeaponCollider").localScale = new Vector3(transform.FindChild("WeaponCollider").localScale.x * 1.5f, transform.FindChild("WeaponCollider").localScale.y * 1.5f, transform.FindChild("WeaponCollider").localScale.z);
+				transform.FindChild("WeaponCollider").localScale = new Vector3 (defaultWeaponColliderLocalScale.x * 1.5f, defaultWeaponColliderLocalScale.y * 1.5f, defaultWeaponColliderLocalScale.z);
                 break;
             case 2:
                 //spear
-                transform.FindChild("WeaponCollider").localScale = new Vector3(transform.FindChild("WeaponCollider").localScale.x * 2.5f, transform.FindChild("WeaponCollider").localScale.y, transform.FindChild("WeaponCollider").localScale.z);
+				transform.FindChild("WeaponCollider").localScale = new Vector3 (defaultWeaponColliderLocalScale.x * 2.5f, defaultWeaponColliderLocalScale.y, defaultWeaponColliderLocalScale.z);
                 break;
             case 3:
                 //dagger
-                transform.FindChild("WeaponCollider").localScale = new Vector3(transform.FindChild("WeaponCollider").localScale.x, transform.FindChild("WeaponCollider").localScale.y * 2.0f, transform.FindChild("WeaponCollider").localScale.z);
+				transform.FindChild("WeaponCollider").localScale = new Vector3 (defaultWeaponColliderLocalScale.x, defaultWeaponColliderLocalScale.y * 2.25f, defaultWeaponColliderLocalScale.z);
                 break;
         }
 
@@ -498,6 +498,6 @@ public class Player : MonoBehaviour
         //charges -= 1;
 
         //restore collider scale
-        transform.FindChild("WeaponCollider").localScale = attackRange;
+        transform.FindChild("WeaponCollider").localScale = defaultWeaponColliderLocalScale;
     }
 }
