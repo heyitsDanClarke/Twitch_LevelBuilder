@@ -111,8 +111,8 @@ public class Dungeon : MonoBehaviour
         // initialize camera
         Camera.main.transform.position = new Vector3(0.0f, Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, -20.0f);
 
-        caveRoomsLeftUntilBoss = 3;
-        hybridRoomsLeftUntilBoss = 3;
+        caveRoomsLeftUntilBoss = 2;
+        hybridRoomsLeftUntilBoss = 2;
 
         GenerateRandomRoom();
     }
