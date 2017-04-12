@@ -1601,7 +1601,7 @@ public class Dungeon : MonoBehaviour
                     GameObject tempEntity = Instantiate(smallMob, new Vector3(x, y, 0.0f), transform.rotation);
                     tempEntity.transform.SetParent(enemyVisual.transform);
                     room[x, y].entity = small;
-                    int mobCluster = random.Next(1, 4); // size of mob cluster (3 to 5 inclusive)
+                    int mobCluster = random.Next(2, 4); // size of mob cluster (2 to 3 inclusive)
                     for (int mobCount = 1; mobCount < mobCluster; mobCount++)
                     {
                         int i, j; // x and y coordinates of the room

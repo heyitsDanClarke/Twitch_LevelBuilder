@@ -188,46 +188,7 @@ public class MonsterAI : MonoBehaviour
 
             if (health <= 0)
 			{
-				if (CompareTag ("Small Monster")) {
-					Vector3 shardPosition = new Vector3(transform.position.x, transform.position.y, 0.0f);
-
-					// prevent shards from spawning inside walls
-					while (true) {
-						int x = Mathf.RoundToInt (shardPosition.x);
-						int y = Mathf.RoundToInt (shardPosition.y);
-						try {
-							bool notOnWall = Dungeon.Instance.roomStructure [x, y].tile != Dungeon.Instance.wall; // shard position not on wall
-							bool notOnBox = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.box; // shard position not on boxes
-							bool notOnLever = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.lever; // shard position not on levers
-							bool onLeverButAtEdge = Dungeon.Instance.roomStructure[x, y].entity == Dungeon.Instance.lever && Mathf.Abs(shardPosition.x - x) > 0.25f && Mathf.Abs(shardPosition.y - y) > 0.25f; // shard position not inside levers
-							if (notOnWall && notOnBox && (notOnLever || onLeverButAtEdge)) {
-								shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.1f;
-								break;
-							}
-						} catch (IndexOutOfRangeException) {
-							shardPosition = Player.Instance.transform.position;
-							break;
-						}
-
-						shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.05f;
-					}
-
-					GameObject treasureObject = Instantiate (shard, shardPosition, Quaternion.identity);
-					treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
-
-					Player.Instance.score += 10;
-				} else if (CompareTag ("Large Monster")) {
-
-					// spawn loot box
-					GameObject treasureObject = Instantiate(lootBox, new Vector3 (transform.position.x, transform.position.y, 0.0f), transform.rotation);
-					treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
-
-					AstarPath.active.Scan();
-
-					Player.Instance.score += 50;
-				}
-
-                Destroy(gameObject);
+				DestroyEnemy ();
             }
             else
             {
@@ -236,21 +197,64 @@ public class MonsterAI : MonoBehaviour
         }
     }
 
+	void DestroyEnemy() {
+		if (CompareTag ("Small Monster")) {
+			Vector3 shardPosition = new Vector3(transform.position.x, transform.position.y, 0.0f);
+
+			// prevent shards from spawning inside walls
+			while (true) {
+				int x = Mathf.RoundToInt (shardPosition.x);
+				int y = Mathf.RoundToInt (shardPosition.y);
+				try {
+					bool notOnWall = Dungeon.Instance.roomStructure [x, y].tile != Dungeon.Instance.wall; // shard position not on wall
+					bool notOnBox = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.box; // shard position not on boxes
+					bool notOnLever = Dungeon.Instance.roomStructure [x, y].entity != Dungeon.Instance.lever; // shard position not on levers
+					bool onLeverButAtEdge = Dungeon.Instance.roomStructure[x, y].entity == Dungeon.Instance.lever && Mathf.Abs(shardPosition.x - x) > 0.25f && Mathf.Abs(shardPosition.y - y) > 0.25f; // shard position not inside levers
+					if (notOnWall && notOnBox && (notOnLever || onLeverButAtEdge)) {
+						shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.1f;
+						break;
+					}
+				} catch (IndexOutOfRangeException) {
+					shardPosition = Player.Instance.transform.position;
+					break;
+				}
+
+				shardPosition -= (transform.position - Player.Instance.transform.position).normalized * 0.05f;
+			}
+
+			GameObject treasureObject = Instantiate (shard, shardPosition, Quaternion.identity);
+			treasureObject.transform.SetParent (Dungeon.Instance.dungeonVisual.transform);
+
+			Player.Instance.score += 10;
+		} else if (CompareTag ("Large Monster")) {
+
+			// spawn loot box
+			GameObject treasureObject = Instantiate(lootBox, new Vector3 (transform.position.x, transform.position.y, 0.0f), transform.rotation);
+			treasureObject.transform.SetParent(Dungeon.Instance.dungeonVisual.transform);
+
+			AstarPath.active.Scan();
+
+			Player.Instance.score += 50;
+		}
+
+		Destroy(gameObject);
+	}
+
     IEnumerator Burn()
     {
         transform.FindChild("FlamesParticleEffect").gameObject.SetActive(true);
         gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         yield return new WaitForSeconds(0.5f);
-        health -= Player.Instance.firePower; //TODO: rebalance for different damage values
+		health -= Player.Instance.firePower * 10;
         if (health <= 0)
         {
-            //DestroyEnemy();
+			DestroyEnemy ();
         }
         yield return new WaitForSeconds(0.5f);
-        health -= Player.Instance.firePower;
+		health -= Player.Instance.firePower * 10;
         if (health <= 0)
         {
-            //DestroyEnemy();
+			DestroyEnemy ();
         }
         transform.FindChild("FlamesParticleEffect").gameObject.SetActive(false);
         gameObject.GetComponent<SpriteRenderer>().color = Color.white;

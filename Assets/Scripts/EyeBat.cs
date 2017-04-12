@@ -169,13 +169,13 @@ public class EyeBat : MonoBehaviour {
         transform.FindChild("FlamesParticleEffect").gameObject.SetActive(true);
         gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         yield return new WaitForSeconds(0.5f);
-        health -= Player.Instance.firePower; //TODO: rebalance for different damage values
+        health -= Player.Instance.firePower * 10;
         if(health <= 0)
         {
             DestroyEnemy();
         }
         yield return new WaitForSeconds(0.5f);
-        health -= Player.Instance.firePower;
+		health -= Player.Instance.firePower * 10;
         if (health <= 0)
         {
             DestroyEnemy();
