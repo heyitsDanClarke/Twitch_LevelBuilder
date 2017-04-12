@@ -145,7 +145,6 @@ public class Cerberus : MonoBehaviour {
 			DestroyEnemy ();
 		}
 		transform.FindChild("FlamesParticleEffect").gameObject.SetActive(false);
-		gameObject.GetComponent<SpriteRenderer>().color = Color.white;
 	}
 
 	IEnumerator Freeze()
