@@ -111,8 +111,8 @@ public class Dungeon : MonoBehaviour
         // initialize camera
         Camera.main.transform.position = new Vector3(0.0f, Mathf.Tan(Mathf.Deg2Rad * -20.0f) * 20.0f, -20.0f);
 
-        caveRoomsLeftUntilBoss = 3;
-        hybridRoomsLeftUntilBoss = 3;
+        caveRoomsLeftUntilBoss = 2;
+        hybridRoomsLeftUntilBoss = 2;
 
         GenerateRandomRoom();
     }
@@ -143,8 +143,8 @@ public class Dungeon : MonoBehaviour
         Player.Instance.rb.drag = 0.0f;
         try
         {
-            int x = (int)Math.Round(Player.Instance.transform.position.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
-            int y = (int)Math.Round(Player.Instance.transform.position.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			int x = (int)Math.Round(Player.Instance.transform.position.x - Player.Instance.positionOffset.x, MidpointRounding.AwayFromZero); // integer x coordinate of player
+			int y = (int)Math.Round(Player.Instance.transform.position.y - Player.Instance.positionOffset.y, MidpointRounding.AwayFromZero); // integer x coordinate of player
             if (roomStructure[x, y].tile == ice)
             {
                 Player.Instance.acceleration = 2.0f; // make floor slippery if player is on ice
