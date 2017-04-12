@@ -38,7 +38,7 @@ public class GemController : MonoBehaviour {
 		Vector2 targetVelocity = new Vector2 (0, 0);
 		if (!PauseMenuActive) { // if the pause menu is not active
 			targetVelocity = (new Vector3(playerPos.x, playerPos.y, transform.position.z) - transform.position).normalized * speed; // target velocity of gem
-			speed += 1.5f * Time.deltaTime; // increase speed
+			speed += 5.0f * Time.deltaTime; // increase speed
 		}
 
 		Vector2 velocityDifference = (targetVelocity - rb.velocity) * 10.0f;

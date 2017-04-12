@@ -101,7 +101,7 @@ public class EyeBat : MonoBehaviour {
 			transform.FindChild("Health Bar").gameObject.SetActive(true); 
 
 			// damage enemy
-			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage);
+			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage * (1.0f + (Player.Instance.firePower + Player.Instance.icePower) / 20.0f));
 			health -= totalDamage;
 
             if (health <= 0)
@@ -169,13 +169,13 @@ public class EyeBat : MonoBehaviour {
         transform.FindChild("FlamesParticleEffect").gameObject.SetActive(true);
 		gameObject.GetComponent<SpriteRenderer>().color = Color.Lerp (Color.red, Color.white, Mathf.Max(1 - Player.Instance.firePower / 10.0f, 0));
         yield return new WaitForSeconds(0.5f);
-        health -= Player.Instance.firePower * 7;
+        health -= Player.Instance.firePower * 5;
         if(health <= 0)
         {
             DestroyEnemy();
         }
         yield return new WaitForSeconds(0.5f);
-		health -= Player.Instance.firePower * 7;
+		health -= Player.Instance.firePower * 5;
         if (health <= 0)
         {
             DestroyEnemy();

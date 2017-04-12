@@ -96,7 +96,7 @@ public class Cerberus : MonoBehaviour {
         if(collision.gameObject.tag == "WeaponCollider")
         {
 			// damage enemy
-			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage * (1.0f + (Player.Instance.firePower + Player.Instance.icePower) / 10.0f));
+			int totalDamage = Mathf.FloorToInt(Player.Instance.baseDamage * (1.0f + (Player.Instance.firePower + Player.Instance.icePower) / 20.0f));
 			health -= totalDamage;
 
             if (health <= 0)
