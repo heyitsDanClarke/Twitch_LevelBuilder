@@ -59,8 +59,8 @@ public class Cerberus : MonoBehaviour {
                 }
                 if(spawnCounter >= 4)
                 {
-                        Instantiate(eyebat, new Vector3(0, 2, 0), transform.rotation);
-                        Instantiate(eyebat, new Vector3(15, 2, 0), transform.rotation);
+					Instantiate(eyebat, new Vector3(0, 2, 0), transform.rotation).transform.SetParent(Dungeon.Instance.enemyVisual.transform);
+					Instantiate(eyebat, new Vector3(15, 2, 0), transform.rotation).transform.SetParent(Dungeon.Instance.enemyVisual.transform);
                     spawnCounter = 0;
                 }
             }
