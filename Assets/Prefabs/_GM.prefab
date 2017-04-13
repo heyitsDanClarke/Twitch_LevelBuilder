@@ -53,3 +53,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iceCount: 0
   fireCount: 0
+  hammerCount: 0
+  daggerCount: 0
+  spearCount: 0
+  music: 0
+  sfx: 0
+  username: uldrendan
