@@ -8,6 +8,7 @@ public class Cerberus : MonoBehaviour {
     Rigidbody2D _rb;
     Animator _anim;
     float counter;
+    float spawnCounter;
     int moveReset;
     bool paused;
     bool moveLeft;
@@ -22,6 +23,8 @@ public class Cerberus : MonoBehaviour {
     public GameObject iceball;
 
     public GameObject exit;
+
+    public GameObject eyebat;
 
     void Start()
     {
@@ -45,6 +48,7 @@ public class Cerberus : MonoBehaviour {
         {
             if (!paused)
             {
+                spawnCounter += Time.deltaTime;
                 counter += Time.deltaTime;
                 if (counter >= moveReset)
                 {
@@ -52,6 +56,11 @@ public class Cerberus : MonoBehaviour {
                     moveLeft = !moveLeft;
                     moveReset = UnityEngine.Random.Range(1, 3);
                     counter = 0;
+                }
+                if(spawnCounter >= 6)
+                {
+                        Instantiate(eyebat, new Vector3(0, 0, 0), transform.rotation);
+                        Instantiate(eyebat, new Vector3(0, 0, 0), transform.rotation);
                 }
             }
         }
@@ -81,7 +90,7 @@ public class Cerberus : MonoBehaviour {
     {
         _rb.velocity = Vector2.zero;
         paused = true;
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         GameObject tempFire = Instantiate(fireball, new Vector2(transform.position.x - 0.5f, transform.position.y - 0.5f), transform.rotation);
         GameObject tempIce = Instantiate(iceball, new Vector2(transform.position.x + 0.5f, transform.position.y - 0.5f), transform.rotation);
         tempFire.transform.SetParent (Dungeon.Instance.enemyVisual.transform);
