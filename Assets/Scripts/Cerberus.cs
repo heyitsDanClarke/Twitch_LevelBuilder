@@ -57,10 +57,11 @@ public class Cerberus : MonoBehaviour {
                     moveReset = UnityEngine.Random.Range(1, 3);
                     counter = 0;
                 }
-                if(spawnCounter >= 6)
+                if(spawnCounter >= 4)
                 {
-                        Instantiate(eyebat, new Vector3(0, 0, 0), transform.rotation);
-                        Instantiate(eyebat, new Vector3(0, 0, 0), transform.rotation);
+                        Instantiate(eyebat, new Vector3(0, 2, 0), transform.rotation);
+                        Instantiate(eyebat, new Vector3(15, 2, 0), transform.rotation);
+                    spawnCounter = 0;
                 }
             }
         }

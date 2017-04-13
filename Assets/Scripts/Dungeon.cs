@@ -439,7 +439,11 @@ public class Dungeon : MonoBehaviour
             {
                 if (room[i, j].tile == air)
                 { // set floor tiles
-                    GameObject floorTile = Instantiate(floorTiles, new Vector3(i, j, 0.0f), transform.rotation);
+                    GameObject floorTile;
+                    if (currentRoomClimate < 0)
+                        floorTile = Instantiate(floorTiles, new Vector3(i, j, 0.0f), transform.rotation);
+                    else
+                        floorTile = Instantiate(hotFloorTiles, new Vector3(i, j, 0.0f), transform.rotation);
                     floorTile.transform.SetParent(dungeonVisual.transform);
                 }
             }
